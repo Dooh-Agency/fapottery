@@ -1,0 +1,145 @@
+@font-face {
+  font-family: 'Gilroy';
+  font-style: normal;
+  font-weight: 400;
+  src: url('https://fonts.cdnfonts.com/s/16219/Gilroy-Regular.woff') format('woff');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gilroy';
+  font-style: normal;
+  font-weight: 500;
+  src: url('https://fonts.cdnfonts.com/s/16219/Gilroy-Medium.woff') format('woff');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gilroy';
+  font-style: normal;
+  font-weight: 700;
+  src: url('https://fonts.cdnfonts.com/s/16219/Gilroy-Bold.woff') format('woff');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gilroy';
+  font-style: normal;
+  font-weight: 300;
+  src: url('https://fonts.cdnfonts.com/s/16219/Gilroy-Light.woff') format('woff');
+  font-display: swap;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 40 20% 97%;
+    --foreground: 42 18% 19%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 42 18% 19%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 42 18% 19%;
+
+    --primary: 42 18% 19%;
+    --primary-foreground: 40 20% 97%;
+
+    --secondary: 45 15% 88%;
+    --secondary-foreground: 42 18% 19%;
+
+    --muted: 40 15% 93%;
+    --muted-foreground: 40 10% 45%;
+
+    --accent: 50 16% 65%;
+    --accent-foreground: 42 18% 19%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 40 15% 88%;
+    --input: 40 15% 88%;
+    --ring: 42 18% 19%;
+
+    --radius: 0px;
+
+    --cream: 40 30% 95%;
+    --olive: 50 16% 65%;
+    --olive-dark: 42 18% 19%;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+    -webkit-font-smoothing: auto;
+    -moz-osx-font-smoothing: auto;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Bodoni Moda', Georgia, serif;
+    font-weight: 400;
+    font-optical-sizing: auto;
+    font-variation-settings: 'opsz' 96;
+    -webkit-font-smoothing: auto;
+    -moz-osx-font-smoothing: auto;
+  }
+
+  /* Global focus-visible ring */
+  :focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+
+  /* Respect reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  /* ── Buttons ── */
+  .btn-outline {
+    @apply inline-block w-full text-center border border-foreground text-foreground font-sans text-xs tracking-[0.2em] uppercase px-8 py-4 hover:bg-foreground hover:text-background transition-colors duration-300;
+  }
+
+  .btn-outline-sm {
+    @apply inline-block w-full text-center border border-foreground text-foreground font-sans text-xs tracking-[0.2em] uppercase px-8 py-3 hover:bg-foreground hover:text-primary-foreground transition-colors;
+  }
+
+  /* ── Section spacing ── */
+  .section-padding {
+    @apply py-20 md:py-28;
+  }
+
+  /* ── Labels ── */
+  .label-sm {
+    @apply text-[10px] uppercase tracking-[0.3em] text-foreground/60 font-sans;
+  }
+
+  /* ── Body text ── */
+  .body-text {
+    @apply text-[15px] md:text-base leading-relaxed text-foreground font-sans;
+  }
+}
