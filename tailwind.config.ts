@@ -14,7 +14,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        serif: ['"Bodoni Moda"', 'Georgia', 'serif'],
+        serif: ['"Gilroy"', 'system-ui', 'sans-serif'],
         sans: ['"Gilroy"', 'system-ui', 'sans-serif'],
       },
       colors: {
