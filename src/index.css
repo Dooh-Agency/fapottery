@@ -93,10 +93,8 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Bodoni Moda', Georgia, serif;
+    font-family: 'Gilroy', system-ui, sans-serif;
     font-weight: 400;
-    font-optical-sizing: auto;
-    font-variation-settings: 'opsz' 96;
     -webkit-font-smoothing: auto;
     -moz-osx-font-smoothing: auto;
   }
