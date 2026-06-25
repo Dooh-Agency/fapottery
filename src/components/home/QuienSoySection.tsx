@@ -23,7 +23,7 @@ const QuienSoySection = () => {
                 Soy Florencia Alvarez, ceramista y diseñadora.
               </p>
               <p>
-                Mi formación tardía en diseño gráfico y de indumentaria se redefinió en una mirada proyectual que, con el tiempo, trasladó al trabajo con el barro. Lo cerámica se convirtió así en mi principal medio de expresión: un territorio donde pensar, hacer y producir desde el material.
+                Mi formación de grado en Diseño Gráfico y comunicación se redefinió en una mirada proyectual que, con el tiempo, trasladó al trabajo con el barro. Lo cerámica se convirtió así en mi principal medio de expresión: un territorio donde pensar, hacer y producir desde el material.
               </p>
               <p>
                 Me formé en torno alfarero, modelado y desarrollo de esmaltes, y desde hace más de cuatro años dicto clases de cerámica para adultos y niños, acompañando procesos técnicos y creativos desde un enfoque cercano, personalizado y consciente del ritmo de cada persona.
