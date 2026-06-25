@@ -82,6 +82,24 @@ const PropuestaEducativa = () => (
       </div>
     </section>
 
+    {/* CTA rápida antes de los tipos */}
+    <section className="pb-6 md:pb-8">
+      <div className="container mx-auto px-6">
+        <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between border border-border p-5 md:p-6">
+          <div>
+            <p className="label-sm mb-1">¿Listo/a para empezar?</p>
+            <p className="text-sm font-sans text-muted-foreground">Grupos reducidos · Todos los niveles · Desde €35 / clase</p>
+          </div>
+          <Link
+            to="/clases"
+            className="inline-block shrink-0 border border-foreground bg-foreground text-primary-foreground font-sans text-xs tracking-[0.2em] uppercase px-7 py-3.5 hover:bg-transparent hover:text-foreground transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+          >
+            Ver fechas disponibles
+          </Link>
+        </div>
+      </div>
+    </section>
+
     {/* Class Types */}
     <section className="w-full bg-cream section-padding" aria-label="Tipos de clases">
       <div className="container mx-auto px-6">
@@ -106,7 +124,7 @@ const PropuestaEducativa = () => (
                 to={`/clases?tipo=${cls.filterParam}`}
                 className="btn-outline-sm mt-8 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring text-center"
               >
-                APÚNTATE
+                Ver fechas y reservar
               </Link>
             </article>
           ))}

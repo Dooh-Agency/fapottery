@@ -78,30 +78,47 @@ const Catalogo = () => {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" role="list">
               {filtered.map((piece) => (
-                <Link
-                  key={piece.id}
-                  to={`/tienda/${piece.id}`}
-                  role="listitem"
-                  className="group focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-                  aria-label={`${piece.title}, €${piece.price}. Ver detalles.`}
-                >
-                  <div className="aspect-square bg-muted overflow-hidden mb-3">
-                    {piece.images?.[0] ? (
-                      <img
-                        src={piece.images[0]}
-                        alt={`Pieza de cerámica: ${piece.title}`}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 motion-reduce:transition-none"
-                        loading="lazy"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs" aria-hidden="true">
-                        Sin imagen
-                      </div>
-                    )}
+                <article key={piece.id} role="listitem" className="group flex flex-col">
+                  <Link
+                    to={`/tienda/${piece.id}`}
+                    className="focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring block"
+                    aria-label={`${piece.title}, €${piece.price}. Ver detalles.`}
+                  >
+                    <div className="aspect-square bg-muted overflow-hidden mb-3">
+                      {piece.images?.[0] ? (
+                        <img
+                          src={piece.images[0]}
+                          alt={`Pieza de cerámica: ${piece.title}`}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 motion-reduce:transition-none"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs" aria-hidden="true">
+                          Sin imagen
+                        </div>
+                      )}
+                    </div>
+                    <p className="font-sans text-sm font-medium">{piece.title}</p>
+                    <p className="font-sans text-base font-serif mb-3">€{piece.price}</p>
+                  </Link>
+                  <div className="flex gap-2 mt-auto">
+                    <Link
+                      to={`/tienda/${piece.id}`}
+                      className="flex-1 text-center border border-foreground text-foreground font-sans text-[10px] tracking-[0.18em] uppercase px-3 py-2.5 hover:bg-foreground hover:text-primary-foreground transition-colors duration-200"
+                    >
+                      Ver pieza
+                    </Link>
+                    <a
+                      href={`https://wa.me/+34681816030?text=${encodeURIComponent(`Hola! Me interesa la pieza "${piece.title}" (€${piece.price}). ¿Está disponible?`)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 text-center border border-border text-muted-foreground font-sans text-[10px] tracking-[0.18em] uppercase px-3 py-2.5 hover:border-foreground hover:text-foreground transition-colors duration-200"
+                      aria-label={`Consultar por WhatsApp sobre ${piece.title}`}
+                    >
+                      Consultar
+                    </a>
                   </div>
-                  <p className="font-sans text-sm font-medium">{piece.title}</p>
-                  <p className="font-sans text-sm text-muted-foreground">€{piece.price}</p>
-                </Link>
+                </article>
               ))}
             </div>
           )}

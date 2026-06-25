@@ -4,6 +4,7 @@ import { Menu, X } from "lucide-react";
 import logoMenu from "@/assets/logo-menu.svg";
 
 const navItems = [
+  { label: "CLASES", path: "/clases" },
   { label: "PROPUESTA EDUCATIVA", path: "/propuesta-educativa" },
   { label: "PRODUCCIÓN", path: "/produccion" },
   { label: "TIENDA", path: "/tienda" },
@@ -58,14 +59,12 @@ const Header = () => {
 
         {/* CTA + Mobile Toggle */}
         <div className="flex items-center gap-4">
-          <a
-            href="https://wa.me/+34681816030"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hidden sm:inline-block border border-foreground text-foreground text-xs uppercase tracking-[0.15em] font-sans font-medium px-5 py-2.5 hover:bg-foreground hover:text-primary-foreground transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+          <Link
+            to="/clases"
+            className="hidden sm:inline-block border border-foreground bg-foreground text-primary-foreground text-xs uppercase tracking-[0.15em] font-sans font-medium px-5 py-2.5 hover:bg-transparent hover:text-foreground transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
           >
-            ¡Apúntate ahora!
-          </a>
+            Reservar clase
+          </Link>
           <button
             className="lg:hidden text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring p-1"
             onClick={() => setMobileOpen(!mobileOpen)}
@@ -100,14 +99,12 @@ const Header = () => {
               {item.label}
             </Link>
           ))}
-          <a
-            href="https://wa.me/+34681816030"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="sm:hidden border border-foreground text-foreground text-sm uppercase tracking-[0.15em] font-sans font-medium px-5 py-2.5 text-center mt-2 hover:bg-foreground hover:text-primary-foreground transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+          <Link
+            to="/clases"
+            className="sm:hidden border border-foreground bg-foreground text-primary-foreground text-sm uppercase tracking-[0.15em] font-sans font-medium px-5 py-2.5 text-center mt-2 hover:bg-transparent hover:text-foreground transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
           >
-            ¡Apúntate ahora!
-          </a>
+            Reservar clase
+          </Link>
         </nav>
       )}
     </header>
