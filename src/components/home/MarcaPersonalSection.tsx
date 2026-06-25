@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import forma1 from "@/assets/forma1.svg";
 import forma2 from "@/assets/forma2.svg";
 import forma3 from "@/assets/forma3.svg";
@@ -7,19 +8,22 @@ const features = [
     icon: forma1,
     title: "Producción artesanal",
     description:
-      "Piezas hechas a mano, en series pequeñas o como objetos únicos.",
+      "Piezas hechas a mano, en series pequeñas o como objetos únicos. Cada pieza conserva las huellas del proceso y del material.",
+    cta: { label: "Ver piezas", to: "/tienda" },
   },
   {
     icon: forma2,
-    title: "Mirada de diseño",
+    title: "Propuesta educativa",
     description:
-      "Cada objeto integra función, forma y criterio proyectual.",
+      "Clases de torno y modelado en grupos reducidos, workshops y clases personalizadas para adultos y niños.",
+    cta: { label: "Ver clases", to: "/clases" },
   },
   {
     icon: forma3,
-    title: "Práctica viva",
+    title: "Colaboraciones",
     description:
-      "Cerámica entendida como proceso, aprendizaje y colaboración.",
+      "Experiencias cerámicas para talleres, empresas y espacios culturales. Proyectos a medida y team building.",
+    cta: { label: "Colaborar", to: "/colaboraciones" },
   },
 ];
 
@@ -59,9 +63,15 @@ const MarcaPersonalSection = () => {
               <h3 className="text-sm font-sans font-bold text-foreground mb-2 tracking-wide">
                 {feature.title}
               </h3>
-              <p className="text-[15px] md:text-base leading-relaxed text-foreground font-sans">
+              <p className="text-[15px] md:text-base leading-relaxed text-foreground font-sans mb-6 flex-1">
                 {feature.description}
               </p>
+              <Link
+                to={feature.cta.to}
+                className="text-xs uppercase tracking-[0.2em] font-sans text-foreground border-b border-foreground pb-0.5 hover:opacity-60 transition-opacity"
+              >
+                {feature.cta.label} →
+              </Link>
             </div>
           ))}
         </div>

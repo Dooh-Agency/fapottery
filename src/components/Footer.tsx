@@ -59,10 +59,12 @@ const Footer = () => {
           <nav aria-label="Enlaces del pie de página" className="flex flex-col gap-1.5">
             {[
               { label: "Inicio", path: "/" },
+              { label: "Clases", path: "/clases" },
               { label: "Propuesta educativa", path: "/propuesta-educativa" },
               { label: "Producción", path: "/produccion" },
               { label: "Tienda", path: "/tienda" },
               { label: "Colaboraciones", path: "/colaboraciones" },
+              { label: "Novedades", path: "/novedades" },
             ].map((item) => (
               <Link
                 key={item.path}
@@ -72,14 +74,6 @@ const Footer = () => {
                 {item.label}
               </Link>
             ))}
-            <a
-              href="https://wa.me/+34681816030"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm text-muted-foreground hover:text-foreground font-sans focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-            >
-              ¡Apúntate!
-            </a>
           </nav>
         </div>
 
