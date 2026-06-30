@@ -124,7 +124,7 @@ const Clases = () => {
       <section className="bg-cream pt-32 md:pt-40 pb-20 md:pb-28">
         <div className="container mx-auto px-6 text-center">
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-serif text-foreground leading-tight mb-6">
-            Clases en Málaga
+            Clases en Maui
           </h1>
           <p className="body-text max-w-lg mx-auto">
             Explorá las opciones de talleres y reservá tu lugar.
