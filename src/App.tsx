@@ -15,6 +15,7 @@ import Produccion from "./pages/Produccion";
 import Colaboraciones from "./pages/Colaboraciones";
 import FaLanding from "./pages/FaLanding";
 import Clases from "./pages/Clases";
+import ClaseDetalle from "./pages/ClaseDetalle";
 import Catalogo from "./pages/Catalogo";
 import PiezaDetalle from "./pages/PiezaDetalle";
 import Novedades from "./pages/Novedades";
@@ -75,6 +76,7 @@ const AppRoutes = () => {
         <Route path="/catalogo/:id" element={<PiezaDetalle />} />
         <Route path="/fa" element={<FaLanding />} />
         <Route path="/clases" element={<Clases />} />
+        <Route path="/clases/:id" element={<ClaseDetalle />} />
         <Route path="/novedades" element={<Novedades />} />
         <Route path="/novedades/:id" element={<NovedadDetalle />} />
         <Route path="*" element={<NotFound />} />

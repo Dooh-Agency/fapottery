@@ -1,116 +1,25 @@
-import { useState, useEffect, useRef } from "react";
-import { useSearchParams } from "react-router-dom";
 import Layout from "@/components/Layout";
 import SEO from "@/components/SEO";
 import DynamicHeroBanner from "@/components/DynamicHeroBanner";
-import { useClassTypes, useClassSchedules, useCreateReservation, type ClassType, type ClassSchedule } from "@/hooks/useClasses";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
-import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
-import { CalendarDays, Clock, Users, MapPin, ExternalLink, ChevronDown } from "lucide-react";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { useClassTypes } from "@/hooks/useClasses";
+import { Link, useSearchParams } from "react-router-dom";
+
+const CATEGORY_LABELS: Record<string, string> = {
+  regulares: "Clases regulares",
+  workshops: "Workshops",
+  personalizadas: "Clases personalizadas",
+};
 
 const Clases = () => {
-  const { data: classTypes, isLoading: loadingTypes } = useClassTypes(true);
-  const { data: schedules, isLoading: loadingSchedules } = useClassSchedules();
-  const createReservation = useCreateReservation();
-  const [selectedSchedule, setSelectedSchedule] = useState<ClassSchedule | null>(null);
-  const [bookingOpen, setBookingOpen] = useState(false);
+  const { data: classTypes, isLoading } = useClassTypes(true);
   const [searchParams] = useSearchParams();
-  const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
+  const tipo = searchParams.get("tipo");
 
-  // Scroll automático al tipo de clase indicado en ?tipo=
-  useEffect(() => {
-    const tipo = searchParams.get("tipo");
-    if (!tipo || loadingTypes || loadingSchedules || !classTypes?.length) return;
-    const match = classTypes.find((ct) =>
-      (ct as any).category === tipo || ct.title.toLowerCase().includes(tipo.toLowerCase())
-    );
-    if (match && sectionRefs.current[match.id]) {
-      setTimeout(() => {
-        sectionRefs.current[match.id]?.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 300);
-    }
-  }, [searchParams, classTypes, loadingTypes, loadingSchedules]);
-
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState<"cash" | "stripe">("cash");
-  const [submitting, setSubmitting] = useState(false);
-  const [errors, setErrors] = useState<{ fullName?: string; email?: string }>({});
-
-  const openBooking = (schedule: ClassSchedule) => {
-    setSelectedSchedule(schedule);
-    setFullName("");
-    setEmail("");
-    setPhone("");
-    setPaymentMethod("cash");
-    setErrors({});
-    setBookingOpen(true);
-  };
-
-  const validate = () => {
-    const newErrors: typeof errors = {};
-    if (!fullName.trim()) newErrors.fullName = "El nombre es obligatorio.";
-    if (!email.trim()) newErrors.email = "El email es obligatorio.";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) newErrors.email = "Ingresá un email válido.";
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleBook = async () => {
-    if (!validate() || !selectedSchedule) return;
-    setSubmitting(true);
-
-    try {
-      if (paymentMethod === "stripe") {
-        const res = await createReservation.mutateAsync({
-          schedule_id: selectedSchedule.id,
-          full_name: fullName.trim(),
-          email: email.trim(),
-          phone: phone.trim() || null,
-          payment_method: "stripe",
-          payment_status: "pending",
-        });
-
-        const { data, error } = await supabase.functions.invoke("create-class-checkout", {
-          body: { reservation_id: res.id, schedule_id: selectedSchedule.id },
-        });
-        if (error) throw error;
-        if (data?.url) window.open(data.url, "_blank");
-        toast.success("Redirigiendo a pago...");
-        setBookingOpen(false);
-      } else {
-        await createReservation.mutateAsync({
-          schedule_id: selectedSchedule.id,
-          full_name: fullName.trim(),
-          email: email.trim(),
-          phone: phone.trim() || null,
-          payment_method: "cash",
-          payment_status: "pending",
-        });
-        toast.success("¡Reserva registrada! Te esperamos para pagar en persona.");
-        setBookingOpen(false);
-      }
-    } catch (e: any) {
-      toast.error(e.message || "Error al reservar");
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const schedulesByType = (typeId: string) =>
-    schedules?.filter((s) => s.class_type_id === typeId && !s.is_cancelled && new Date(s.scheduled_date + "T23:59:59") >= new Date()) || [];
-
-  const formatTime = (t: string) => t.slice(0, 5);
+  const items = (classTypes || []).filter((ct) => {
+    if (!tipo) return true;
+    const cta = ct as any;
+    return cta.category === tipo || ct.title.toLowerCase().includes(tipo.toLowerCase());
+  });
 
   return (
     <Layout>
@@ -119,230 +28,79 @@ const Clases = () => {
         description="Reservá tu lugar en clases de cerámica. Torno, modelado, workshops y más."
         path="/clases"
       />
-
-      {/* Hero like Colaboraciones */}
-      <section className="bg-cream pt-32 md:pt-40 pb-20 md:pb-28">
-        <div className="container mx-auto px-6 text-center">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-serif text-foreground leading-tight mb-6">
-            Clases en Maui
-          </h1>
-          <p className="body-text max-w-lg mx-auto">
-            Explorá las opciones de talleres y reservá tu lugar.
-          </p>
-        </div>
-      </section>
-
       <DynamicHeroBanner
         sectionKey="clases"
         fallbackSrc=""
-        fallbackAlt="Clases header"
+        fallbackAlt="Clases del estudio"
+        flush
+        title="Clases"
       />
-
       <section className="section-padding" aria-label="Clases disponibles">
         <div className="container mx-auto px-6">
-          {(loadingTypes || loadingSchedules) ? (
-            <p className="text-muted-foreground text-sm text-center" role="status">Cargando...</p>
-          ) : !classTypes?.length ? (
-            <p className="text-muted-foreground text-sm text-center">Próximamente se publicarán clases.</p>
-          ) : (
-            <div className="space-y-24">
-              {classTypes.map((ct) => {
-                const upcoming = schedulesByType(ct.id);
-                const cta = ct as any;
-                const faq: { question: string; answer: string }[] = Array.isArray(cta.faq) ? cta.faq : [];
+          <p className="body-text text-center max-w-xl mx-auto mb-12">
+            Explorá las opciones de talleres y reservá tu lugar.
+          </p>
 
+          {isLoading && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" role="status" aria-label="Cargando clases">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="animate-pulse bg-muted aspect-[4/5]" aria-hidden="true" />
+              ))}
+              <span className="sr-only">Cargando clases…</span>
+            </div>
+          )}
+
+          {!isLoading && items.length === 0 && (
+            <p className="body-text text-center text-muted-foreground">
+              Próximamente se publicarán clases.
+            </p>
+          )}
+
+          {!isLoading && items.length > 0 && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {items.map((ct) => {
+                const cta = ct as any;
                 return (
-                  <section
+                  <Link
                     key={ct.id}
-                    aria-labelledby={`class-${ct.id}`}
-                    ref={(el) => { sectionRefs.current[ct.id] = el; }}
-                    className="scroll-mt-28"
+                    to={`/clases/${ct.id}`}
+                    className="group border border-border bg-card overflow-hidden flex flex-col focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                    aria-label={`Ver detalles de: ${ct.title}`}
                   >
-                    {/* Imagen */}
                     {cta.image_url && (
-                      <div className="w-full aspect-[16/6] overflow-hidden mb-8">
+                      <div className="aspect-[4/5] overflow-hidden">
                         <img
                           src={cta.image_url}
-                          alt={ct.title}
-                          className="w-full h-full object-cover"
+                          alt={`Imagen de la clase: ${ct.title}`}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 motion-reduce:transition-none"
                           loading="lazy"
                         />
                       </div>
                     )}
-
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-                      {/* Columna principal */}
-                      <div className="lg:col-span-2 space-y-6">
-                        <h2 id={`class-${ct.id}`} className="text-2xl md:text-3xl font-serif text-foreground">{ct.title}</h2>
-
-                        {/* Descripción */}
-                        {ct.description && (
-                          <div className="body-text whitespace-pre-line">{ct.description}</div>
+                    <div className="p-5 flex flex-col flex-1">
+                      {cta.category && (
+                        <span className="label-sm mb-2">{CATEGORY_LABELS[cta.category] || cta.category}</span>
+                      )}
+                      <h2 className="font-serif font-bold text-lg mb-2">{ct.title}</h2>
+                      {ct.description && (
+                        <p className="body-text line-clamp-3 flex-1">{ct.description}</p>
+                      )}
+                      <div className="flex items-center justify-between mt-3">
+                        {Number(ct.price) > 0 && (
+                          <span className="text-sm font-serif font-semibold text-foreground">€{ct.price}</span>
                         )}
-
-                        {/* FAQ */}
-                        {faq.length > 0 && (
-                          <div className="mt-6">
-                            <h3 className="text-base font-semibold text-foreground mb-3">Preguntas frecuentes</h3>
-                            <Accordion type="single" collapsible className="w-full">
-                              {faq.map((item, i) => (
-                                <AccordionItem key={i} value={`faq-${ct.id}-${i}`}>
-                                  <AccordionTrigger className="text-sm text-left font-medium">
-                                    {item.question}
-                                  </AccordionTrigger>
-                                  <AccordionContent className="text-sm text-muted-foreground whitespace-pre-line">
-                                    {item.answer}
-                                  </AccordionContent>
-                                </AccordionItem>
-                              ))}
-                            </Accordion>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Columna lateral — info + reserva */}
-                      <div className="space-y-5">
-                        {/* Datos del evento */}
-                        <div className="border border-border bg-card p-5 space-y-4">
-
-                          {/* Precio */}
-                          {Number(ct.price) > 0 && (
-                            <div>
-                              <p className="text-2xl font-serif font-semibold text-foreground">€{ct.price}</p>
-                              <p className="text-xs text-muted-foreground">por persona</p>
-                            </div>
-                          )}
-
-                          {/* Detalles */}
-                          <div className="space-y-2 text-sm">
-                            <div className="flex items-center gap-2 text-muted-foreground">
-                              <Clock className="h-4 w-4 shrink-0" />
-                              <span>{ct.duration_minutes} minutos</span>
-                            </div>
-                            <div className="flex items-center gap-2 text-muted-foreground">
-                              <Users className="h-4 w-4 shrink-0" />
-                              <span>Máx. {ct.max_students} alumnos</span>
-                            </div>
-                            {cta.location_text && (
-                              <div className="flex items-start gap-2 text-muted-foreground">
-                                <MapPin className="h-4 w-4 shrink-0 mt-0.5" />
-                                <div>
-                                  <span>{cta.location_text}</span>
-                                  {cta.location_map_url && (
-                                    <a
-                                      href={cta.location_map_url}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="flex items-center gap-1 text-xs text-foreground underline underline-offset-2 mt-0.5"
-                                    >
-                                      Ver en Google Maps <ExternalLink className="h-3 w-3" />
-                                    </a>
-                                  )}
-                                </div>
-                              </div>
-                            )}
-                          </div>
-
-                          {/* Fechas disponibles */}
-                          {upcoming.length > 0 && (
-                            <div className="space-y-2 pt-2 border-t border-border">
-                              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Próximas fechas</p>
-                              {upcoming.map((s) => (
-                                <div key={s.id} className="space-y-1">
-                                  <div className="flex items-center gap-2">
-                                    <CalendarDays className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-                                    <span className="text-sm font-medium capitalize">
-                                      {format(new Date(s.scheduled_date + "T00:00:00"), "EEEE d 'de' MMMM", { locale: es })}
-                                    </span>
-                                  </div>
-                                  <div className="flex items-center justify-between pl-5">
-                                    <span className="text-xs text-muted-foreground">{formatTime(s.start_time)} – {formatTime(s.end_time)}</span>
-                                    <Badge variant={s.spots_available > 0 ? "default" : "secondary"} className="text-[10px]">
-                                      {s.spots_available > 0 ? `${s.spots_available} vacantes` : "Completo"}
-                                    </Badge>
-                                  </div>
-                                  {s.notes && <p className="text-xs text-muted-foreground italic pl-5">{s.notes}</p>}
-                                  <Button
-                                    className="w-full mt-1"
-                                    variant="default"
-                                    disabled={s.spots_available <= 0}
-                                    onClick={() => openBooking(s)}
-                                  >
-                                    {s.spots_available > 0 ? "Apuntarme" : "Sin vacantes"}
-                                  </Button>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-
-                          {upcoming.length === 0 && (
-                            <p className="text-sm text-muted-foreground pt-2 border-t border-border">
-                              No hay fechas próximas disponibles.
-                            </p>
-                          )}
-                        </div>
+                        <span className="text-xs uppercase tracking-[0.15em] font-sans text-muted-foreground">
+                          Ver más →
+                        </span>
                       </div>
                     </div>
-                  </section>
+                  </Link>
                 );
               })}
             </div>
           )}
         </div>
       </section>
-
-      {/* Booking Dialog */}
-      <Dialog open={bookingOpen} onOpenChange={setBookingOpen}>
-        <DialogContent className="max-w-sm">
-          <DialogHeader>
-            <DialogTitle className="font-serif">Reservar clase</DialogTitle>
-          </DialogHeader>
-          {selectedSchedule && (
-            <form
-              className="space-y-4"
-              onSubmit={(e) => { e.preventDefault(); handleBook(); }}
-              noValidate
-            >
-              <p className="text-sm text-muted-foreground">
-                {selectedSchedule.class_types?.title} — {format(new Date(selectedSchedule.scheduled_date + "T00:00:00"), "EEEE d MMM yyyy", { locale: es })} · {formatTime(selectedSchedule.start_time)}
-              </p>
-
-              <div className="space-y-1">
-                <Label htmlFor="booking-name">Nombre completo <span aria-hidden="true">*</span></Label>
-                <Input id="booking-name" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Tu nombre" required autoComplete="name" aria-invalid={!!errors.fullName} aria-describedby={errors.fullName ? "name-error" : undefined} />
-                {errors.fullName && <p id="name-error" className="text-xs text-destructive" role="alert">{errors.fullName}</p>}
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="booking-email">Email <span aria-hidden="true">*</span></Label>
-                <Input id="booking-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="tu@email.com" required autoComplete="email" aria-invalid={!!errors.email} aria-describedby={errors.email ? "email-error" : undefined} />
-                {errors.email && <p id="email-error" className="text-xs text-destructive" role="alert">{errors.email}</p>}
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="booking-phone">Teléfono</Label>
-                <Input id="booking-phone" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+34 600 000 000" autoComplete="tel" />
-              </div>
-
-              <fieldset className="space-y-2">
-                <legend className="text-sm font-medium">Método de pago</legend>
-                <RadioGroup value={paymentMethod} onValueChange={(v) => setPaymentMethod(v as "cash" | "stripe")}>
-                  <div className="flex items-center gap-2">
-                    <RadioGroupItem value="cash" id="pay-cash" />
-                    <Label htmlFor="pay-cash" className="font-normal text-sm">Efectivo (pagar en persona)</Label>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <RadioGroupItem value="stripe" id="pay-stripe" />
-                    <Label htmlFor="pay-stripe" className="font-normal text-sm">Tarjeta (pago online)</Label>
-                  </div>
-                </RadioGroup>
-              </fieldset>
-
-              <Button type="submit" className="w-full" disabled={submitting}>
-                {submitting ? "Procesando..." : paymentMethod === "stripe" ? "Pagar y reservar" : "Confirmar reserva"}
-              </Button>
-            </form>
-          )}
-        </DialogContent>
-      </Dialog>
     </Layout>
   );
 };

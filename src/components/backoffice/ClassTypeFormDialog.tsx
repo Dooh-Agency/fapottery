@@ -218,6 +218,7 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
                     bucket="class-images"
                   />
                 </FormControl>
+                <p className="text-xs text-muted-foreground">Medida recomendada: 1080 x 1350 px (relación 4:5), para que se vea completa en el listado de clases.</p>
                 <FormMessage />
               </FormItem>
             )} />
