@@ -1,10 +1,10 @@
 import { useSiteImages, useUpdateSiteImage } from "@/hooks/useSiteImages";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Upload } from "lucide-react";
 
 const SECTION_LABELS: Record<string, string> = {
@@ -20,6 +20,19 @@ const SiteImagesManager = () => {
   const { data: images, isLoading } = useSiteImages();
   const update = useUpdateSiteImage();
   const [uploading, setUploading] = useState<string | null>(null);
+  const [savingSubtitle, setSavingSubtitle] = useState<string | null>(null);
+  const [subtitleDrafts, setSubtitleDrafts] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    if (!images) return;
+    setSubtitleDrafts((prev) => {
+      const next = { ...prev };
+      for (const img of images) {
+        if (!(img.section_key in next)) next[img.section_key] = img.subtitle ?? "";
+      }
+      return next;
+    });
+  }, [images]);
 
   const handleUpload = async (sectionKey: string, file: File) => {
     setUploading(sectionKey);
@@ -43,6 +56,17 @@ const SiteImagesManager = () => {
       toast.error(e.message);
     }
     setUploading(null);
+  };
+
+  const handleSaveSubtitle = async (sectionKey: string) => {
+    setSavingSubtitle(sectionKey);
+    try {
+      await update.mutateAsync({ sectionKey, subtitle: subtitleDrafts[sectionKey] ?? "" });
+      toast.success("Texto actualizado");
+    } catch (e: any) {
+      toast.error(e.message);
+    }
+    setSavingSubtitle(null);
   };
 
   return (
@@ -96,6 +120,31 @@ const SiteImagesManager = () => {
                 >
                   <Upload className="h-4 w-4 mr-1" />
                   {uploading === img.section_key ? "Subiendo…" : "Cambiar imagen"}
+                </Button>
+              </div>
+
+              <div className="space-y-2 pt-2 border-t border-border">
+                <Label htmlFor={`subtitle-${img.section_key}`} className="text-sm">
+                  Texto debajo del hero
+                </Label>
+                <Textarea
+                  id={`subtitle-${img.section_key}`}
+                  rows={2}
+                  value={subtitleDrafts[img.section_key] ?? ""}
+                  onChange={(e) =>
+                    setSubtitleDrafts((prev) => ({ ...prev, [img.section_key]: e.target.value }))
+                  }
+                  placeholder="Ej: Explorá las opciones de talleres y reservá tu lugar."
+                />
+                <Button
+                  size="sm"
+                  disabled={
+                    savingSubtitle === img.section_key ||
+                    (subtitleDrafts[img.section_key] ?? "") === (img.subtitle ?? "")
+                  }
+                  onClick={() => handleSaveSubtitle(img.section_key)}
+                >
+                  {savingSubtitle === img.section_key ? "Guardando…" : "Guardar texto"}
                 </Button>
               </div>
             </div>

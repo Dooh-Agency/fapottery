@@ -2,6 +2,7 @@ import Layout from "@/components/Layout";
 import SEO from "@/components/SEO";
 import DynamicHeroBanner from "@/components/DynamicHeroBanner";
 import { useClassTypes } from "@/hooks/useClasses";
+import { useSiteImage } from "@/hooks/useSiteImages";
 import { Link, useSearchParams } from "react-router-dom";
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -12,6 +13,7 @@ const CATEGORY_LABELS: Record<string, string> = {
 
 const Clases = () => {
   const { data: classTypes, isLoading } = useClassTypes(true);
+  const { data: siteImage } = useSiteImage("clases");
   const [searchParams] = useSearchParams();
   const tipo = searchParams.get("tipo");
 
@@ -38,7 +40,7 @@ const Clases = () => {
       <section className="section-padding" aria-label="Clases disponibles">
         <div className="container mx-auto px-6">
           <p className="body-text text-center max-w-xl mx-auto mb-12">
-            Explorá las opciones de talleres y reservá tu lugar.
+            {siteImage?.subtitle || "Explorá las opciones de talleres y reservá tu lugar."}
           </p>
 
           {isLoading && (

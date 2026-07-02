@@ -2,12 +2,14 @@ import Layout from "@/components/Layout";
 import SEO from "@/components/SEO";
 import DynamicHeroBanner from "@/components/DynamicHeroBanner";
 import { useNews } from "@/hooks/useNews";
+import { useSiteImage } from "@/hooks/useSiteImages";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { Link } from "react-router-dom";
 
 const Novedades = () => {
   const { data: news, isLoading } = useNews(true);
+  const { data: siteImage } = useSiteImage("novedades");
 
   return (
     <Layout>
@@ -26,7 +28,7 @@ const Novedades = () => {
       <section className="section-padding" aria-label="Novedades del estudio">
         <div className="container mx-auto px-6">
           <p className="body-text text-center max-w-xl mx-auto mb-12">
-            Últimas noticias, eventos y novedades del estudio.
+            {siteImage?.subtitle || "Últimas noticias, eventos y novedades del estudio."}
           </p>
 
           {isLoading && (

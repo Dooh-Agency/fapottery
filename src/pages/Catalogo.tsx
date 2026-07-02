@@ -2,6 +2,7 @@ import Layout from "@/components/Layout";
 import SEO from "@/components/SEO";
 import DynamicHeroBanner from "@/components/DynamicHeroBanner";
 import { usePublishedPieces, type Piece } from "@/hooks/usePieces";
+import { useSiteImage } from "@/hooks/useSiteImages";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -18,6 +19,7 @@ const allCategories: Piece["category"][] = ["tazas", "platos", "bowls", "jarrone
 
 const Catalogo = () => {
   const { data: pieces, isLoading } = usePublishedPieces();
+  const { data: siteImage } = useSiteImage("catalogo");
   const [filter, setFilter] = useState<Piece["category"] | "all">("all");
 
   const filtered = filter === "all" ? pieces : pieces?.filter((p) => p.category === filter);
@@ -39,7 +41,7 @@ const Catalogo = () => {
       <section className="section-padding" aria-label="Tienda de piezas">
         <div className="container mx-auto px-6">
           <p className="text-center text-muted-foreground font-sans text-[15px] md:text-base mb-10">
-            Piezas únicas hechas a mano
+            {siteImage?.subtitle || "Piezas únicas hechas a mano"}
           </p>
 
           {/* Filter */}

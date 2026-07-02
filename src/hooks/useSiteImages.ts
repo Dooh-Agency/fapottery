@@ -6,6 +6,7 @@ export interface SiteImage {
   section_key: string;
   image_url: string;
   alt_text: string | null;
+  subtitle: string | null;
   updated_at: string;
   updated_by: string | null;
 }
@@ -37,14 +38,25 @@ export const useSiteImage = (sectionKey: string) =>
 export const useUpdateSiteImage = () => {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async ({ sectionKey, imageUrl, altText }: { sectionKey: string; imageUrl: string; altText?: string }) => {
+    mutationFn: async ({
+      sectionKey,
+      imageUrl,
+      altText,
+      subtitle,
+    }: {
+      sectionKey: string;
+      imageUrl?: string;
+      altText?: string;
+      subtitle?: string;
+    }) => {
+      const updates: Record<string, unknown> = { updated_at: new Date().toISOString() };
+      if (imageUrl !== undefined) updates.image_url = imageUrl;
+      if (altText !== undefined) updates.alt_text = altText || null;
+      if (subtitle !== undefined) updates.subtitle = subtitle || null;
+
       const { error } = await supabase
         .from("site_images")
-        .update({
-          image_url: imageUrl,
-          alt_text: altText || null,
-          updated_at: new Date().toISOString(),
-        } as any)
+        .update(updates as any)
         .eq("section_key", sectionKey);
       if (error) throw error;
     },
