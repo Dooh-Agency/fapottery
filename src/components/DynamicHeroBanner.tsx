@@ -11,10 +11,7 @@ interface Props {
 const DynamicHeroBanner = ({ sectionKey, fallbackSrc, fallbackAlt = "", flush = false, title }: Props) => {
   const { data: siteImage, isLoading } = useSiteImage(sectionKey);
 
-  const src = siteImage?.image_url || fallbackSrc;
-  const alt = siteImage?.alt_text || fallbackAlt;
-
-  if (!src && isLoading) {
+  if (isLoading) {
     return (
       <section className={`w-full ${flush ? "" : "pt-6 md:pt-10 pb-6 md:pb-10"}`} aria-label="Imagen de cabecera">
         <div className={flush ? "" : "container mx-auto px-6"}>
@@ -23,6 +20,9 @@ const DynamicHeroBanner = ({ sectionKey, fallbackSrc, fallbackAlt = "", flush = 
       </section>
     );
   }
+
+  const src = siteImage?.image_url || fallbackSrc;
+  const alt = siteImage?.alt_text || fallbackAlt;
 
   if (!src) return null;
 
