@@ -10,7 +10,7 @@ interface SEOProps {
 }
 
 const SITE_NAME = "FA Pottery Studio";
-const BASE_URL = "https://fapottery.lovable.app";
+const BASE_URL = "https://fapottery.com";
 const DEFAULT_DESC = "FA Pottery Studio por Florencia Alvarez. Cerámica artesanal, clases y producción en Málaga y Buenos Aires.";
 
 const SEO = ({

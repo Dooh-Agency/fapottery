@@ -1,73 +1,58 @@
-# Welcome to your Lovable project
+# FA Pottery Studio
 
 ## Project info
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+Sitio de FA Pottery Studio: producción, clases y catálogo de cerámica, con backoffice de gestión de contenidos.
 
-## How can I edit this code?
+## Cómo editar este código
 
-There are several ways of editing your application.
+**Trabajar localmente con tu IDE**
 
-**Use Lovable**
+El único requisito es tener Node.js & npm instalados - [instalar con nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+Pasos:
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
+# Paso 1: Clonar el repositorio
 git clone <YOUR_GIT_URL>
 
-# Step 2: Navigate to the project directory.
+# Paso 2: Entrar al directorio del proyecto
 cd <YOUR_PROJECT_NAME>
 
-# Step 3: Install the necessary dependencies.
+# Paso 3: Instalar dependencias
 npm i
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Paso 4: Levantar el servidor de desarrollo
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+**Editar un archivo directamente en GitHub**
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+- Navegá al archivo deseado.
+- Hacé clic en el botón "Edit" (ícono de lápiz) arriba a la derecha.
+- Hacé tus cambios y commiteá.
 
-**Use GitHub Codespaces**
+**Usar GitHub Codespaces**
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+- Andá a la página principal del repositorio.
+- Hacé clic en el botón "Code" (verde) arriba a la derecha.
+- Seleccioná la pestaña "Codespaces".
+- Hacé clic en "New codespace".
+- Editá archivos directamente en el Codespace y commiteá/pusheá tus cambios.
 
-## What technologies are used for this project?
-
-This project is built with:
+## Tecnologías usadas
 
 - Vite
 - TypeScript
 - React
 - shadcn-ui
 - Tailwind CSS
+- Supabase
 
-## How can I deploy this project?
+## Deploy
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+El sitio se despliega en **Netlify**, conectado al repositorio de GitHub. Cada push a la rama `main` dispara un build y deploy automático a producción (`fapottery.com`).
 
-## Can I connect a custom domain to my Lovable project?
+## Dominio
 
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+El dominio propio (`fapottery.com`) está configurado en Netlify: Site configuration → Domain management.
