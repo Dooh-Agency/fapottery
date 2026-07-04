@@ -1,11 +1,14 @@
 import { useSiteImages, useUpdateSiteImage } from "@/hooks/useSiteImages";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
-import { Upload } from "lucide-react";
+import { Upload, X } from "lucide-react";
+
+const DEFAULT_BG_COLOR = "#F8F6F1";
 
 const SECTION_LABELS: Record<string, string> = {
   "propuesta-educativa": "Propuesta Educativa",
@@ -22,6 +25,9 @@ const SiteImagesManager = () => {
   const [uploading, setUploading] = useState<string | null>(null);
   const [savingSubtitle, setSavingSubtitle] = useState<string | null>(null);
   const [subtitleDrafts, setSubtitleDrafts] = useState<Record<string, string>>({});
+  const [removingImage, setRemovingImage] = useState<string | null>(null);
+  const [savingBgColor, setSavingBgColor] = useState<string | null>(null);
+  const [bgColorDrafts, setBgColorDrafts] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (!images) return;
@@ -29,6 +35,13 @@ const SiteImagesManager = () => {
       const next = { ...prev };
       for (const img of images) {
         if (!(img.section_key in next)) next[img.section_key] = img.subtitle ?? "";
+      }
+      return next;
+    });
+    setBgColorDrafts((prev) => {
+      const next = { ...prev };
+      for (const img of images) {
+        if (!(img.section_key in next)) next[img.section_key] = img.bg_color ?? DEFAULT_BG_COLOR;
       }
       return next;
     });
@@ -69,6 +82,28 @@ const SiteImagesManager = () => {
     setSavingSubtitle(null);
   };
 
+  const handleRemoveImage = async (sectionKey: string) => {
+    setRemovingImage(sectionKey);
+    try {
+      await update.mutateAsync({ sectionKey, imageUrl: "" });
+      toast.success("Imagen quitada. Ahora se muestra el color de fondo.");
+    } catch (e: any) {
+      toast.error(e.message);
+    }
+    setRemovingImage(null);
+  };
+
+  const handleSaveBgColor = async (sectionKey: string) => {
+    setSavingBgColor(sectionKey);
+    try {
+      await update.mutateAsync({ sectionKey, bgColor: bgColorDrafts[sectionKey] ?? DEFAULT_BG_COLOR });
+      toast.success("Color de fondo actualizado");
+    } catch (e: any) {
+      toast.error(e.message);
+    }
+    setSavingBgColor(null);
+  };
+
   return (
     <div className="space-y-6">
       <div>
@@ -97,8 +132,11 @@ const SiteImagesManager = () => {
                   />
                 </div>
               ) : (
-                <div className="w-full bg-muted flex items-center justify-center aspect-[10/1] text-muted-foreground text-sm">
-                  Sin imagen
+                <div
+                  className="w-full flex items-center justify-center aspect-[10/1] text-sm border border-border"
+                  style={{ backgroundColor: img.bg_color || DEFAULT_BG_COLOR }}
+                >
+                  <span className="text-muted-foreground">Sin imagen — se muestra este color de fondo</span>
                 </div>
               )}
 
@@ -121,6 +159,55 @@ const SiteImagesManager = () => {
                   <Upload className="h-4 w-4 mr-1" />
                   {uploading === img.section_key ? "Subiendo…" : "Cambiar imagen"}
                 </Button>
+                {img.image_url && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    disabled={removingImage === img.section_key}
+                    onClick={() => handleRemoveImage(img.section_key)}
+                  >
+                    <X className="h-4 w-4 mr-1" />
+                    {removingImage === img.section_key ? "Quitando…" : "Quitar imagen (usar color)"}
+                  </Button>
+                )}
+              </div>
+
+              <div className="space-y-2 pt-2 border-t border-border">
+                <Label htmlFor={`bgcolor-${img.section_key}`} className="text-sm">
+                  Color de fondo (se usa cuando no hay imagen)
+                </Label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="color"
+                    id={`bgcolor-${img.section_key}`}
+                    value={bgColorDrafts[img.section_key] ?? DEFAULT_BG_COLOR}
+                    onChange={(e) =>
+                      setBgColorDrafts((prev) => ({ ...prev, [img.section_key]: e.target.value }))
+                    }
+                    className="h-9 w-12 border border-border rounded cursor-pointer"
+                  />
+                  <Input
+                    value={bgColorDrafts[img.section_key] ?? DEFAULT_BG_COLOR}
+                    onChange={(e) =>
+                      setBgColorDrafts((prev) => ({ ...prev, [img.section_key]: e.target.value }))
+                    }
+                    placeholder="#F8F6F1"
+                    className="max-w-[140px]"
+                  />
+                  <Button
+                    size="sm"
+                    disabled={
+                      savingBgColor === img.section_key ||
+                      (bgColorDrafts[img.section_key] ?? DEFAULT_BG_COLOR) === (img.bg_color ?? DEFAULT_BG_COLOR)
+                    }
+                    onClick={() => handleSaveBgColor(img.section_key)}
+                  >
+                    {savingBgColor === img.section_key ? "Guardando…" : "Guardar color"}
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Si el título de esta sección se muestra en blanco, elegí un color oscuro para que se lea bien.
+                </p>
               </div>
 
               <div className="space-y-2 pt-2 border-t border-border">

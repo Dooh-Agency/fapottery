@@ -24,6 +24,9 @@ const Novedades = () => {
         fallbackAlt="Novedades del estudio"
         flush
         title="Novedades"
+        aspectClassName="aspect-[7.2/1] md:aspect-[10/1]"
+        titleClassName="font-sans text-foreground text-xs sm:text-sm md:text-base lg:text-lg uppercase tracking-[0.25em] font-light"
+        overlayClassName="bg-gradient-to-t from-white/60 via-white/40 to-white/10"
       />
       <section className="section-padding" aria-label="Novedades del estudio">
         <div className="container mx-auto px-6">
@@ -52,7 +55,7 @@ const Novedades = () => {
                 <Link
                   key={item.id}
                   to={`/novedades/${item.id}`}
-                  className="group border border-border bg-card overflow-hidden flex flex-col focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                  className="group bg-card overflow-hidden flex flex-col focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
                   aria-label={`Leer más sobre: ${item.title}`}
                 >
                   {item.image_url && (
@@ -71,7 +74,7 @@ const Novedades = () => {
                         {format(new Date(item.published_at), "d MMM yyyy", { locale: es })}
                       </time>
                     )}
-                    <h2 className="font-serif text-lg mb-2">{item.title}</h2>
+                    <h2 className="font-serif font-bold text-lg mb-2">{item.title}</h2>
                     {item.body && (
                       <p className="body-text line-clamp-3 flex-1">{item.body}</p>
                     )}

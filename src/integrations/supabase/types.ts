@@ -249,6 +249,7 @@ export type Database = {
       site_images: {
         Row: {
           alt_text: string | null
+          bg_color: string | null
           id: string
           image_url: string
           section_key: string
@@ -258,6 +259,7 @@ export type Database = {
         }
         Insert: {
           alt_text?: string | null
+          bg_color?: string | null
           id?: string
           image_url: string
           section_key: string
@@ -267,6 +269,7 @@ export type Database = {
         }
         Update: {
           alt_text?: string | null
+          bg_color?: string | null
           id?: string
           image_url?: string
           section_key?: string
