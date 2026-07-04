@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { Upload, X } from "lucide-react";
 
 const DEFAULT_BG_COLOR = "#F8F6F1";
+const DEFAULT_TITLE_COLOR = "#FFFFFF";
 
 const SECTION_LABELS: Record<string, string> = {
   "propuesta-educativa": "Propuesta Educativa",
@@ -28,6 +29,8 @@ const SiteImagesManager = () => {
   const [removingImage, setRemovingImage] = useState<string | null>(null);
   const [savingBgColor, setSavingBgColor] = useState<string | null>(null);
   const [bgColorDrafts, setBgColorDrafts] = useState<Record<string, string>>({});
+  const [savingTitleColor, setSavingTitleColor] = useState<string | null>(null);
+  const [titleColorDrafts, setTitleColorDrafts] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (!images) return;
@@ -42,6 +45,13 @@ const SiteImagesManager = () => {
       const next = { ...prev };
       for (const img of images) {
         if (!(img.section_key in next)) next[img.section_key] = img.bg_color ?? DEFAULT_BG_COLOR;
+      }
+      return next;
+    });
+    setTitleColorDrafts((prev) => {
+      const next = { ...prev };
+      for (const img of images) {
+        if (!(img.section_key in next)) next[img.section_key] = img.title_color ?? DEFAULT_TITLE_COLOR;
       }
       return next;
     });
@@ -102,6 +112,17 @@ const SiteImagesManager = () => {
       toast.error(e.message);
     }
     setSavingBgColor(null);
+  };
+
+  const handleSaveTitleColor = async (sectionKey: string) => {
+    setSavingTitleColor(sectionKey);
+    try {
+      await update.mutateAsync({ sectionKey, titleColor: titleColorDrafts[sectionKey] ?? DEFAULT_TITLE_COLOR });
+      toast.success("Color del título actualizado");
+    } catch (e: any) {
+      toast.error(e.message);
+    }
+    setSavingTitleColor(null);
   };
 
   return (
@@ -208,6 +229,41 @@ const SiteImagesManager = () => {
                 <p className="text-xs text-muted-foreground">
                   Si el título de esta sección se muestra en blanco, elegí un color oscuro para que se lea bien.
                 </p>
+              </div>
+
+              <div className="space-y-2 pt-2 border-t border-border">
+                <Label htmlFor={`titlecolor-${img.section_key}`} className="text-sm">
+                  Color del título
+                </Label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="color"
+                    id={`titlecolor-${img.section_key}`}
+                    value={titleColorDrafts[img.section_key] ?? DEFAULT_TITLE_COLOR}
+                    onChange={(e) =>
+                      setTitleColorDrafts((prev) => ({ ...prev, [img.section_key]: e.target.value }))
+                    }
+                    className="h-9 w-12 border border-border rounded cursor-pointer"
+                  />
+                  <Input
+                    value={titleColorDrafts[img.section_key] ?? DEFAULT_TITLE_COLOR}
+                    onChange={(e) =>
+                      setTitleColorDrafts((prev) => ({ ...prev, [img.section_key]: e.target.value }))
+                    }
+                    placeholder="#FFFFFF"
+                    className="max-w-[140px]"
+                  />
+                  <Button
+                    size="sm"
+                    disabled={
+                      savingTitleColor === img.section_key ||
+                      (titleColorDrafts[img.section_key] ?? DEFAULT_TITLE_COLOR) === (img.title_color ?? DEFAULT_TITLE_COLOR)
+                    }
+                    onClick={() => handleSaveTitleColor(img.section_key)}
+                  >
+                    {savingTitleColor === img.section_key ? "Guardando…" : "Guardar color"}
+                  </Button>
+                </div>
               </div>
 
               <div className="space-y-2 pt-2 border-t border-border">

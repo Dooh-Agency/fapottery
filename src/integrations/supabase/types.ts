@@ -254,6 +254,7 @@ export type Database = {
           image_url: string
           section_key: string
           subtitle: string | null
+          title_color: string | null
           updated_at: string
           updated_by: string | null
         }
@@ -264,6 +265,7 @@ export type Database = {
           image_url: string
           section_key: string
           subtitle?: string | null
+          title_color?: string | null
           updated_at?: string
           updated_by?: string | null
         }
@@ -274,6 +276,7 @@ export type Database = {
           image_url?: string
           section_key?: string
           subtitle?: string | null
+          title_color?: string | null
           updated_at?: string
           updated_by?: string | null
         }

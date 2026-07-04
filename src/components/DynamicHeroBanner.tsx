@@ -35,6 +35,7 @@ const DynamicHeroBanner = ({
 
   const src = siteImage?.image_url || fallbackSrc;
   const bgColor = siteImage?.bg_color || undefined;
+  const titleColor = siteImage?.title_color || undefined;
   const alt = siteImage?.alt_text || fallbackAlt;
 
   if (!src && !bgColor) return null;
@@ -56,13 +57,13 @@ const DynamicHeroBanner = ({
           {title && (
             src ? (
               <div className={`absolute inset-0 flex items-center justify-center ${overlayClassName}`}>
-                <h1 className={titleClassName}>
+                <h1 className={titleClassName} style={titleColor ? { color: titleColor } : undefined}>
                   – {title} –
                 </h1>
               </div>
             ) : (
               <div className="absolute inset-0 flex items-center justify-center">
-                <h1 className={titleClassName}>
+                <h1 className={titleClassName} style={titleColor ? { color: titleColor } : undefined}>
                   – {title} –
                 </h1>
               </div>

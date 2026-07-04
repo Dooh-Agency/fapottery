@@ -8,6 +8,7 @@ export interface SiteImage {
   alt_text: string | null;
   subtitle: string | null;
   bg_color: string | null;
+  title_color: string | null;
   updated_at: string;
   updated_by: string | null;
 }
@@ -45,18 +46,21 @@ export const useUpdateSiteImage = () => {
       altText,
       subtitle,
       bgColor,
+      titleColor,
     }: {
       sectionKey: string;
       imageUrl?: string;
       altText?: string;
       subtitle?: string;
       bgColor?: string;
+      titleColor?: string;
     }) => {
       const updates: Record<string, unknown> = { updated_at: new Date().toISOString() };
       if (imageUrl !== undefined) updates.image_url = imageUrl;
       if (altText !== undefined) updates.alt_text = altText || null;
       if (subtitle !== undefined) updates.subtitle = subtitle || null;
       if (bgColor !== undefined) updates.bg_color = bgColor || null;
+      if (titleColor !== undefined) updates.title_color = titleColor || null;
 
       const { error } = await supabase
         .from("site_images")
