@@ -95,7 +95,11 @@ const SiteImagesManager = () => {
   const handleRemoveImage = async (sectionKey: string) => {
     setRemovingImage(sectionKey);
     try {
-      await update.mutateAsync({ sectionKey, imageUrl: "" });
+      await update.mutateAsync({
+        sectionKey,
+        imageUrl: "",
+        bgColor: bgColorDrafts[sectionKey] || DEFAULT_BG_COLOR,
+      });
       toast.success("Imagen quitada. Ahora se muestra el color de fondo.");
     } catch (e: any) {
       toast.error(e.message);
