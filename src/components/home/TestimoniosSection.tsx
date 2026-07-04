@@ -1,21 +1,21 @@
 const testimonios = [
   {
     quote:
-      "Las clases con Florencia cambiaron completamente mi relación con la cerámica. El grupo reducido hace que el aprendizaje sea muy personalizado y el espacio es increíble.",
+      "Las clases con Florencia cambiaron completamente mi relación con la cerámica. Jamás me había animado a hacer. El grupo era de 6 y la enseñanza fue super personalizada y el espacio es increíble.",
     name: "Laura M.",
-    context: "Alumna de clases regulares, Málaga",
+    context: "Alumna de clases regulares, Riviera, La Cala de Mijas",
   },
   {
     quote:
-      "Organizamos un workshop de cerámica para el equipo y fue una experiencia memorable. Flo tiene una capacidad increíble para que todos se sientan cómodos con el barro desde el primer momento.",
+      "Organizamos un workshop de cerámica para el equipo de trabajo y fue una experiencia hermosa. Flor tiene una capacidad y una paciencia increible, para que todos se sientan cómodos haciendo cerámica desde el primer momento.",
     name: "Carlos R.",
     context: "Team building corporativo",
   },
   {
     quote:
-      "Compré una taza y un bowl, y cada vez que los uso siento que hay algo especial en ellos. Se nota que cada pieza está hecha con cuidado y criterio.",
+      "Mi primera vez haciendo cerámica. Hice una taza con un bowl, y cada vez que los uso siento que hay algo especial. No están perfectos, pero los amo!! Además le compré una ensaladera y nota que cada pieza está hecha con cuidado y amor. Es mi preferida.",
     name: "Ana P.",
-    context: "Clienta de la tienda online",
+    context: "Clienta y alumna de Workshop Cerámica & Picoteo, Maui Paddle Surf",
   },
 ];
 
@@ -28,7 +28,7 @@ const TestimoniosSection = () => (
           id="testimonios-heading"
           className="text-2xl sm:text-3xl md:text-4xl font-serif text-foreground leading-tight max-w-2xl mx-auto"
         >
-          Lo que dicen quienes ya pasaron por el estudio
+          Lo que dicen quienes ya vivieron una experiencia cerámica conmigo
         </h2>
       </div>
 
