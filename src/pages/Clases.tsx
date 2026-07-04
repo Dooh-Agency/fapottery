@@ -37,7 +37,7 @@ const Clases = () => {
         flush
         title="Clases"
       />
-      <section className="section-padding" aria-label="Clases disponibles">
+      <section className="pt-[37px] md:pt-[46px] pb-20 md:pb-28" aria-label="Clases disponibles">
         <div className="container mx-auto px-6">
           <p className="body-text text-center max-w-xl mx-auto mb-12">
             {siteImage?.subtitle || "Explorá las opciones de talleres y reservá tu lugar."}

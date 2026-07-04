@@ -19,7 +19,7 @@ const Produccion = () => (
     />
 
     {/* Two-column content */}
-    <section className="pt-8 md:pt-10 pb-10 md:pb-14">
+    <section className="pt-[37px] md:pt-[46px] pb-10 md:pb-14">
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16">
           <div>

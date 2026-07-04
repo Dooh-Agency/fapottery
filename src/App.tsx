@@ -28,6 +28,7 @@ import CatalogManager from "./pages/backoffice/CatalogManager";
 import ClassManager from "./pages/backoffice/ClassManager";
 import NewsManager from "./pages/backoffice/NewsManager";
 import SiteImagesManager from "./pages/backoffice/SiteImagesManager";
+import HomeServicesManager from "./pages/backoffice/HomeServicesManager";
 import Placeholder from "./pages/backoffice/Placeholder";
 
 const queryClient = new QueryClient();
@@ -59,6 +60,7 @@ const AppRoutes = () => {
         <Route path="clases" element={<ClassManager />} />
         <Route path="novedades" element={<NewsManager />} />
         <Route path="imagenes" element={<SiteImagesManager />} />
+        <Route path="servicios-home" element={<HomeServicesManager />} />
         <Route path="usuarios" element={<Placeholder title="Usuarios" description="Gestión de usuarios y roles. Próximamente." />} />
       </Route>
     </Routes>

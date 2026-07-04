@@ -28,7 +28,7 @@ const Novedades = () => {
         titleClassName="font-sans text-foreground text-xs sm:text-sm md:text-base lg:text-lg uppercase tracking-[0.25em] font-light"
         overlayClassName="bg-gradient-to-t from-white/60 via-white/40 to-white/10"
       />
-      <section className="section-padding" aria-label="Novedades del estudio">
+      <section className="pt-[37px] md:pt-[46px] pb-20 md:pb-28" aria-label="Novedades del estudio">
         <div className="container mx-auto px-6">
           <p className="body-text text-center max-w-xl mx-auto mb-12">
             {siteImage?.subtitle || "Últimas noticias, eventos y novedades del estudio."}

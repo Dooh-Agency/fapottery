@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      home_services: {
+        Row: {
+          cta_label: string
+          cta_link: string
+          description: string | null
+          id: string
+          image_url: string
+          label: string
+          position: number
+          price: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          cta_label: string
+          cta_link: string
+          description?: string | null
+          id?: string
+          image_url?: string
+          label: string
+          position: number
+          price?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          cta_label?: string
+          cta_link?: string
+          description?: string | null
+          id?: string
+          image_url?: string
+          label?: string
+          position?: number
+          price?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       class_reservations: {
         Row: {
           created_at: string

@@ -38,7 +38,7 @@ const Catalogo = () => {
         flush
         title="Tienda"
       />
-      <section className="section-padding" aria-label="Tienda de piezas">
+      <section className="pt-[37px] md:pt-[46px] pb-20 md:pb-28" aria-label="Tienda de piezas">
         <div className="container mx-auto px-6">
           <p className="text-center text-muted-foreground font-sans text-[15px] md:text-base mb-10">
             {siteImage?.subtitle || "Piezas únicas hechas a mano"}

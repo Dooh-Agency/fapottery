@@ -21,7 +21,7 @@ const Colaboraciones = () => (
     />
 
     {/* Experiencias Pottery */}
-    <section className="section-padding bg-background" aria-labelledby="experiencias-heading">
+    <section className="pt-[37px] md:pt-[46px] pb-20 md:pb-28 bg-background" aria-labelledby="experiencias-heading">
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-start">
           {/* Left column */}
