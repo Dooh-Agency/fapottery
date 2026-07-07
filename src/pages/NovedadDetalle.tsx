@@ -15,7 +15,8 @@ const NovedadDetalle = () => {
   const item = news?.find((n) => n.id === id);
   const { t } = useTranslation();
   const location = useLocation();
-  const dateLocale = getLanguageFromPathname(location.pathname) === "en" ? enUS : es;
+  const isEn = getLanguageFromPathname(location.pathname) === "en";
+  const dateLocale = isEn ? enUS : es;
 
   if (isLoading) {
     return (
@@ -43,9 +44,12 @@ const NovedadDetalle = () => {
     );
   }
 
+  const title = (isEn && item.title_en) || item.title;
+  const body = (isEn && item.body_en) || item.body;
+
   return (
     <Layout>
-      <SEO title={item.title} description={item.body?.slice(0, 155) || ""} path={`/novedades/${item.id}`} />
+      <SEO title={title} description={body?.slice(0, 155) || ""} path={`/novedades/${item.id}`} />
       <section className="pt-10 md:pt-14 pb-20 md:pb-28">
         <div className="container mx-auto px-6">
           <Link to="/novedades" className="inline-flex items-center gap-1.5 text-xs uppercase tracking-[0.15em] font-sans text-muted-foreground hover:text-foreground transition-colors mb-8">
@@ -58,7 +62,7 @@ const NovedadDetalle = () => {
               <div className="w-full overflow-hidden">
                 <img
                   src={item.image_url}
-                  alt={item.title}
+                  alt={title}
                   className="w-full h-auto object-cover"
                 />
               </div>
@@ -71,9 +75,9 @@ const NovedadDetalle = () => {
                   {format(new Date(item.published_at), dateLocale === enUS ? "MMMM d, yyyy" : "d 'de' MMMM yyyy", { locale: dateLocale })}
                 </time>
               )}
-              <h1 className="font-serif text-2xl md:text-3xl lg:text-4xl mb-6">{item.title}</h1>
-              {item.body && (
-                <div className="body-text whitespace-pre-line space-y-4">{item.body}</div>
+              <h1 className="font-serif text-2xl md:text-3xl lg:text-4xl mb-6">{title}</h1>
+              {body && (
+                <div className="body-text whitespace-pre-line space-y-4">{body}</div>
               )}
               {item.instagram_url && (
                 <a

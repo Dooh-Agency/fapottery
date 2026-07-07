@@ -23,7 +23,8 @@ const ClaseDetalle = () => {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
   const { t } = useTranslation();
-  const dateLocale = getLanguageFromPathname(location.pathname) === "en" ? enUS : es;
+  const isEn = getLanguageFromPathname(location.pathname) === "en";
+  const dateLocale = isEn ? enUS : es;
   const { data: classTypes, isLoading: loadingTypes } = useClassTypes(true);
   const item = classTypes?.find((ct) => ct.id === id);
   const { data: schedules, isLoading: loadingSchedules } = useClassSchedules(id);
@@ -131,11 +132,14 @@ const ClaseDetalle = () => {
   }
 
   const cta = item as any;
-  const faq: { question: string; answer: string }[] = Array.isArray(cta.faq) ? cta.faq : [];
+  const title = (isEn && cta.title_en) || item.title;
+  const description = (isEn && cta.description_en) || item.description;
+  const faq: { question: string; answer: string }[] =
+    (isEn && Array.isArray(cta.faq_en) && cta.faq_en.length > 0 ? cta.faq_en : Array.isArray(cta.faq) ? cta.faq : []);
 
   return (
     <Layout>
-      <SEO title={item.title} description={item.description?.slice(0, 155) || ""} path={`/clases/${item.id}`} />
+      <SEO title={title} description={description?.slice(0, 155) || ""} path={`/clases/${item.id}`} />
       <section className="pt-10 md:pt-14 pb-20 md:pb-28">
         <div className="container mx-auto px-6">
           <Link to="/clases" className="inline-flex items-center gap-1.5 text-xs uppercase tracking-[0.15em] font-sans text-muted-foreground hover:text-foreground transition-colors mb-8">
@@ -146,7 +150,7 @@ const ClaseDetalle = () => {
             <div className="w-full aspect-[16/6] overflow-hidden mb-10">
               <img
                 src={cta.image_url}
-                alt={item.title}
+                alt={title}
                 className="w-full h-full object-cover"
                 loading="lazy"
               />
@@ -156,10 +160,10 @@ const ClaseDetalle = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
             {/* Columna principal */}
             <div className="lg:col-span-2 space-y-6">
-              <h1 className="font-serif font-bold text-2xl md:text-3xl lg:text-4xl mb-2">{item.title}</h1>
+              <h1 className="font-serif font-bold text-2xl md:text-3xl lg:text-4xl mb-2">{title}</h1>
 
-              {item.description && (
-                <div className="body-text whitespace-pre-line space-y-4">{item.description}</div>
+              {description && (
+                <div className="body-text whitespace-pre-line space-y-4">{description}</div>
               )}
 
               {faq.length > 0 && (
@@ -275,7 +279,7 @@ const ClaseDetalle = () => {
               noValidate
             >
               <p className="text-sm text-muted-foreground">
-                {item.title} — {format(new Date(selectedSchedule.scheduled_date + "T00:00:00"), "EEEE d MMM yyyy", { locale: dateLocale })} · {formatTime(selectedSchedule.start_time)}
+                {title} — {format(new Date(selectedSchedule.scheduled_date + "T00:00:00"), "EEEE d MMM yyyy", { locale: dateLocale })} · {formatTime(selectedSchedule.start_time)}
               </p>
 
               <div className="space-y-1">

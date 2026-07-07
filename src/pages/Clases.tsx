@@ -12,7 +12,8 @@ const Clases = () => {
   const { data: siteImage } = useSiteImage("clases");
   const [searchParams] = useSearchParams();
   const tipo = searchParams.get("tipo");
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isEn = i18n.language === "en";
 
   const CATEGORY_LABELS: Record<string, string> = {
     regulares: t("clases.categoriaRegulares"),
@@ -65,18 +66,20 @@ const Clases = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {items.map((ct) => {
                 const cta = ct as any;
+                const title = (isEn && cta.title_en) || ct.title;
+                const description = (isEn && cta.description_en) || ct.description;
                 return (
                   <Link
                     key={ct.id}
                     to={`/clases/${ct.id}`}
                     className="group border border-border bg-card overflow-hidden flex flex-col focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-                    aria-label={`Ver detalles de: ${ct.title}`}
+                    aria-label={title}
                   >
                     {cta.image_url && (
                       <div className="aspect-[4/5] overflow-hidden">
                         <img
                           src={cta.image_url}
-                          alt={`Imagen de la clase: ${ct.title}`}
+                          alt={title}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 motion-reduce:transition-none"
                           loading="lazy"
                         />
@@ -86,9 +89,9 @@ const Clases = () => {
                       {cta.category && (
                         <span className="label-sm mb-2">{CATEGORY_LABELS[cta.category] || cta.category}</span>
                       )}
-                      <h2 className="font-serif font-bold text-lg mb-2">{ct.title}</h2>
-                      {ct.description && (
-                        <p className="body-text line-clamp-3 flex-1">{ct.description}</p>
+                      <h2 className="font-serif font-bold text-lg mb-2">{title}</h2>
+                      {description && (
+                        <p className="body-text line-clamp-3 flex-1">{description}</p>
                       )}
                       <div className="flex items-center justify-between mt-3">
                         {Number(ct.price) > 0 && (

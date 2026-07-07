@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNews, useUpsertNews, useDeleteNews, type NewsItem } from "@/hooks/useNews";
+import { useTranslateContent } from "@/hooks/useTranslateContent";
 import { Button } from "@/components/ui/button";
 import { Plus, Pencil, Trash2, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
@@ -11,15 +12,18 @@ const NewsManager = () => {
   const { data: news, isLoading } = useNews(false);
   const upsert = useUpsertNews();
   const remove = useDeleteNews();
+  const translateContent = useTranslateContent("news");
   const [editing, setEditing] = useState<NewsItem | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const handleSave = async (values: Partial<NewsItem> & { title: string }) => {
     try {
-      await upsert.mutateAsync(values);
+      const result = await upsert.mutateAsync(values);
       toast.success(values.id ? "Novedad actualizada" : "Novedad creada");
       setDialogOpen(false);
       setEditing(null);
+      const newsId = values.id || (result as any)?.id;
+      if (newsId) translateContent.mutate(newsId);
     } catch (e: any) {
       toast.error(e.message);
     }

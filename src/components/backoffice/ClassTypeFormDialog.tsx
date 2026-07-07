@@ -18,6 +18,7 @@ import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { useUpsertClassType, useUpsertSchedule, useClassSchedules, useDeleteSchedule, type ClassType } from "@/hooks/useClasses";
+import { useTranslateContent } from "@/hooks/useTranslateContent";
 import { toast } from "sonner";
 import ImageUploader from "./ImageUploader";
 
@@ -78,6 +79,7 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
   const upsert = useUpsertClassType();
   const upsertSchedule = useUpsertSchedule();
   const deleteSchedule = useDeleteSchedule();
+  const translateContent = useTranslateContent("class_types");
   const { data: existingSchedules } = useClassSchedules(classType?.id);
 
   const form = useForm<FormValues>({
@@ -129,25 +131,25 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
         image_url: classTypeData.image_url || null,
       } as any);
 
+      const classTypeId = classType?.id || (result as any)?.id;
+
       // 2. Guardar nuevas fechas si hay
-      if (new_schedules.length > 0) {
-        const classTypeId = classType?.id || (result as any)?.id;
-        if (classTypeId) {
-          for (const s of new_schedules) {
-            await upsertSchedule.mutateAsync({
-              class_type_id: classTypeId,
-              scheduled_date: format(s.scheduled_date, "yyyy-MM-dd"),
-              start_time: s.start_time,
-              end_time: s.end_time,
-              spots_available: s.spots_available,
-              notes: s.notes || "",
-            });
-          }
+      if (new_schedules.length > 0 && classTypeId) {
+        for (const s of new_schedules) {
+          await upsertSchedule.mutateAsync({
+            class_type_id: classTypeId,
+            scheduled_date: format(s.scheduled_date, "yyyy-MM-dd"),
+            start_time: s.start_time,
+            end_time: s.end_time,
+            spots_available: s.spots_available,
+            notes: s.notes || "",
+          });
         }
       }
 
       toast.success(classType ? "Clase actualizada" : "Clase creada");
       onOpenChange(false);
+      if (classTypeId) translateContent.mutate(classTypeId);
     } catch (e: any) {
       toast.error(e.message);
     }

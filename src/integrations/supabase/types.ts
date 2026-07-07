@@ -12,47 +12,33 @@ export type Database = {
   __InternalSupabase: {
     PostgrestVersion: "14.5"
   }
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json
+          operationName?: string
+          query?: string
+          variables?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
   public: {
     Tables: {
-      home_services: {
-        Row: {
-          cta_label: string
-          cta_link: string
-          description: string | null
-          id: string
-          image_url: string
-          label: string
-          position: number
-          price: string | null
-          title: string
-          updated_at: string
-        }
-        Insert: {
-          cta_label: string
-          cta_link: string
-          description?: string | null
-          id?: string
-          image_url?: string
-          label: string
-          position: number
-          price?: string | null
-          title: string
-          updated_at?: string
-        }
-        Update: {
-          cta_label?: string
-          cta_link?: string
-          description?: string | null
-          id?: string
-          image_url?: string
-          label?: string
-          position?: number
-          price?: string | null
-          title?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
       class_reservations: {
         Row: {
           created_at: string
@@ -146,38 +132,98 @@ export type Database = {
       }
       class_types: {
         Row: {
+          category: string | null
           created_at: string
           description: string | null
+          description_en: string | null
           duration_minutes: number
+          faq: Json | null
+          faq_en: Json | null
           id: string
           image_url: string | null
           is_active: boolean
+          location_map_url: string | null
+          location_text: string | null
           max_students: number
           price: number
+          title: string
+          title_en: string | null
+          updated_at: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          description_en?: string | null
+          duration_minutes?: number
+          faq?: Json | null
+          faq_en?: Json | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          location_map_url?: string | null
+          location_text?: string | null
+          max_students?: number
+          price?: number
+          title: string
+          title_en?: string | null
+          updated_at?: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          description_en?: string | null
+          duration_minutes?: number
+          faq?: Json | null
+          faq_en?: Json | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          location_map_url?: string | null
+          location_text?: string | null
+          max_students?: number
+          price?: number
+          title?: string
+          title_en?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      home_services: {
+        Row: {
+          cta_label: string
+          cta_link: string
+          description: string | null
+          id: string
+          image_url: string
+          label: string
+          position: number
+          price: string | null
           title: string
           updated_at: string
         }
         Insert: {
-          created_at?: string
+          cta_label: string
+          cta_link: string
           description?: string | null
-          duration_minutes?: number
           id?: string
-          image_url?: string | null
-          is_active?: boolean
-          max_students?: number
-          price?: number
+          image_url?: string
+          label: string
+          position: number
+          price?: string | null
           title: string
           updated_at?: string
         }
         Update: {
-          created_at?: string
+          cta_label?: string
+          cta_link?: string
           description?: string | null
-          duration_minutes?: number
           id?: string
-          image_url?: string | null
-          is_active?: boolean
-          max_students?: number
-          price?: number
+          image_url?: string
+          label?: string
+          position?: number
+          price?: string | null
           title?: string
           updated_at?: string
         }
@@ -186,6 +232,7 @@ export type Database = {
       news: {
         Row: {
           body: string | null
+          body_en: string | null
           created_at: string
           id: string
           image_url: string | null
@@ -193,10 +240,12 @@ export type Database = {
           is_published: boolean
           published_at: string | null
           title: string
+          title_en: string | null
           updated_at: string
         }
         Insert: {
           body?: string | null
+          body_en?: string | null
           created_at?: string
           id?: string
           image_url?: string | null
@@ -204,10 +253,12 @@ export type Database = {
           is_published?: boolean
           published_at?: string | null
           title: string
+          title_en?: string | null
           updated_at?: string
         }
         Update: {
           body?: string | null
+          body_en?: string | null
           created_at?: string
           id?: string
           image_url?: string | null
@@ -215,6 +266,7 @@ export type Database = {
           is_published?: boolean
           published_at?: string | null
           title?: string
+          title_en?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -489,6 +541,9 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
   public: {
     Enums: {
       app_role: ["admin", "colaborador"],

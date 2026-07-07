@@ -15,7 +15,8 @@ const Novedades = () => {
   const { data: siteImage } = useSiteImage("novedades");
   const { t } = useTranslation();
   const location = useLocation();
-  const dateLocale = getLanguageFromPathname(location.pathname) === "en" ? enUS : es;
+  const isEn = getLanguageFromPathname(location.pathname) === "en";
+  const dateLocale = isEn ? enUS : es;
 
   return (
     <Layout>
@@ -57,39 +58,43 @@ const Novedades = () => {
 
           {!isLoading && news && news.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {news.map((item) => (
-                <Link
-                  key={item.id}
-                  to={`/novedades/${item.id}`}
-                  className="group bg-card overflow-hidden flex flex-col focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-                  aria-label={`${t("novedades.leerMas")} — ${item.title}`}
-                >
-                  {item.image_url && (
-                    <div className="aspect-square overflow-hidden">
-                      <img
-                        src={item.image_url}
-                        alt={item.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 motion-reduce:transition-none"
-                        loading="lazy"
-                      />
+              {news.map((item) => {
+                const title = (isEn && item.title_en) || item.title;
+                const body = (isEn && item.body_en) || item.body;
+                return (
+                  <Link
+                    key={item.id}
+                    to={`/novedades/${item.id}`}
+                    className="group bg-card overflow-hidden flex flex-col focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                    aria-label={`${t("novedades.leerMas")} — ${title}`}
+                  >
+                    {item.image_url && (
+                      <div className="aspect-square overflow-hidden">
+                        <img
+                          src={item.image_url}
+                          alt={title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 motion-reduce:transition-none"
+                          loading="lazy"
+                        />
+                      </div>
+                    )}
+                    <div className="p-5 flex flex-col flex-1">
+                      {item.published_at && (
+                        <time className="label-sm mb-2" dateTime={item.published_at}>
+                          {format(new Date(item.published_at), "d MMM yyyy", { locale: dateLocale })}
+                        </time>
+                      )}
+                      <h2 className="font-serif font-bold text-lg mb-2">{title}</h2>
+                      {body && (
+                        <p className="body-text line-clamp-3 flex-1">{body}</p>
+                      )}
+                      <span className="text-xs uppercase tracking-[0.15em] font-sans text-muted-foreground mt-3">
+                        {t("novedades.leerMas")}
+                      </span>
                     </div>
-                  )}
-                  <div className="p-5 flex flex-col flex-1">
-                    {item.published_at && (
-                      <time className="label-sm mb-2" dateTime={item.published_at}>
-                        {format(new Date(item.published_at), "d MMM yyyy", { locale: dateLocale })}
-                      </time>
-                    )}
-                    <h2 className="font-serif font-bold text-lg mb-2">{item.title}</h2>
-                    {item.body && (
-                      <p className="body-text line-clamp-3 flex-1">{item.body}</p>
-                    )}
-                    <span className="text-xs uppercase tracking-[0.15em] font-sans text-muted-foreground mt-3">
-                      {t("novedades.leerMas")}
-                    </span>
-                  </div>
-                </Link>
-              ))}
+                  </Link>
+                );
+              })}
             </div>
           )}
         </div>

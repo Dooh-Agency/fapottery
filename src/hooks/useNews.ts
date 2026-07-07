@@ -4,7 +4,9 @@ import { supabase } from "@/integrations/supabase/client";
 export interface NewsItem {
   id: string;
   title: string;
+  title_en: string | null;
   body: string | null;
+  body_en: string | null;
   image_url: string | null;
   instagram_url: string | null;
   is_published: boolean;
@@ -40,9 +42,11 @@ export const useUpsertNews = () => {
       if (id) {
         const { error } = await supabase.from("news").update(rest as any).eq("id", id);
         if (error) throw error;
+        return { id };
       } else {
-        const { error } = await supabase.from("news").insert(rest as any);
+        const { data, error } = await supabase.from("news").insert(rest as any).select().single();
         if (error) throw error;
+        return data;
       }
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["news"] }),
