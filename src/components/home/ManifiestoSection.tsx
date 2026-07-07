@@ -1,4 +1,7 @@
+import { useTranslation } from "react-i18next";
+
 const ManifiestoSection = () => {
+  const { t } = useTranslation();
   return (
     <section className="relative py-32 md:py-44 overflow-hidden" aria-label="Manifiesto">
       {/* Background video — decorative, respects reduced motion */}
@@ -19,10 +22,10 @@ const ManifiestoSection = () => {
 
       <div className="container mx-auto px-6 relative z-10 text-center">
         <p className="text-xs uppercase tracking-[0.3em] text-primary-foreground/70 font-sans mb-8">
-          Manifiesto
+          {t("home.manifiesto.label")}
         </p>
         <blockquote className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif text-primary-foreground leading-snug max-w-4xl mx-auto">
-          Una práctica donde cada objeto refleja una forma de mirar, hacer y enseñar cerámica.
+          {t("home.manifiesto.quote")}
         </blockquote>
       </div>
     </section>

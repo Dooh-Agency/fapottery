@@ -1,21 +1,24 @@
+import { useTranslation } from "react-i18next";
 import Layout from "@/components/Layout";
 import SEO from "@/components/SEO";
 import DynamicHeroBanner from "@/components/DynamicHeroBanner";
 import { useClassTypes } from "@/hooks/useClasses";
 import { useSiteImage } from "@/hooks/useSiteImages";
-import { Link, useSearchParams } from "react-router-dom";
-
-const CATEGORY_LABELS: Record<string, string> = {
-  regulares: "Clases regulares",
-  workshops: "Workshops",
-  personalizadas: "Clases personalizadas",
-};
+import { useSearchParams } from "react-router-dom";
+import { Link } from "@/components/LocalizedLink";
 
 const Clases = () => {
   const { data: classTypes, isLoading } = useClassTypes(true);
   const { data: siteImage } = useSiteImage("clases");
   const [searchParams] = useSearchParams();
   const tipo = searchParams.get("tipo");
+  const { t } = useTranslation();
+
+  const CATEGORY_LABELS: Record<string, string> = {
+    regulares: t("clases.categoriaRegulares"),
+    workshops: t("clases.categoriaWorkshops"),
+    personalizadas: t("clases.categoriaPersonalizadas"),
+  };
 
   const items = (classTypes || []).filter((ct) => {
     if (!tipo) return true;
@@ -26,35 +29,35 @@ const Clases = () => {
   return (
     <Layout>
       <SEO
-        title="Clases"
-        description="Reservá tu lugar en clases de cerámica. Torno, modelado, workshops y más."
+        title={t("clases.seoTitle")}
+        description={t("clases.seoDescription")}
         path="/clases"
       />
       <DynamicHeroBanner
         sectionKey="clases"
         fallbackSrc=""
-        fallbackAlt="Clases del estudio"
+        fallbackAlt={t("clases.heroAlt")}
         flush
-        title="Clases"
+        title={t("clases.heroTitle")}
       />
-      <section className="pt-[37px] md:pt-[46px] pb-20 md:pb-28" aria-label="Clases disponibles">
+      <section className="pt-[37px] md:pt-[46px] pb-20 md:pb-28" aria-label={t("clases.heroTitle")}>
         <div className="container mx-auto px-6">
           <p className="body-text text-center max-w-xl mx-auto mb-12">
-            {siteImage?.subtitle || "Explorá las opciones de talleres y reservá tu lugar."}
+            {siteImage?.subtitle || t("clases.defaultSubtitle")}
           </p>
 
           {isLoading && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" role="status" aria-label="Cargando clases">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" role="status" aria-label={t("clases.cargando")}>
               {[1, 2, 3].map((i) => (
                 <div key={i} className="animate-pulse bg-muted aspect-[4/5]" aria-hidden="true" />
               ))}
-              <span className="sr-only">Cargando clases…</span>
+              <span className="sr-only">{t("clases.cargando")}</span>
             </div>
           )}
 
           {!isLoading && items.length === 0 && (
             <p className="body-text text-center text-muted-foreground">
-              Próximamente se publicarán clases.
+              {t("clases.vacio")}
             </p>
           )}
 
@@ -92,7 +95,7 @@ const Clases = () => {
                           <span className="text-sm font-serif font-semibold text-foreground">€{ct.price}</span>
                         )}
                         <span className="text-xs uppercase tracking-[0.15em] font-sans text-muted-foreground">
-                          Ver más →
+                          {t("clases.verMas")}
                         </span>
                       </div>
                     </div>

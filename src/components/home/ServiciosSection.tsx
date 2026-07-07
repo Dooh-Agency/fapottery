@@ -1,4 +1,5 @@
-import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { Link } from "@/components/LocalizedLink";
 import { useHomeServices } from "@/hooks/useHomeServices";
 import clasesRegularesImg from "@/assets/fa-clases-regulares.avif";
 import workshopsImg from "@/assets/fa-workshops.avif";
@@ -10,6 +11,7 @@ const FALLBACK_IMAGES: Record<number, string> = {
 
 const ServiciosSection = () => {
   const { data: services, isLoading } = useHomeServices();
+  const { t } = useTranslation();
 
   return (
     <section className="py-20 md:py-28 bg-cream" aria-labelledby="servicios-heading">
@@ -19,19 +21,19 @@ const ServiciosSection = () => {
             id="servicios-heading"
             className="text-2xl sm:text-3xl md:text-4xl font-serif text-foreground leading-tight max-w-sm"
           >
-            ¿Qué podés encontrar en FA Pottery?
+            {t("home.servicios.heading")}
           </h2>
           <p className="text-[15px] md:text-base text-muted-foreground font-sans max-w-xs">
-            Clases, piezas y experiencias cerámicas. Todo con una mirada de diseño y un proceso artesanal.
+            {t("home.servicios.subtitle")}
           </p>
         </div>
 
         {isLoading && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-6" role="status" aria-label="Cargando">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-6" role="status" aria-label={t("home.servicios.cargando")}>
             {[1, 2, 3].map((i) => (
               <div key={i} className="animate-pulse bg-muted aspect-[4/3]" aria-hidden="true" />
             ))}
-            <span className="sr-only">Cargando…</span>
+            <span className="sr-only">{t("home.servicios.cargando")}</span>
           </div>
         )}
 

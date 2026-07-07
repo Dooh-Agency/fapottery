@@ -1,7 +1,9 @@
-import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { Link } from "@/components/LocalizedLink";
 import heroBackground from "@/assets/home-hero-background.jpg";
 
 const HeroSection = () => {
+  const { t } = useTranslation();
   return (
     <section className="relative h-[85vh] md:h-[90vh] flex flex-col justify-end" aria-label="Presentación">
       {/* Background image — decorative */}
@@ -18,13 +20,13 @@ const HeroSection = () => {
           className="text-[2.2rem] sm:text-5xl md:text-6xl lg:text-[4.2rem] xl:text-[4.8rem] font-serif font-normal text-foreground text-left leading-[1.08] max-w-2xl tracking-[-0.01em] mb-3 md:mb-5"
           style={{ fontVariationSettings: "'opsz' 96", fontWeight: 400 }}
         >
-          Cerámica desde<br />una mirada{" "}
-          <em className="italic">personal</em>
+          {t("home.hero.titleLine1")}<br />{t("home.hero.titleLine2")}{" "}
+          <em className="italic">{t("home.hero.titleEmphasis")}</em>
         </h1>
 
         {/* Subtitle */}
         <p className="text-[10px] sm:text-xs uppercase tracking-[0.25em] text-muted-foreground font-sans font-medium mb-8 md:mb-10">
-          Clases · Piezas · Colaboraciones · Málaga
+          {t("home.hero.subtitle")}
         </p>
 
         {/* CTAs */}
@@ -33,13 +35,13 @@ const HeroSection = () => {
             to="/clases"
             className="inline-block border border-foreground bg-foreground text-primary-foreground font-sans text-xs tracking-[0.2em] uppercase px-8 py-4 hover:bg-transparent hover:text-foreground transition-colors duration-300 text-center"
           >
-            Ver clases disponibles
+            {t("home.hero.ctaClases")}
           </Link>
           <Link
             to="/tienda"
             className="inline-block border border-foreground text-foreground font-sans text-xs tracking-[0.2em] uppercase px-8 py-4 hover:bg-foreground hover:text-primary-foreground transition-colors duration-300 text-center bg-background/40 backdrop-blur-sm"
           >
-            Explorar tienda
+            {t("home.hero.ctaTienda")}
           </Link>
         </div>
       </div>

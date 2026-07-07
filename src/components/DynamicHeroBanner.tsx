@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useSiteImage } from "@/hooks/useSiteImages";
 
 interface Props {
@@ -22,10 +23,11 @@ const DynamicHeroBanner = ({
   overlayClassName = "bg-gradient-to-t from-black/50 via-black/30 to-black/15",
 }: Props) => {
   const { data: siteImage, isLoading } = useSiteImage(sectionKey);
+  const { t } = useTranslation();
 
   if (isLoading) {
     return (
-      <section className={`w-full ${flush ? "" : "pt-6 md:pt-10 pb-6 md:pb-10"}`} aria-label="Imagen de cabecera">
+      <section className={`w-full ${flush ? "" : "pt-6 md:pt-10 pb-6 md:pb-10"}`} aria-label={t("heroBanner.aria")}>
         <div className={flush ? "" : "container mx-auto px-6"}>
           <div className={`relative w-full bg-muted animate-pulse ${aspectClassName}`} />
         </div>
@@ -41,7 +43,7 @@ const DynamicHeroBanner = ({
   if (!src && !bgColor) return null;
 
   return (
-    <section className={`w-full ${flush ? "" : "pt-6 md:pt-10 pb-6 md:pb-10"}`} aria-label="Imagen de cabecera">
+    <section className={`w-full ${flush ? "" : "pt-6 md:pt-10 pb-6 md:pb-10"}`} aria-label={t("heroBanner.aria")}>
       <div className={flush ? "" : "container mx-auto px-6"}>
         <div className="relative w-full overflow-hidden">
           {src ? (
