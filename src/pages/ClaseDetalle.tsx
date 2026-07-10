@@ -1,23 +1,18 @@
-import { useState } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Link } from "@/components/LocalizedLink";
 import Layout from "@/components/Layout";
 import SEO from "@/components/SEO";
-import { useClassTypes, useClassSchedules, useCreateReservation, type ClassSchedule } from "@/hooks/useClasses";
+import { useClassTypes, useClassSchedules, type ClassSchedule } from "@/hooks/useClasses";
 import { format } from "date-fns";
 import { es, enUS } from "date-fns/locale";
 import { getLanguageFromPathname } from "@/i18n";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, CalendarDays, Clock, Users, MapPin, ExternalLink } from "lucide-react";
+import { ArrowLeft, CalendarDays, Clock, Users, MapPin, ExternalLink, MessageCircle } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+
+const WHATSAPP_NUMBER = "+34681816030";
 
 const ClaseDetalle = () => {
   const { id } = useParams<{ id: string }>();
@@ -28,76 +23,6 @@ const ClaseDetalle = () => {
   const { data: classTypes, isLoading: loadingTypes } = useClassTypes(true);
   const item = classTypes?.find((ct) => ct.id === id);
   const { data: schedules, isLoading: loadingSchedules } = useClassSchedules(id);
-  const createReservation = useCreateReservation();
-
-  const [selectedSchedule, setSelectedSchedule] = useState<ClassSchedule | null>(null);
-  const [bookingOpen, setBookingOpen] = useState(false);
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState<"cash" | "stripe">("cash");
-  const [submitting, setSubmitting] = useState(false);
-  const [errors, setErrors] = useState<{ fullName?: string; email?: string }>({});
-
-  const openBooking = (schedule: ClassSchedule) => {
-    setSelectedSchedule(schedule);
-    setFullName("");
-    setEmail("");
-    setPhone("");
-    setPaymentMethod("cash");
-    setErrors({});
-    setBookingOpen(true);
-  };
-
-  const validate = () => {
-    const newErrors: typeof errors = {};
-    if (!fullName.trim()) newErrors.fullName = t("claseDetalle.errorNombre");
-    if (!email.trim()) newErrors.email = t("claseDetalle.errorEmailRequerido");
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) newErrors.email = t("claseDetalle.errorEmailInvalido");
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleBook = async () => {
-    if (!validate() || !selectedSchedule) return;
-    setSubmitting(true);
-
-    try {
-      if (paymentMethod === "stripe") {
-        const res = await createReservation.mutateAsync({
-          schedule_id: selectedSchedule.id,
-          full_name: fullName.trim(),
-          email: email.trim(),
-          phone: phone.trim() || null,
-          payment_method: "stripe",
-          payment_status: "pending",
-        });
-
-        const { data, error } = await supabase.functions.invoke("create-class-checkout", {
-          body: { reservation_id: res.id, schedule_id: selectedSchedule.id },
-        });
-        if (error) throw error;
-        if (data?.url) window.open(data.url, "_blank");
-        toast.success(t("claseDetalle.toastRedirigiendo"));
-        setBookingOpen(false);
-      } else {
-        await createReservation.mutateAsync({
-          schedule_id: selectedSchedule.id,
-          full_name: fullName.trim(),
-          email: email.trim(),
-          phone: phone.trim() || null,
-          payment_method: "cash",
-          payment_status: "pending",
-        });
-        toast.success(t("claseDetalle.toastReservaOk"));
-        setBookingOpen(false);
-      }
-    } catch (e: any) {
-      toast.error(e.message || t("claseDetalle.toastError"));
-    } finally {
-      setSubmitting(false);
-    }
-  };
 
   const formatTime = (time: string) => time.slice(0, 5);
 
@@ -136,6 +61,12 @@ const ClaseDetalle = () => {
   const description = (isEn && cta.description_en) || item.description;
   const faq: { question: string; answer: string }[] =
     (isEn && Array.isArray(cta.faq_en) && cta.faq_en.length > 0 ? cta.faq_en : Array.isArray(cta.faq) ? cta.faq : []);
+
+  const whatsappUrl = (s: ClassSchedule) => {
+    const dateStr = format(new Date(s.scheduled_date + "T00:00:00"), "EEEE d 'de' MMMM", { locale: dateLocale });
+    const message = t("claseDetalle.whatsappMensaje", { title, date: dateStr, time: formatTime(s.start_time) });
+    return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+  };
 
   return (
     <Layout>
@@ -244,14 +175,18 @@ const ClaseDetalle = () => {
                           </Badge>
                         </div>
                         {s.notes && <p className="text-xs text-muted-foreground italic pl-5">{s.notes}</p>}
-                        <Button
-                          className="w-full mt-1"
-                          variant="default"
-                          disabled={s.spots_available <= 0}
-                          onClick={() => openBooking(s)}
-                        >
-                          {s.spots_available > 0 ? t("claseDetalle.apuntarme") : t("claseDetalle.sinVacantes")}
-                        </Button>
+                        {s.spots_available > 0 ? (
+                          <Button className="w-full mt-1" variant="default" asChild>
+                            <a href={whatsappUrl(s)} target="_blank" rel="noopener noreferrer">
+                              <MessageCircle className="h-4 w-4 mr-1.5" aria-hidden="true" />
+                              {t("claseDetalle.reservarWhatsapp")}
+                            </a>
+                          </Button>
+                        ) : (
+                          <Button className="w-full mt-1" variant="default" disabled>
+                            {t("claseDetalle.sinVacantes")}
+                          </Button>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -265,59 +200,6 @@ const ClaseDetalle = () => {
           </div>
         </div>
       </section>
-
-      {/* Booking Dialog */}
-      <Dialog open={bookingOpen} onOpenChange={setBookingOpen}>
-        <DialogContent className="max-w-sm">
-          <DialogHeader>
-            <DialogTitle className="font-serif">{t("claseDetalle.reservarClase")}</DialogTitle>
-          </DialogHeader>
-          {selectedSchedule && (
-            <form
-              className="space-y-4"
-              onSubmit={(e) => { e.preventDefault(); handleBook(); }}
-              noValidate
-            >
-              <p className="text-sm text-muted-foreground">
-                {title} — {format(new Date(selectedSchedule.scheduled_date + "T00:00:00"), "EEEE d MMM yyyy", { locale: dateLocale })} · {formatTime(selectedSchedule.start_time)}
-              </p>
-
-              <div className="space-y-1">
-                <Label htmlFor="booking-name">{t("claseDetalle.nombreCompleto")} <span aria-hidden="true">*</span></Label>
-                <Input id="booking-name" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder={t("claseDetalle.nombrePlaceholder")} required autoComplete="name" aria-invalid={!!errors.fullName} aria-describedby={errors.fullName ? "name-error" : undefined} />
-                {errors.fullName && <p id="name-error" className="text-xs text-destructive" role="alert">{errors.fullName}</p>}
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="booking-email">{t("claseDetalle.email")} <span aria-hidden="true">*</span></Label>
-                <Input id="booking-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="tu@email.com" required autoComplete="email" aria-invalid={!!errors.email} aria-describedby={errors.email ? "email-error" : undefined} />
-                {errors.email && <p id="email-error" className="text-xs text-destructive" role="alert">{errors.email}</p>}
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="booking-phone">{t("claseDetalle.telefono")}</Label>
-                <Input id="booking-phone" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+34 600 000 000" autoComplete="tel" />
-              </div>
-
-              <fieldset className="space-y-2">
-                <legend className="text-sm font-medium">{t("claseDetalle.metodoPago")}</legend>
-                <RadioGroup value={paymentMethod} onValueChange={(v) => setPaymentMethod(v as "cash" | "stripe")}>
-                  <div className="flex items-center gap-2">
-                    <RadioGroupItem value="cash" id="pay-cash" />
-                    <Label htmlFor="pay-cash" className="font-normal text-sm">{t("claseDetalle.efectivo")}</Label>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <RadioGroupItem value="stripe" id="pay-stripe" />
-                    <Label htmlFor="pay-stripe" className="font-normal text-sm">{t("claseDetalle.tarjeta")}</Label>
-                  </div>
-                </RadioGroup>
-              </fieldset>
-
-              <Button type="submit" className="w-full" disabled={submitting}>
-                {submitting ? t("claseDetalle.procesando") : paymentMethod === "stripe" ? t("claseDetalle.pagarYReservar") : t("claseDetalle.confirmarReserva")}
-              </Button>
-            </form>
-          )}
-        </DialogContent>
-      </Dialog>
     </Layout>
   );
 };
