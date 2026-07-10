@@ -11,6 +11,7 @@ const Footer = () => {
     { label: t("nav.propuestaEducativa"), path: "/propuesta-educativa" },
     { label: t("nav.produccion"), path: "/produccion" },
     { label: t("nav.tienda"), path: "/tienda" },
+    { label: t("nav.giftCard"), path: "/bono-regalo" },
     { label: t("nav.colaboraciones"), path: "/colaboraciones" },
     { label: t("nav.novedades"), path: "/novedades" },
   ];

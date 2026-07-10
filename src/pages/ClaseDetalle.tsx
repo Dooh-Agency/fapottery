@@ -309,6 +309,9 @@ const ClaseDetalle = () => {
                     <Label htmlFor="pay-stripe" className="font-normal text-sm">{t("claseDetalle.tarjeta")}</Label>
                   </div>
                 </RadioGroup>
+                {paymentMethod === "stripe" && (
+                  <p className="text-xs text-muted-foreground pt-1">{t("claseDetalle.senaInfo")}</p>
+                )}
               </fieldset>
 
               <Button type="submit" className="w-full" disabled={submitting}>

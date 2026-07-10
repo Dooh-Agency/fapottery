@@ -21,6 +21,7 @@ import Clases from "./pages/Clases";
 import ClaseDetalle from "./pages/ClaseDetalle";
 import Catalogo from "./pages/Catalogo";
 import PiezaDetalle from "./pages/PiezaDetalle";
+import GiftCard from "./pages/GiftCard";
 import Novedades from "./pages/Novedades";
 import NovedadDetalle from "./pages/NovedadDetalle";
 import NotFound from "./pages/NotFound";
@@ -61,6 +62,7 @@ const PublicPages = () => (
     <Route path="/tienda/:id" element={<PiezaDetalle />} />
     <Route path="/catalogo" element={<Catalogo />} />
     <Route path="/catalogo/:id" element={<PiezaDetalle />} />
+    <Route path="/bono-regalo" element={<GiftCard />} />
     <Route path="/fa" element={<FaLanding />} />
     <Route path="/clases" element={<Clases />} />
     <Route path="/clases/:id" element={<ClaseDetalle />} />

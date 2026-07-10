@@ -8,15 +8,27 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+const MIN_AMOUNT = 20;
+const MAX_AMOUNT = 500;
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { pieceId, quantity = 1 } = await req.json();
-    if (!pieceId) {
-      return new Response(JSON.stringify({ error: "pieceId is required" }), {
+    const { amount, buyer_name, buyer_email, recipient_name, recipient_email, message } = await req.json();
+
+    if (!buyer_name || !buyer_email) {
+      return new Response(JSON.stringify({ error: "buyer_name and buyer_email are required" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const numericAmount = Number(amount);
+    if (!Number.isFinite(numericAmount) || numericAmount < MIN_AMOUNT || numericAmount > MAX_AMOUNT) {
+      return new Response(JSON.stringify({ error: `amount must be between €${MIN_AMOUNT} and €${MAX_AMOUNT}` }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -27,38 +39,22 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
-    // Fetch piece details
-    const { data: piece, error: pieceErr } = await supabaseAdmin
-      .from("pieces")
-      .select("*")
-      .eq("id", pieceId)
-      .eq("status", "published")
-      .single();
-
-    if (pieceErr || !piece) {
-      return new Response(JSON.stringify({ error: "Piece not found" }), {
-        status: 404,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    if (piece.stock < quantity) {
-      return new Response(JSON.stringify({ error: "Not enough stock" }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    const amount = Math.round(piece.price * quantity * 100) / 100;
-
-    const { data: order, error: orderErr } = await supabaseAdmin
-      .from("piece_orders")
-      .insert({ piece_id: pieceId, quantity, amount })
+    const { data: giftCard, error: giftCardErr } = await supabaseAdmin
+      .from("gift_cards")
+      .insert({
+        amount: numericAmount,
+        balance: numericAmount,
+        buyer_name,
+        buyer_email,
+        recipient_name: recipient_name || null,
+        recipient_email: recipient_email || null,
+        message: message || null,
+      })
       .select()
       .single();
 
-    if (orderErr || !order) {
-      return new Response(JSON.stringify({ error: "Could not create order" }), {
+    if (giftCardErr || !giftCard) {
+      return new Response(JSON.stringify({ error: "Could not create gift card" }), {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -71,35 +67,33 @@ serve(async (req) => {
     const origin = req.headers.get("origin") || "https://fapottery.com";
 
     const session = await stripe.checkout.sessions.create({
+      customer_email: buyer_email,
       line_items: [
         {
           price_data: {
             currency: "eur",
             product_data: {
-              name: piece.title,
-              description: piece.description || undefined,
-              images: piece.images?.length ? [piece.images[0]] : undefined,
+              name: "Bono regalo — FA Pottery Studio",
+              description: recipient_name ? `Para: ${recipient_name}` : undefined,
             },
-            unit_amount: Math.round(piece.price * 100),
+            unit_amount: Math.round(numericAmount * 100),
           },
-          quantity,
+          quantity: 1,
         },
       ],
       mode: "payment",
-      success_url: `${origin}/tienda?payment=success`,
-      cancel_url: `${origin}/tienda?payment=cancelled`,
+      success_url: `${origin}/bono-regalo?success=true`,
+      cancel_url: `${origin}/bono-regalo?cancelled=true`,
       metadata: {
-        type: "piece_order",
-        order_id: order.id,
-        piece_id: pieceId,
-        quantity: String(quantity),
+        type: "gift_card",
+        gift_card_id: giftCard.id,
       },
     });
 
     await supabaseAdmin
-      .from("piece_orders")
+      .from("gift_cards")
       .update({ stripe_session_id: session.id })
-      .eq("id", order.id);
+      .eq("id", giftCard.id);
 
     return new Response(JSON.stringify({ url: session.url }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

@@ -41,6 +41,7 @@ export type Database = {
     Tables: {
       class_reservations: {
         Row: {
+          amount_paid: number | null
           created_at: string
           email: string
           full_name: string
@@ -52,6 +53,7 @@ export type Database = {
           stripe_session_id: string | null
         }
         Insert: {
+          amount_paid?: number | null
           created_at?: string
           email: string
           full_name: string
@@ -63,6 +65,7 @@ export type Database = {
           stripe_session_id?: string | null
         }
         Update: {
+          amount_paid?: number | null
           created_at?: string
           email?: string
           full_name?: string
@@ -190,6 +193,54 @@ export type Database = {
         }
         Relationships: []
       }
+      gift_cards: {
+        Row: {
+          amount: number
+          balance: number
+          buyer_email: string
+          buyer_name: string
+          code: string | null
+          created_at: string
+          id: string
+          message: string | null
+          recipient_email: string | null
+          recipient_name: string | null
+          redeemed_at: string | null
+          status: Database["public"]["Enums"]["gift_card_status"]
+          stripe_session_id: string | null
+        }
+        Insert: {
+          amount: number
+          balance: number
+          buyer_email: string
+          buyer_name: string
+          code?: string | null
+          created_at?: string
+          id?: string
+          message?: string | null
+          recipient_email?: string | null
+          recipient_name?: string | null
+          redeemed_at?: string | null
+          status?: Database["public"]["Enums"]["gift_card_status"]
+          stripe_session_id?: string | null
+        }
+        Update: {
+          amount?: number
+          balance?: number
+          buyer_email?: string
+          buyer_name?: string
+          code?: string | null
+          created_at?: string
+          id?: string
+          message?: string | null
+          recipient_email?: string | null
+          recipient_name?: string | null
+          redeemed_at?: string | null
+          status?: Database["public"]["Enums"]["gift_card_status"]
+          stripe_session_id?: string | null
+        }
+        Relationships: []
+      }
       home_services: {
         Row: {
           cta_label: string
@@ -313,6 +364,47 @@ export type Database = {
         }
         Relationships: []
       }
+      piece_orders: {
+        Row: {
+          amount: number
+          created_at: string
+          customer_email: string | null
+          id: string
+          piece_id: string
+          quantity: number
+          status: Database["public"]["Enums"]["order_status"]
+          stripe_session_id: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          customer_email?: string | null
+          id?: string
+          piece_id: string
+          quantity?: number
+          status?: Database["public"]["Enums"]["order_status"]
+          stripe_session_id?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          customer_email?: string | null
+          id?: string
+          piece_id?: string
+          quantity?: number
+          status?: Database["public"]["Enums"]["order_status"]
+          stripe_session_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "piece_orders_piece_id_fkey"
+            columns: ["piece_id"]
+            isOneToOne: false
+            referencedRelation: "pieces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
@@ -406,6 +498,8 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "colaborador"
+      gift_card_status: "pending" | "active" | "redeemed" | "cancelled"
+      order_status: "pending" | "paid" | "cancelled"
       payment_method: "stripe" | "cash"
       piece_category:
         | "tazas"
@@ -547,6 +641,8 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "colaborador"],
+      gift_card_status: ["pending", "active", "redeemed", "cancelled"],
+      order_status: ["pending", "paid", "cancelled"],
       payment_method: ["stripe", "cash"],
       piece_category: [
         "tazas",

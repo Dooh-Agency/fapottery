@@ -56,3 +56,14 @@ El sitio se despliega en **Netlify**, conectado al repositorio de GitHub. Cada p
 ## Dominio
 
 El dominio propio (`fapottery.com`) está configurado en Netlify: Site configuration → Domain management.
+
+## Pagos (Stripe)
+
+Los pagos online (seña de clases, compra de piezas y bonos regalo) usan Stripe Checkout a través de Edge Functions de Supabase (`create-class-checkout`, `create-piece-checkout`, `create-giftcard-checkout`, `stripe-webhook`).
+
+Para que funcionen en producción hace falta configurar, como secrets del proyecto de Supabase (Project Settings → Edge Functions → Secrets, o `supabase secrets set`):
+
+- `STRIPE_SECRET_KEY`: clave secreta de la cuenta de Stripe (España/EUR).
+- `STRIPE_WEBHOOK_SECRET`: signing secret del webhook de Stripe apuntando a `<SUPABASE_URL>/functions/v1/stripe-webhook`, escuchando el evento `checkout.session.completed`.
+
+El webhook es el que confirma el pago de verdad (marca la reserva como pagada, descuenta stock, genera el código del bono regalo) — sin `STRIPE_WEBHOOK_SECRET` configurado, los pagos no se confirman automáticamente.

@@ -16,6 +16,7 @@ const Header = () => {
     { label: t("nav.propuestaEducativaCorta"), path: "/propuesta-educativa" },
     { label: t("nav.produccion"), path: "/produccion" },
     { label: t("nav.tienda"), path: "/tienda" },
+    { label: t("nav.giftCard"), path: "/bono-regalo" },
     { label: t("nav.colaboracionesCorta"), path: "/colaboraciones" },
     { label: t("nav.novedades"), path: "/novedades" },
   ];

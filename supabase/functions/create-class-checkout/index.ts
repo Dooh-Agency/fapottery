@@ -42,6 +42,7 @@ serve(async (req) => {
     const classType = reservation.class_schedules?.class_types;
     const price = classType?.price || 0;
     const title = classType?.title || "Clase de cerámica";
+    const deposit = Math.round(price * 0.5 * 100) / 100;
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2025-08-27.basil",
@@ -53,8 +54,11 @@ serve(async (req) => {
         {
           price_data: {
             currency: "eur",
-            product_data: { name: `Reserva: ${title}` },
-            unit_amount: Math.round(price * 100),
+            product_data: {
+              name: `Seña (50%): ${title}`,
+              description: `Reserva de clase. Saldo restante de €${(price - deposit).toFixed(2)} a abonar en el estudio.`,
+            },
+            unit_amount: Math.round(deposit * 100),
           },
           quantity: 1,
         },
@@ -62,7 +66,7 @@ serve(async (req) => {
       mode: "payment",
       success_url: `${req.headers.get("origin")}/clases?success=true`,
       cancel_url: `${req.headers.get("origin")}/clases?cancelled=true`,
-      metadata: { reservation_id },
+      metadata: { reservation_id, type: "class_deposit" },
     });
 
     // Save stripe session id on reservation

@@ -36,6 +36,7 @@ const ReservationsList = () => {
           <TableHead>Clase</TableHead>
           <TableHead>Fecha</TableHead>
           <TableHead>Pago</TableHead>
+          <TableHead>Seña / Saldo</TableHead>
           <TableHead>Estado</TableHead>
           <TableHead className="text-right">Acciones</TableHead>
         </TableRow>
@@ -52,6 +53,18 @@ const ReservationsList = () => {
                 : "—"}
             </TableCell>
             <TableCell><Badge variant="secondary" className="text-[10px]">{paymentLabels[r.payment_method] || r.payment_method}</Badge></TableCell>
+            <TableCell className="text-sm">
+              {r.payment_method === "stripe" && r.amount_paid != null ? (
+                <>
+                  €{r.amount_paid} pagado
+                  {r.class_schedules?.class_types?.price != null && (
+                    <span className="text-muted-foreground"> · saldo €{(Number(r.class_schedules.class_types.price) - Number(r.amount_paid)).toFixed(2)}</span>
+                  )}
+                </>
+              ) : (
+                "—"
+              )}
+            </TableCell>
             <TableCell>
               <Badge variant={statusVariant[r.payment_status] || "secondary"} className="text-[10px]">
                 {statusLabels[r.payment_status] || r.payment_status}
