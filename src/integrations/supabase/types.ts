@@ -145,6 +145,7 @@ export type Database = {
           id: string
           image_url: string | null
           is_active: boolean
+          is_featured: boolean
           location_map_url: string | null
           location_text: string | null
           max_students: number
@@ -164,6 +165,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_active?: boolean
+          is_featured?: boolean
           location_map_url?: string | null
           location_text?: string | null
           max_students?: number
@@ -183,6 +185,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_active?: boolean
+          is_featured?: boolean
           location_map_url?: string | null
           location_text?: string | null
           max_students?: number

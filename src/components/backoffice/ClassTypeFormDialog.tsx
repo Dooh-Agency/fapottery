@@ -39,6 +39,7 @@ const schema = z.object({
   duration_minutes: z.coerce.number().min(15),
   max_students: z.coerce.number().min(1),
   is_active: z.boolean(),
+  is_featured: z.boolean(),
   faq: z.array(z.object({
     question: z.string().min(1, "La pregunta es requerida"),
     answer: z.string().min(1, "La respuesta es requerida"),
@@ -71,6 +72,7 @@ const emptyDefaults: FormValues = {
   duration_minutes: 120,
   max_students: 8,
   is_active: true,
+  is_featured: false,
   faq: [],
   new_schedules: [],
 };
@@ -112,6 +114,7 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
           duration_minutes: ct.duration_minutes,
           max_students: ct.max_students,
           is_active: ct.is_active,
+          is_featured: ct.is_featured || false,
           faq: Array.isArray(ct.faq) ? ct.faq : [],
           new_schedules: [],
         } : emptyDefaults
@@ -411,6 +414,13 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
               <FormItem className="flex items-center gap-3">
                 <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
                 <FormLabel className="!mt-0">Activo (visible en el sitio)</FormLabel>
+              </FormItem>
+            )} />
+
+            <FormField control={form.control} name="is_featured" render={({ field }) => (
+              <FormItem className="flex items-center gap-3">
+                <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                <FormLabel className="!mt-0">Destacado (aparece arriba en la página de Clases)</FormLabel>
               </FormItem>
             )} />
 

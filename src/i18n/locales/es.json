@@ -171,7 +171,11 @@
     "verMas": "Ver más →",
     "categoriaRegulares": "Clases regulares",
     "categoriaWorkshops": "Workshops",
-    "categoriaPersonalizadas": "Clases personalizadas"
+    "categoriaPersonalizadas": "Clases personalizadas",
+    "destacados": "Destacados",
+    "eventosPasados": "Eventos pasados",
+    "todas": "Todas",
+    "filtrarAria": "Filtrar clases por categoría"
   },
   "claseDetalle": {
     "cargando": "Cargando…",
