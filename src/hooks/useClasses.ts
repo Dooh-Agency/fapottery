@@ -5,6 +5,7 @@ import type { Tables, TablesInsert, TablesUpdate } from "@/integrations/supabase
 export type ClassType = Tables<"class_types">;
 export type ClassSchedule = Tables<"class_schedules"> & { class_types?: ClassType };
 export type ClassReservation = Tables<"class_reservations"> & { class_schedules?: ClassSchedule & { class_types?: ClassType } };
+export type ClassTypeWithSchedules = ClassType & { class_schedules: Tables<"class_schedules">[] };
 
 // ── Class Types ──
 
@@ -17,6 +18,20 @@ export const useClassTypes = (activeOnly = true) =>
       const { data, error } = await q;
       if (error) throw error;
       return data as ClassType[];
+    },
+  });
+
+// Class types with their schedules embedded, for splitting the Clases page into
+// destacados / próximas / pasadas without an extra round-trip per card.
+export const useClassTypesWithSchedules = (activeOnly = true) =>
+  useQuery({
+    queryKey: ["class_types_with_schedules", activeOnly],
+    queryFn: async () => {
+      let q = supabase.from("class_types").select("*, class_schedules(*)").order("title");
+      if (activeOnly) q = q.eq("is_active", true);
+      const { data, error } = await q;
+      if (error) throw error;
+      return data as ClassTypeWithSchedules[];
     },
   });
 

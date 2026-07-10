@@ -42,6 +42,9 @@ const ClassTypesList = () => {
                   <Badge variant={ct.is_active ? "default" : "secondary"} className="text-[10px]">
                     {ct.is_active ? "Activo" : "Inactivo"}
                   </Badge>
+                  {ct.is_featured && (
+                    <Badge variant="outline" className="text-[10px]">Destacado</Badge>
+                  )}
                   <span className="text-xs text-muted-foreground">{ct.duration_minutes} min</span>
                   <span className="text-xs text-muted-foreground">Máx. {ct.max_students} alumnos</span>
                   <span className="text-xs font-medium">€{ct.price}</span>

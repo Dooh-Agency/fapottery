@@ -170,7 +170,11 @@
     "verMas": "See more →",
     "categoriaRegulares": "Regular classes",
     "categoriaWorkshops": "Workshops",
-    "categoriaPersonalizadas": "Personalized classes"
+    "categoriaPersonalizadas": "Personalized classes",
+    "destacados": "Featured",
+    "eventosPasados": "Past events",
+    "todas": "All",
+    "filtrarAria": "Filter classes by category"
   },
   "claseDetalle": {
     "cargando": "Loading…",
