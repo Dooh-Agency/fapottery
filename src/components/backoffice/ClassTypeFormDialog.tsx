@@ -44,6 +44,10 @@ const schema = z.object({
     question: z.string().min(1, "La pregunta es requerida"),
     answer: z.string().min(1, "La respuesta es requerida"),
   })),
+  options: z.array(z.object({
+    label: z.string().min(1, "El nombre de la opción es requerido"),
+    price: z.coerce.number().min(0),
+  })),
   new_schedules: z.array(z.object({
     scheduled_date: z.date({ required_error: "Seleccioná fecha" }),
     start_time: z.string().min(1, "Requerido"),
@@ -74,6 +78,7 @@ const emptyDefaults: FormValues = {
   is_active: true,
   is_featured: false,
   faq: [],
+  options: [],
   new_schedules: [],
 };
 
@@ -100,6 +105,11 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
     name: "faq",
   });
 
+  const { fields: optionFields, append: appendOption, remove: removeOption } = useFieldArray({
+    control: form.control,
+    name: "options",
+  });
+
   const { fields: scheduleFields, append: appendSchedule, remove: removeSchedule } = useFieldArray({
     control: form.control,
     name: "new_schedules",
@@ -122,6 +132,7 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
           is_active: ct.is_active,
           is_featured: ct.is_featured || false,
           faq: Array.isArray(ct.faq) ? ct.faq : [],
+          options: Array.isArray(ct.options) ? ct.options : [],
           new_schedules: [],
         } : emptyDefaults
       );
@@ -455,6 +466,45 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
                 <FormItem><FormLabel>Máx. alumnos</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
               )} />
             </div>
+
+            <Separator />
+
+            {/* Opciones con precio (ej. montos de tarjeta regalo, variantes de un taller) */}
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-semibold text-foreground">Opciones con precio</p>
+                <p className="text-xs text-muted-foreground">Si cargás opciones, en el detalle se muestran para elegir en vez de una fecha (ej. montos de una tarjeta regalo).</p>
+              </div>
+              <Button type="button" variant="outline" size="sm" onClick={() => appendOption({ label: "", price: 0 })}>
+                <Plus className="h-3.5 w-3.5 mr-1" /> Agregar opción
+              </Button>
+            </div>
+
+            {optionFields.length === 0 && (
+              <p className="text-xs text-muted-foreground">No hay opciones cargadas.</p>
+            )}
+
+            {optionFields.map((optionField, index) => (
+              <div key={optionField.id} className="border border-border rounded p-3 flex items-end gap-2">
+                <FormField control={form.control} name={`options.${index}.label`} render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel className="text-xs">Nombre de la opción</FormLabel>
+                    <FormControl><Input placeholder="Ej: Bono €30" {...field} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+                <FormField control={form.control} name={`options.${index}.price`} render={({ field }) => (
+                  <FormItem className="w-28">
+                    <FormLabel className="text-xs">Precio (€)</FormLabel>
+                    <FormControl><Input type="number" step="0.01" {...field} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+                <Button type="button" variant="ghost" size="sm" onClick={() => removeOption(index)}>
+                  <Trash2 className="h-3.5 w-3.5 text-destructive" />
+                </Button>
+              </div>
+            ))}
 
             <Separator />
 

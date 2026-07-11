@@ -199,7 +199,9 @@
     "tipoRegulares": "clase",
     "tipoWorkshops": "workshop",
     "tipoPersonalizadas": "clase personalizada",
-    "sinImagen": "Sin imagen"
+    "sinImagen": "Sin imagen",
+    "elegirOpcion": "Elegí una opción",
+    "whatsappMensajeOpcion": "Hola! Quiero \"{{title}}\" - opción \"{{option}}\" (€{{price}}). ¿Confirmamos?"
   },
   "catalogo": {
     "seoTitle": "Tienda",

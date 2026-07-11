@@ -32,6 +32,7 @@ const ClaseDetalle = () => {
   const item = classTypes?.find((ct) => ct.id === id);
   const { data: schedules, isLoading: loadingSchedules } = useClassSchedules(id);
   const [selectedImgIdx, setSelectedImgIdx] = useState(0);
+  const [selectedOptionIdx, setSelectedOptionIdx] = useState(0);
 
   const formatTime = (time: string) => time.slice(0, 5);
 
@@ -72,10 +73,18 @@ const ClaseDetalle = () => {
     (isEn && Array.isArray(cta.faq_en) && cta.faq_en.length > 0 ? cta.faq_en : Array.isArray(cta.faq) ? cta.faq : []);
   const images: string[] = item.images?.length ? item.images : (cta.image_url ? [cta.image_url] : []);
   const tipoLabel = t(TIPO_LABEL_KEYS[cta.category] || TIPO_LABEL_KEYS.regulares);
+  const options: { label: string; price: number }[] = Array.isArray(cta.options) ? cta.options : [];
+  const selectedOption = options[selectedOptionIdx];
 
   const whatsappUrl = (s: ClassSchedule) => {
     const dateStr = format(new Date(s.scheduled_date + "T00:00:00"), "EEEE d 'de' MMMM", { locale: dateLocale });
     const message = t("claseDetalle.whatsappMensaje", { title, date: dateStr, time: formatTime(s.start_time) });
+    return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+  };
+
+  const optionWhatsappUrl = () => {
+    if (!selectedOption) return "#";
+    const message = t("claseDetalle.whatsappMensajeOpcion", { title, option: selectedOption.label, price: selectedOption.price });
     return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
   };
 
@@ -148,7 +157,7 @@ const ClaseDetalle = () => {
             <div className="space-y-6">
               <h1 className="font-serif font-bold text-2xl md:text-3xl lg:text-4xl">{title}</h1>
 
-              {Number(item.price) > 0 && (
+              {options.length === 0 && Number(item.price) > 0 && (
                 <div>
                   <p className="text-2xl font-serif font-semibold text-foreground">€{item.price}</p>
                   <p className="text-xs text-muted-foreground">{t("claseDetalle.porPersona")}</p>
@@ -189,7 +198,34 @@ const ClaseDetalle = () => {
               )}
 
               <div className="pt-2 border-t border-border">
-                {loadingSchedules ? (
+                {options.length > 0 ? (
+                  <div className="space-y-3">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("claseDetalle.elegirOpcion")}</p>
+                    <div className="flex flex-wrap gap-2">
+                      {options.map((opt, idx) => (
+                        <button
+                          key={idx}
+                          type="button"
+                          onClick={() => setSelectedOptionIdx(idx)}
+                          aria-pressed={selectedOptionIdx === idx}
+                          className={`font-sans text-sm px-4 py-2.5 border transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring ${
+                            selectedOptionIdx === idx
+                              ? "border-foreground bg-foreground text-primary-foreground"
+                              : "border-border text-muted-foreground hover:text-foreground"
+                          }`}
+                        >
+                          {opt.label} · €{opt.price}
+                        </button>
+                      ))}
+                    </div>
+                    <Button className="w-full mt-1" variant="default" asChild>
+                      <a href={optionWhatsappUrl()} target="_blank" rel="noopener noreferrer">
+                        <MessageCircle className="h-4 w-4 mr-1.5" aria-hidden="true" />
+                        {t("claseDetalle.reservarWhatsapp", { tipo: tipoLabel })}
+                      </a>
+                    </Button>
+                  </div>
+                ) : loadingSchedules ? (
                   <p className="text-sm text-muted-foreground">{t("claseDetalle.cargandoFechas")}</p>
                 ) : upcoming.length > 0 ? (
                   <div className="space-y-3">

@@ -147,6 +147,7 @@ export type Database = {
           location_map_url: string | null
           location_text: string | null
           max_students: number
+          options: Json
           price: number
           title: string
           title_en: string | null
@@ -168,6 +169,7 @@ export type Database = {
           location_map_url?: string | null
           location_text?: string | null
           max_students?: number
+          options?: Json
           price?: number
           title: string
           title_en?: string | null
@@ -189,6 +191,7 @@ export type Database = {
           location_map_url?: string | null
           location_text?: string | null
           max_students?: number
+          options?: Json
           price?: number
           title?: string
           title_en?: string | null
