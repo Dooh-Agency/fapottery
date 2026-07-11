@@ -200,7 +200,7 @@
     "tipoWorkshops": "workshop",
     "tipoPersonalizadas": "clase personalizada",
     "sinImagen": "Sin imagen",
-    "elegirOpcion": "Elegí una opción",
+    "elegirOpcion": "Elige",
     "whatsappMensajeOpcion": "Hola! Quiero \"{{title}}\" - opción \"{{option}}\" (€{{price}}). ¿Confirmamos?"
   },
   "catalogo": {
