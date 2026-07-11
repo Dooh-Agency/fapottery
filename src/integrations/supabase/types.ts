@@ -132,6 +132,7 @@ export type Database = {
       }
       class_types: {
         Row: {
+          badge_label: string | null
           category: string | null
           created_at: string
           description: string | null
@@ -154,6 +155,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          badge_label?: string | null
           category?: string | null
           created_at?: string
           description?: string | null
@@ -176,6 +178,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          badge_label?: string | null
           category?: string | null
           created_at?: string
           description?: string | null

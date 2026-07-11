@@ -53,11 +53,16 @@ const Clases = () => {
       <Link
         key={ct.id}
         to={`/actividades/${ct.id}`}
-        className={`group border border-border bg-card overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring ${
+        className={`group relative border border-border bg-card overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring ${
           big ? "flex flex-col md:flex-row" : "flex flex-col"
         }`}
         aria-label={title}
       >
+        {cta.badge_label && (
+          <span className="absolute top-0 right-0 z-10 bg-foreground text-primary-foreground text-[10px] font-sans font-medium uppercase tracking-[0.1em] px-3 py-1.5">
+            {cta.badge_label}
+          </span>
+        )}
         {cta.image_url && (
           <div className={big ? "md:w-1/2 aspect-[4/5] md:aspect-auto overflow-hidden" : "aspect-[4/5] overflow-hidden"}>
             <img

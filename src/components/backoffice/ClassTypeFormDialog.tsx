@@ -40,6 +40,7 @@ const schema = z.object({
   max_students: z.coerce.number().min(1),
   is_active: z.boolean(),
   is_featured: z.boolean(),
+  badge_label: z.string().optional(),
   faq: z.array(z.object({
     question: z.string().min(1, "La pregunta es requerida"),
     answer: z.string().min(1, "La respuesta es requerida"),
@@ -77,6 +78,7 @@ const emptyDefaults: FormValues = {
   max_students: 8,
   is_active: true,
   is_featured: false,
+  badge_label: "",
   faq: [],
   options: [],
   new_schedules: [],
@@ -131,6 +133,7 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
           max_students: ct.max_students,
           is_active: ct.is_active,
           is_featured: ct.is_featured || false,
+          badge_label: ct.badge_label || "",
           faq: Array.isArray(ct.faq) ? ct.faq : [],
           options: Array.isArray(ct.options) ? ct.options : [],
           new_schedules: [],
@@ -187,6 +190,7 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
         location_text: classTypeData.location_text || null,
         location_map_url: classTypeData.location_map_url || null,
         image_url: classTypeData.image_url || null,
+        badge_label: classTypeData.badge_label || null,
         images,
       } as any);
 
@@ -576,6 +580,27 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
               <FormItem className="flex items-center gap-3">
                 <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
                 <FormLabel className="!mt-0">Destacado (aparece arriba en la página de Clases)</FormLabel>
+              </FormItem>
+            )} />
+
+            <FormField control={form.control} name="badge_label" render={({ field }) => (
+              <FormItem>
+                <FormLabel>Etiqueta en la tarjeta (opcional)</FormLabel>
+                <div className="flex flex-wrap gap-2 mb-1">
+                  {["Más vendido", "Más popular", "Últimas plazas"].map((preset) => (
+                    <Button key={preset} type="button" variant="outline" size="sm" onClick={() => field.onChange(preset)}>
+                      {preset}
+                    </Button>
+                  ))}
+                  {field.value && (
+                    <Button type="button" variant="ghost" size="sm" onClick={() => field.onChange("")}>
+                      <X className="h-3.5 w-3.5 mr-1" /> Quitar
+                    </Button>
+                  )}
+                </div>
+                <FormControl><Input placeholder="Ej: Más popular" {...field} /></FormControl>
+                <p className="text-xs text-muted-foreground">Aparece arriba a la derecha de la tarjeta en el listado de Clases. Dejar vacío para no mostrar ninguna.</p>
+                <FormMessage />
               </FormItem>
             )} />
 
