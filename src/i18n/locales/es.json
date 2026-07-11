@@ -172,7 +172,8 @@
     "categoriaWorkshops": "Workshops",
     "categoriaPersonalizadas": "Clases personalizadas",
     "destacados": "Destacados",
-    "eventosPasados": "Eventos pasados",
+    "eventosPasados": "Eventos anteriores",
+    "sinPasados": "Todavía no hay eventos pasados.",
     "todas": "Todas",
     "filtrarAria": "Filtrar actividades por categoría"
   },

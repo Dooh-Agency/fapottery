@@ -36,8 +36,11 @@ const Clases = () => {
     personalizadas: t("clases.categoriaPersonalizadas"),
   };
 
+  const isPastFilter = filter === "pasados";
+  const categoryFilter = isPastFilter ? "all" : filter;
+
   const all = classTypes || [];
-  const filtered = filter === "all" ? all : all.filter((ct) => ct.category === filter);
+  const filtered = categoryFilter === "all" ? all : all.filter((ct) => ct.category === categoryFilter);
 
   const featured = all.filter((ct) => ct.is_featured && !isPastClassType(ct));
   const featuredIds = new Set(featured.map((ct) => ct.id));
@@ -98,31 +101,6 @@ const Clases = () => {
     );
   };
 
-  const renderPastCard = (ct: ClassTypeWithSchedules) => {
-    const cta = ct as any;
-    const title = (isEn && cta.title_en) || ct.title;
-    return (
-      <Link
-        key={ct.id}
-        to={`/actividades/${ct.id}`}
-        className="group border border-border bg-card overflow-hidden flex flex-col focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-        aria-label={title}
-      >
-        {cta.image_url && (
-          <div className="aspect-square overflow-hidden">
-            <img
-              src={cta.image_url}
-              alt={title}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 motion-reduce:transition-none"
-              loading="lazy"
-            />
-          </div>
-        )}
-        <p className="font-sans text-xs font-medium truncate p-2">{title}</p>
-      </Link>
-    );
-  };
-
   return (
     <Layout>
       <SEO
@@ -161,7 +139,7 @@ const Clases = () => {
           {!isLoading && all.length > 0 && (
             <>
               {/* Destacados */}
-              {featured.length > 0 && (
+              {!isPastFilter && featured.length > 0 && (
                 <div className="mb-16">
                   <h2 className="font-serif text-xl md:text-2xl mb-6">{t("clases.destacados")}</h2>
                   {featured.length === 1 ? (
@@ -209,23 +187,36 @@ const Clases = () => {
                     {CATEGORY_LABELS[cat]}
                   </button>
                 ))}
+                <button
+                  onClick={() => setFilter("pasados")}
+                  aria-pressed={isPastFilter}
+                  className={`font-sans text-xs uppercase tracking-[0.15em] px-4 py-2 border transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring ${
+                    isPastFilter
+                      ? "border-foreground bg-foreground text-primary-foreground"
+                      : "border-border text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {t("clases.eventosPasados")}
+                </button>
               </div>
 
-              {/* Próximas / vigentes */}
-              {current.length > 0 ? (
+              {/* Próximas / vigentes, o pasadas si se eligió ese filtro */}
+              {(isPastFilter ? past : current).length > 0 ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {current.map((ct) => renderCard(ct))}
+                  {(isPastFilter ? past : current).map((ct) => renderCard(ct))}
                 </div>
               ) : (
-                <p className="body-text text-center text-muted-foreground">{t("clases.vacio")}</p>
+                <p className="body-text text-center text-muted-foreground">
+                  {isPastFilter ? t("clases.sinPasados") : t("clases.vacio")}
+                </p>
               )}
 
-              {/* Pasadas */}
-              {past.length > 0 && (
+              {/* Pasadas (listado automático debajo, salvo que ya se estén mostrando arriba) */}
+              {!isPastFilter && past.length > 0 && (
                 <div className="mt-20">
                   <h2 className="font-serif text-xl md:text-2xl mb-6">{t("clases.eventosPasados")}</h2>
-                  <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-3">
-                    {past.map((ct) => renderPastCard(ct))}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {past.map((ct) => renderCard(ct))}
                   </div>
                 </div>
               )}
