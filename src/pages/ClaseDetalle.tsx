@@ -71,7 +71,10 @@ const ClaseDetalle = () => {
   const description = (isEn && cta.description_en) || item.description;
   const faq: { question: string; answer: string }[] =
     (isEn && Array.isArray(cta.faq_en) && cta.faq_en.length > 0 ? cta.faq_en : Array.isArray(cta.faq) ? cta.faq : []);
-  const images: string[] = item.images?.length ? item.images : (cta.image_url ? [cta.image_url] : []);
+  const galleryImages: string[] = item.images || [];
+  const images: string[] = cta.image_url
+    ? [cta.image_url, ...galleryImages.filter((url) => url !== cta.image_url)]
+    : galleryImages;
   const tipoLabel = t(TIPO_LABEL_KEYS[cta.category] || TIPO_LABEL_KEYS.regulares);
   const options: { label: string; price: number }[] = Array.isArray(cta.options) ? cta.options : [];
   const selectedOption = options[selectedOptionIdx];
@@ -101,8 +104,28 @@ const ClaseDetalle = () => {
             {/* Galería */}
             <div>
               {images.length > 0 ? (
-                <>
-                  <div className="relative aspect-[4/5] bg-muted overflow-hidden">
+                <div className="flex flex-col-reverse md:flex-row gap-3">
+                  {/* Miniaturas — columna a la izquierda en desktop */}
+                  {images.length > 1 && (
+                    <div className="flex md:flex-col gap-2 overflow-x-auto md:overflow-y-auto md:max-h-[600px] shrink-0">
+                      {images.map((url, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => setSelectedImgIdx(idx)}
+                          className={`w-16 h-16 md:w-20 md:h-20 flex-shrink-0 overflow-hidden border-2 transition-colors ${
+                            idx === selectedImgIdx ? "border-foreground" : "border-transparent hover:border-border"
+                          }`}
+                          aria-label={t("claseDetalle.verImagen", { n: idx + 1 })}
+                          aria-current={idx === selectedImgIdx ? "true" : undefined}
+                        >
+                          <img src={url} alt="" className="w-full h-full object-cover" />
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Imagen principal */}
+                  <div className="relative flex-1 aspect-[4/5] bg-muted overflow-hidden">
                     <img
                       src={images[selectedImgIdx]}
                       alt={title}
@@ -128,24 +151,7 @@ const ClaseDetalle = () => {
                       </>
                     )}
                   </div>
-                  {images.length > 1 && (
-                    <div className="flex gap-2 mt-3 flex-wrap">
-                      {images.map((url, idx) => (
-                        <button
-                          key={idx}
-                          onClick={() => setSelectedImgIdx(idx)}
-                          className={`w-16 h-16 md:w-20 md:h-20 flex-shrink-0 overflow-hidden border-2 transition-colors ${
-                            idx === selectedImgIdx ? "border-foreground" : "border-transparent hover:border-border"
-                          }`}
-                          aria-label={t("claseDetalle.verImagen", { n: idx + 1 })}
-                          aria-current={idx === selectedImgIdx ? "true" : undefined}
-                        >
-                          <img src={url} alt="" className="w-full h-full object-cover" />
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </>
+                </div>
               ) : (
                 <div className="aspect-[4/5] bg-muted flex items-center justify-center text-muted-foreground text-sm">
                   {t("claseDetalle.sinImagen")}
