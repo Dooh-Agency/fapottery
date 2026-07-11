@@ -18,7 +18,7 @@ const MarcaPersonalSection = () => {
       icon: forma2,
       title: t("home.marcaPersonal.feature2Title"),
       description: t("home.marcaPersonal.feature2Desc"),
-      cta: { label: t("home.marcaPersonal.feature2Cta"), to: "/clases" },
+      cta: { label: t("home.marcaPersonal.feature2Cta"), to: "/actividades" },
     },
     {
       icon: forma3,

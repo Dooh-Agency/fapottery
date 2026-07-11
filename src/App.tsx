@@ -4,7 +4,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, useParams, Navigate } from "react-router-dom";
+import { localizePath } from "@/components/LocalizedLink";
 import { AuthProvider } from "@/hooks/useAuth";
 import { initGTM } from "@/lib/analytics";
 import { getLanguageFromPathname } from "@/i18n";
@@ -50,6 +51,19 @@ const PublicShell = ({ children }: { children: React.ReactNode }) => (
   </div>
 );
 
+// Redirige las URLs viejas de /clases a /actividades sin perder el idioma activo,
+// para no romper links guardados ni el posicionamiento que ya tenían.
+const RedirectToActividades = () => {
+  const location = useLocation();
+  return <Navigate to={localizePath("/actividades", location.pathname)} replace />;
+};
+
+const RedirectToActividadDetalle = () => {
+  const { id } = useParams<{ id: string }>();
+  const location = useLocation();
+  return <Navigate to={localizePath(`/actividades/${id}`, location.pathname)} replace />;
+};
+
 const PublicPages = () => (
   <Routes>
     <Route path="/" element={<Index />} />
@@ -62,8 +76,10 @@ const PublicPages = () => (
     <Route path="/catalogo" element={<Catalogo />} />
     <Route path="/catalogo/:id" element={<PiezaDetalle />} />
     <Route path="/fa" element={<FaLanding />} />
-    <Route path="/clases" element={<Clases />} />
-    <Route path="/clases/:id" element={<ClaseDetalle />} />
+    <Route path="/actividades" element={<Clases />} />
+    <Route path="/actividades/:id" element={<ClaseDetalle />} />
+    <Route path="/clases" element={<RedirectToActividades />} />
+    <Route path="/clases/:id" element={<RedirectToActividadDetalle />} />
     <Route path="/novedades" element={<Novedades />} />
     <Route path="/novedades/:id" element={<NovedadDetalle />} />
     <Route path="*" element={<NotFound />} />

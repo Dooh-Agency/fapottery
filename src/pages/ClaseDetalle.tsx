@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Link } from "@/components/LocalizedLink";
@@ -9,10 +10,17 @@ import { es, enUS } from "date-fns/locale";
 import { getLanguageFromPathname } from "@/i18n";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, CalendarDays, Clock, Users, MapPin, ExternalLink, MessageCircle } from "lucide-react";
+import { ArrowLeft, CalendarDays, Clock, Users, MapPin, ExternalLink, MessageCircle, ChevronLeft, ChevronRight } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { renderBoldText } from "@/lib/richText";
 
 const WHATSAPP_NUMBER = "+34681816030";
+
+const TIPO_LABEL_KEYS: Record<string, string> = {
+  regulares: "claseDetalle.tipoRegulares",
+  workshops: "claseDetalle.tipoWorkshops",
+  personalizadas: "claseDetalle.tipoPersonalizadas",
+};
 
 const ClaseDetalle = () => {
   const { id } = useParams<{ id: string }>();
@@ -23,6 +31,7 @@ const ClaseDetalle = () => {
   const { data: classTypes, isLoading: loadingTypes } = useClassTypes(true);
   const item = classTypes?.find((ct) => ct.id === id);
   const { data: schedules, isLoading: loadingSchedules } = useClassSchedules(id);
+  const [selectedImgIdx, setSelectedImgIdx] = useState(0);
 
   const formatTime = (time: string) => time.slice(0, 5);
 
@@ -45,11 +54,11 @@ const ClaseDetalle = () => {
   if (!item) {
     return (
       <Layout>
-        <SEO title={t("claseDetalle.noEncontradaTitle")} path="/clases" />
+        <SEO title={t("claseDetalle.noEncontradaTitle")} path="/actividades" />
         <section className="section-padding">
           <div className="container mx-auto px-6 text-center">
             <h1 className="font-serif text-2xl mb-4">{t("claseDetalle.noEncontradaTitle")}</h1>
-            <Link to="/clases" className="body-text underline">← {t("claseDetalle.volver")}</Link>
+            <Link to="/actividades" className="body-text underline">← {t("claseDetalle.volver")}</Link>
           </div>
         </section>
       </Layout>
@@ -61,6 +70,8 @@ const ClaseDetalle = () => {
   const description = (isEn && cta.description_en) || item.description;
   const faq: { question: string; answer: string }[] =
     (isEn && Array.isArray(cta.faq_en) && cta.faq_en.length > 0 ? cta.faq_en : Array.isArray(cta.faq) ? cta.faq : []);
+  const images: string[] = item.images?.length ? item.images : (cta.image_url ? [cta.image_url] : []);
+  const tipoLabel = t(TIPO_LABEL_KEYS[cta.category] || TIPO_LABEL_KEYS.regulares);
 
   const whatsappUrl = (s: ClassSchedule) => {
     const dateStr = format(new Date(s.scheduled_date + "T00:00:00"), "EEEE d 'de' MMMM", { locale: dateLocale });
@@ -70,21 +81,58 @@ const ClaseDetalle = () => {
 
   return (
     <Layout>
-      <SEO title={title} description={description?.slice(0, 155) || ""} path={`/clases/${item.id}`} />
+      <SEO title={title} description={description?.slice(0, 155) || ""} path={`/actividades/${item.id}`} />
       <section className="pt-10 md:pt-14 pb-20 md:pb-28">
         <div className="container mx-auto px-6">
-          <Link to="/clases" className="inline-flex items-center gap-1.5 text-xs uppercase tracking-[0.15em] font-sans text-muted-foreground hover:text-foreground transition-colors mb-8">
+          <Link to="/actividades" className="inline-flex items-center gap-1.5 text-xs uppercase tracking-[0.15em] font-sans text-muted-foreground hover:text-foreground transition-colors mb-8">
             <ArrowLeft className="h-4 w-4" /> {t("claseDetalle.volver")}
           </Link>
 
-          {cta.image_url && (
-            <div className="w-full aspect-[16/6] overflow-hidden mb-10">
-              <img
-                src={cta.image_url}
-                alt={title}
-                className="w-full h-full object-cover"
-                loading="lazy"
-              />
+          {images.length > 0 && (
+            <div className="mb-10">
+              <div className="relative w-full aspect-[16/6] overflow-hidden">
+                <img
+                  src={images[selectedImgIdx]}
+                  alt={title}
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                />
+                {images.length > 1 && (
+                  <>
+                    <button
+                      onClick={() => setSelectedImgIdx((i) => (i - 1 + images.length) % images.length)}
+                      className="absolute left-3 top-1/2 -translate-y-1/2 bg-background/80 rounded-full p-1.5 hover:bg-background transition-colors"
+                      aria-label={t("claseDetalle.imagenAnterior")}
+                    >
+                      <ChevronLeft className="h-5 w-5" />
+                    </button>
+                    <button
+                      onClick={() => setSelectedImgIdx((i) => (i + 1) % images.length)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 bg-background/80 rounded-full p-1.5 hover:bg-background transition-colors"
+                      aria-label={t("claseDetalle.imagenSiguiente")}
+                    >
+                      <ChevronRight className="h-5 w-5" />
+                    </button>
+                  </>
+                )}
+              </div>
+              {images.length > 1 && (
+                <div className="flex gap-2 mt-3 overflow-x-auto">
+                  {images.map((url, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setSelectedImgIdx(idx)}
+                      className={`w-16 h-16 md:w-20 md:h-20 flex-shrink-0 overflow-hidden border-2 transition-colors ${
+                        idx === selectedImgIdx ? "border-foreground" : "border-transparent hover:border-border"
+                      }`}
+                      aria-label={t("claseDetalle.verImagen", { n: idx + 1 })}
+                      aria-current={idx === selectedImgIdx ? "true" : undefined}
+                    >
+                      <img src={url} alt="" className="w-full h-full object-cover" />
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 
@@ -94,7 +142,7 @@ const ClaseDetalle = () => {
               <h1 className="font-serif font-bold text-2xl md:text-3xl lg:text-4xl mb-2">{title}</h1>
 
               {description && (
-                <div className="body-text whitespace-pre-line space-y-4">{description}</div>
+                <div className="body-text whitespace-pre-line space-y-4">{renderBoldText(description)}</div>
               )}
 
               {faq.length > 0 && (
@@ -179,7 +227,7 @@ const ClaseDetalle = () => {
                           <Button className="w-full mt-1" variant="default" asChild>
                             <a href={whatsappUrl(s)} target="_blank" rel="noopener noreferrer">
                               <MessageCircle className="h-4 w-4 mr-1.5" aria-hidden="true" />
-                              {t("claseDetalle.reservarWhatsapp")}
+                              {t("claseDetalle.reservarWhatsapp", { tipo: tipoLabel })}
                             </a>
                           </Button>
                         ) : (

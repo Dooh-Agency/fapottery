@@ -1,7 +1,7 @@
 {
   "nav": {
     "inicio": "Inicio",
-    "clases": "Clases",
+    "clases": "Actividades",
     "propuestaEducativa": "Propuesta educativa",
     "propuestaEducativaCorta": "Propuesta",
     "produccion": "Producción",
@@ -9,7 +9,7 @@
     "colaboraciones": "Colaboraciones",
     "colaboracionesCorta": "Colab",
     "novedades": "Novedades",
-    "reservarClase": "Reservar clase",
+    "reservarClase": "Reservar actividad",
     "abrirMenu": "Abrir menú",
     "cerrarMenu": "Cerrar menú",
     "navegacionPrincipal": "Navegación principal",
@@ -160,13 +160,13 @@
     "cta": "CONTÁCTAME"
   },
   "clases": {
-    "seoTitle": "Clases",
+    "seoTitle": "Actividades",
     "seoDescription": "Reservá tu lugar en clases de cerámica. Torno, modelado, workshops y más.",
     "heroAlt": "Clases del estudio",
-    "heroTitle": "Clases",
+    "heroTitle": "Actividades",
     "defaultSubtitle": "Explorá las opciones de talleres y reservá tu lugar.",
     "cargando": "Cargando clases…",
-    "vacio": "Próximamente se publicarán clases.",
+    "vacio": "Próximamente se publicarán actividades.",
     "verMas": "Ver más →",
     "categoriaRegulares": "Clases regulares",
     "categoriaWorkshops": "Workshops",
@@ -174,12 +174,12 @@
     "destacados": "Destacados",
     "eventosPasados": "Eventos pasados",
     "todas": "Todas",
-    "filtrarAria": "Filtrar clases por categoría"
+    "filtrarAria": "Filtrar actividades por categoría"
   },
   "claseDetalle": {
     "cargando": "Cargando…",
-    "noEncontradaTitle": "Clase no encontrada",
-    "volver": "Volver a clases",
+    "noEncontradaTitle": "Actividad no encontrada",
+    "volver": "Volver a actividades",
     "faqTitle": "Preguntas frecuentes",
     "porPersona": "por persona",
     "minutos": "minutos",
@@ -191,8 +191,14 @@
     "completo": "Completo",
     "sinVacantes": "Sin vacantes",
     "sinFechas": "No hay fechas próximas disponibles.",
-    "reservarWhatsapp": "Reservar por WhatsApp",
-    "whatsappMensaje": "Hola! Quiero reservar mi lugar en \"{{title}}\" el {{date}} a las {{time}}. ¿Confirmamos?"
+    "reservarWhatsapp": "Reservar {{tipo}} por WhatsApp",
+    "whatsappMensaje": "Hola! Quiero reservar mi lugar en \"{{title}}\" el {{date}} a las {{time}}. ¿Confirmamos?",
+    "imagenAnterior": "Imagen anterior",
+    "imagenSiguiente": "Imagen siguiente",
+    "verImagen": "Ver imagen {{n}}",
+    "tipoRegulares": "clase",
+    "tipoWorkshops": "workshop",
+    "tipoPersonalizadas": "clase personalizada"
   },
   "catalogo": {
     "seoTitle": "Tienda",

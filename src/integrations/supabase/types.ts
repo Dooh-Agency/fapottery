@@ -141,6 +141,7 @@ export type Database = {
           faq_en: Json | null
           id: string
           image_url: string | null
+          images: string[]
           is_active: boolean
           is_featured: boolean
           location_map_url: string | null
@@ -161,6 +162,7 @@ export type Database = {
           faq_en?: Json | null
           id?: string
           image_url?: string | null
+          images?: string[]
           is_active?: boolean
           is_featured?: boolean
           location_map_url?: string | null
@@ -181,6 +183,7 @@ export type Database = {
           faq_en?: Json | null
           id?: string
           image_url?: string | null
+          images?: string[]
           is_active?: boolean
           is_featured?: boolean
           location_map_url?: string | null

@@ -8,6 +8,7 @@ import { useSearchParams } from "react-router-dom";
 import { useState } from "react";
 import { Link } from "@/components/LocalizedLink";
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
+import { renderBoldText } from "@/lib/richText";
 
 const CLASS_CATEGORIES = ["regulares", "workshops", "personalizadas"] as const;
 
@@ -48,7 +49,7 @@ const Clases = () => {
     return (
       <Link
         key={ct.id}
-        to={`/clases/${ct.id}`}
+        to={`/actividades/${ct.id}`}
         className={`group border border-border bg-card overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring ${
           big ? "flex flex-col md:flex-row" : "flex flex-col"
         }`}
@@ -72,7 +73,7 @@ const Clases = () => {
             {title}
           </h2>
           {description && (
-            <p className={`body-text flex-1 ${big ? "line-clamp-4 md:line-clamp-6" : "line-clamp-3"}`}>{description}</p>
+            <p className={`body-text flex-1 ${big ? "line-clamp-4 md:line-clamp-6" : "line-clamp-3"}`}>{renderBoldText(description)}</p>
           )}
           <div className="flex items-center justify-between mt-3">
             {Number(ct.price) > 0 && (
@@ -94,7 +95,7 @@ const Clases = () => {
       <SEO
         title={t("clases.seoTitle")}
         description={t("clases.seoDescription")}
-        path="/clases"
+        path="/actividades"
       />
       <DynamicHeroBanner
         sectionKey="clases"

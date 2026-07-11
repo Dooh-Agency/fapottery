@@ -7,7 +7,7 @@ const Footer = () => {
 
   const navItems = [
     { label: t("nav.inicio"), path: "/" },
-    { label: t("nav.clases"), path: "/clases" },
+    { label: t("nav.clases"), path: "/actividades" },
     { label: t("nav.propuestaEducativa"), path: "/propuesta-educativa" },
     { label: t("nav.produccion"), path: "/produccion" },
     { label: t("nav.tienda"), path: "/tienda" },

@@ -81,7 +81,7 @@ const PropuestaEducativa = () => {
               <p className="text-sm font-sans text-muted-foreground">{t("propuestaEducativa.ctaBoxSubtitle")}</p>
             </div>
             <Link
-              to="/clases"
+              to="/actividades"
               className="inline-block shrink-0 border border-foreground bg-foreground text-primary-foreground font-sans text-xs tracking-[0.2em] uppercase px-7 py-3.5 hover:bg-transparent hover:text-foreground transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
             >
               {t("propuestaEducativa.ctaBoxButton")}
@@ -111,7 +111,7 @@ const PropuestaEducativa = () => {
                   ))}
                 </div>
                 <Link
-                  to={`/clases?tipo=${cls.filterParam}`}
+                  to={`/actividades?tipo=${cls.filterParam}`}
                   className="btn-outline-sm mt-8 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring text-center"
                 >
                   {t("propuestaEducativa.verFechas")}

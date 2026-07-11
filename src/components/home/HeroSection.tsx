@@ -32,7 +32,7 @@ const HeroSection = () => {
         {/* CTAs */}
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
           <Link
-            to="/clases"
+            to="/actividades"
             className="inline-block border border-foreground bg-foreground text-primary-foreground font-sans text-xs tracking-[0.2em] uppercase px-8 py-4 hover:bg-transparent hover:text-foreground transition-colors duration-300 text-center"
           >
             {t("home.hero.ctaClases")}

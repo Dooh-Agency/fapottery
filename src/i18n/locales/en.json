@@ -1,7 +1,7 @@
 {
   "nav": {
     "inicio": "Home",
-    "clases": "Classes",
+    "clases": "Activities",
     "propuestaEducativa": "Educational Program",
     "propuestaEducativaCorta": "Program",
     "produccion": "Production",
@@ -9,7 +9,7 @@
     "colaboraciones": "Collaborations",
     "colaboracionesCorta": "Collab",
     "novedades": "News",
-    "reservarClase": "Book a class",
+    "reservarClase": "Book an activity",
     "abrirMenu": "Open menu",
     "cerrarMenu": "Close menu",
     "navegacionPrincipal": "Main navigation",
@@ -160,13 +160,13 @@
     "cta": "CONTACT ME"
   },
   "clases": {
-    "seoTitle": "Classes",
+    "seoTitle": "Activities",
     "seoDescription": "Book your spot in ceramics classes. Wheel-throwing, hand-building, workshops and more.",
     "heroAlt": "Studio classes",
-    "heroTitle": "Classes",
+    "heroTitle": "Activities",
     "defaultSubtitle": "Explore the workshop options and book your spot.",
     "cargando": "Loading classes…",
-    "vacio": "Classes will be published soon.",
+    "vacio": "Activities will be published soon.",
     "verMas": "See more →",
     "categoriaRegulares": "Regular classes",
     "categoriaWorkshops": "Workshops",
@@ -174,12 +174,12 @@
     "destacados": "Featured",
     "eventosPasados": "Past events",
     "todas": "All",
-    "filtrarAria": "Filter classes by category"
+    "filtrarAria": "Filter activities by category"
   },
   "claseDetalle": {
     "cargando": "Loading…",
-    "noEncontradaTitle": "Class not found",
-    "volver": "Back to classes",
+    "noEncontradaTitle": "Activity not found",
+    "volver": "Back to activities",
     "faqTitle": "Frequently asked questions",
     "porPersona": "per person",
     "minutos": "minutes",
@@ -191,8 +191,14 @@
     "completo": "Full",
     "sinVacantes": "No spots left",
     "sinFechas": "No upcoming dates available.",
-    "reservarWhatsapp": "Book via WhatsApp",
-    "whatsappMensaje": "Hi! I'd like to book my spot in \"{{title}}\" on {{date}} at {{time}}. Can we confirm?"
+    "reservarWhatsapp": "Book {{tipo}} via WhatsApp",
+    "whatsappMensaje": "Hi! I'd like to book my spot in \"{{title}}\" on {{date}} at {{time}}. Can we confirm?",
+    "imagenAnterior": "Previous image",
+    "imagenSiguiente": "Next image",
+    "verImagen": "View image {{n}}",
+    "tipoRegulares": "class",
+    "tipoWorkshops": "workshop",
+    "tipoPersonalizadas": "personalized class"
   },
   "catalogo": {
     "seoTitle": "Shop",

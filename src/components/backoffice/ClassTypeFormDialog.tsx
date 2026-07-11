@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -13,11 +13,11 @@ import { Separator } from "@/components/ui/separator";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
-import { CalendarIcon, Plus, Trash2 } from "lucide-react";
+import { CalendarIcon, Plus, Trash2, Bold, Upload, X } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { cn } from "@/lib/utils";
-import { useUpsertClassType, useUpsertSchedule, useClassSchedules, useDeleteSchedule, type ClassType } from "@/hooks/useClasses";
+import { useUpsertClassType, useUpsertSchedule, useClassSchedules, useDeleteSchedule, uploadClassImage, type ClassType } from "@/hooks/useClasses";
 import { useTranslateContent } from "@/hooks/useTranslateContent";
 import { toast } from "sonner";
 import ImageUploader from "./ImageUploader";
@@ -89,6 +89,11 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
     defaultValues: emptyDefaults,
   });
 
+  const [images, setImages] = useState<string[]>([]);
+  const [uploadingGallery, setUploadingGallery] = useState(false);
+  const galleryFileRef = useRef<HTMLInputElement>(null);
+  const descriptionRef = useRef<HTMLTextAreaElement | null>(null);
+
   const { fields: faqFields, append: appendFaq, remove: removeFaq } = useFieldArray({
     control: form.control,
     name: "faq",
@@ -119,8 +124,43 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
           new_schedules: [],
         } : emptyDefaults
       );
+      setImages(ct?.images || []);
     }
   }, [open, classType]);
+
+  const handleGalleryUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+    setUploadingGallery(true);
+    try {
+      const urls: string[] = [];
+      for (const file of Array.from(files)) {
+        urls.push(await uploadClassImage(file));
+      }
+      setImages((prev) => [...prev, ...urls]);
+    } catch (e: any) {
+      toast.error(e.message || "Error al subir la imagen");
+    }
+    setUploadingGallery(false);
+    if (galleryFileRef.current) galleryFileRef.current.value = "";
+  };
+
+  const removeGalleryImage = (idx: number) => {
+    setImages((prev) => prev.filter((_, i) => i !== idx));
+  };
+
+  const wrapDescriptionSelectionBold = () => {
+    const el = descriptionRef.current;
+    if (!el || el.selectionStart === el.selectionEnd) return;
+    const { selectionStart, selectionEnd, value } = el;
+    const selected = value.slice(selectionStart, selectionEnd);
+    const newValue = value.slice(0, selectionStart) + `**${selected}**` + value.slice(selectionEnd);
+    form.setValue("description", newValue, { shouldDirty: true });
+    requestAnimationFrame(() => {
+      el.focus();
+      el.setSelectionRange(selectionStart + 2, selectionEnd + 2);
+    });
+  };
 
   const onSubmit = async (values: FormValues) => {
     try {
@@ -132,6 +172,7 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
         location_text: classTypeData.location_text || null,
         location_map_url: classTypeData.location_map_url || null,
         image_url: classTypeData.image_url || null,
+        images,
       } as any);
 
       const classTypeId = classType?.id || (result as any)?.id;
@@ -204,10 +245,23 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
               </FormItem>
             )} />
 
-            <FormField control={form.control} name="description" render={({ field }) => (
+            <FormField control={form.control} name="description" render={({ field: { ref, ...field } }) => (
               <FormItem>
                 <FormLabel>Descripción</FormLabel>
-                <FormControl><Textarea rows={5} placeholder="Describí la clase o workshop en detalle..." {...field} /></FormControl>
+                <div className="flex items-center gap-2 mb-1">
+                  <Button type="button" variant="outline" size="sm" onClick={wrapDescriptionSelectionBold}>
+                    <Bold className="h-3.5 w-3.5 mr-1" /> Negrita
+                  </Button>
+                  <p className="text-xs text-muted-foreground">Seleccioná texto y hacé clic para resaltarlo</p>
+                </div>
+                <FormControl>
+                  <Textarea
+                    rows={5}
+                    placeholder="Describí la clase o workshop en detalle..."
+                    {...field}
+                    ref={(el) => { ref(el); descriptionRef.current = el; }}
+                  />
+                </FormControl>
                 <p className="text-xs text-muted-foreground">Podés usar saltos de línea para separar párrafos.</p>
                 <FormMessage />
               </FormItem>
@@ -217,7 +271,7 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
               <FormItem>
                 <FormControl>
                   <ImageUploader
-                    label="Imagen del evento"
+                    label="Imagen de portada (listado de clases)"
                     value={field.value || ""}
                     onChange={field.onChange}
                     bucket="class-images"
@@ -227,6 +281,35 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
                 <FormMessage />
               </FormItem>
             )} />
+
+            {/* Galería de imágenes adicionales (vista de detalle) */}
+            <div className="space-y-2">
+              <p className="text-sm font-medium">Galería adicional (opcional)</p>
+              <p className="text-xs text-muted-foreground">Se muestran como slider con miniaturas en la vista de detalle de la clase.</p>
+              <div className="flex flex-wrap gap-2">
+                {images.map((url, i) => (
+                  <div key={i} className="relative w-20 h-20 border border-border overflow-hidden group">
+                    <img src={url} alt="" className="w-full h-full object-cover" />
+                    <button
+                      type="button"
+                      onClick={() => removeGalleryImage(i)}
+                      className="absolute top-0 right-0 bg-destructive text-destructive-foreground p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => galleryFileRef.current?.click()}
+                  disabled={uploadingGallery}
+                  className="w-20 h-20 border border-dashed border-border flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <Upload className="h-5 w-5" />
+                </button>
+              </div>
+              <input ref={galleryFileRef} type="file" accept="image/*" multiple onChange={handleGalleryUpload} className="hidden" />
+            </div>
 
             <Separator />
 

@@ -142,7 +142,7 @@ const HomeServicesManager = () => {
                       id={`cta-link-${s.id}`}
                       value={draft.cta_link}
                       onChange={(e) => updateDraft(s.id, "cta_link", e.target.value)}
-                      placeholder="/clases"
+                      placeholder="/actividades"
                     />
                   </div>
                 </div>

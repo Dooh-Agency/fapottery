@@ -12,7 +12,7 @@ const Header = () => {
   const { t } = useTranslation();
 
   const navItems = [
-    { label: t("nav.clases"), path: "/clases" },
+    { label: t("nav.clases"), path: "/actividades" },
     { label: t("nav.propuestaEducativaCorta"), path: "/propuesta-educativa" },
     { label: t("nav.produccion"), path: "/produccion" },
     { label: t("nav.tienda"), path: "/tienda" },
@@ -67,7 +67,7 @@ const Header = () => {
         <div className="flex items-center gap-4">
           <LanguageSwitcher className="hidden sm:flex" />
           <Link
-            to="/clases"
+            to="/actividades"
             className="hidden sm:inline-block border border-foreground bg-foreground text-primary-foreground text-xs uppercase tracking-[0.15em] font-sans font-medium px-5 py-2.5 hover:bg-transparent hover:text-foreground transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
           >
             {t("nav.reservarClase")}
@@ -108,7 +108,7 @@ const Header = () => {
           ))}
           <LanguageSwitcher className="mt-2" />
           <Link
-            to="/clases"
+            to="/actividades"
             className="sm:hidden border border-foreground bg-foreground text-primary-foreground text-sm uppercase tracking-[0.15em] font-sans font-medium px-5 py-2.5 text-center mt-2 hover:bg-transparent hover:text-foreground transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
           >
             {t("nav.reservarClase")}

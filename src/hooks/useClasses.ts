@@ -54,6 +54,15 @@ export const useUpsertClassType = () => {
   });
 };
 
+export async function uploadClassImage(file: File): Promise<string> {
+  const ext = file.name.split(".").pop();
+  const path = `${crypto.randomUUID()}.${ext}`;
+  const { error } = await supabase.storage.from("class-images").upload(path, file);
+  if (error) throw error;
+  const { data } = supabase.storage.from("class-images").getPublicUrl(path);
+  return data.publicUrl;
+}
+
 export const useDeleteClassType = () => {
   const qc = useQueryClient();
   return useMutation({

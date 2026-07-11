@@ -31,7 +31,7 @@ const QuienSoySection = () => {
             {/* Action CTAs */}
             <div className="flex flex-col sm:flex-row gap-3">
               <Link
-                to="/clases"
+                to="/actividades"
                 className="btn-outline-sm text-center"
               >
                 {t("home.quienSoy.ctaClases")}
