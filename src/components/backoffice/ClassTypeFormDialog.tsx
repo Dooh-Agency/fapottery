@@ -587,7 +587,7 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
               <FormItem>
                 <FormLabel>Etiqueta en la tarjeta (opcional)</FormLabel>
                 <div className="flex flex-wrap gap-2 mb-1">
-                  {["Más vendido", "Más popular", "Últimas plazas"].map((preset) => (
+                  {["Más vendido", "Más popular", "Últimas plazas", "¡Novedad!"].map((preset) => (
                     <Button key={preset} type="button" variant="outline" size="sm" onClick={() => field.onChange(preset)}>
                       {preset}
                     </Button>
