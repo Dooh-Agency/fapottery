@@ -5,17 +5,13 @@ import { Link } from "@/components/LocalizedLink";
 import Layout from "@/components/Layout";
 import SEO from "@/components/SEO";
 import { usePublishedPieces, type Piece } from "@/hooks/usePieces";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, MessageCircle, CreditCard, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, MessageCircle, ChevronLeft, ChevronRight } from "lucide-react";
 
 const PiezaDetalle = () => {
   const { id } = useParams<{ id: string }>();
   const { data: pieces, isLoading } = usePublishedPieces();
   const piece = pieces?.find((p) => p.id === id);
   const [selectedImgIdx, setSelectedImgIdx] = useState(0);
-  const [purchasing, setPurchasing] = useState(false);
-  const { toast } = useToast();
   const { t } = useTranslation();
 
   const categoryLabels: Record<Piece["category"], string> = {
@@ -31,20 +27,6 @@ const PiezaDetalle = () => {
 
   const whatsappUrl = (p: Piece) =>
     `https://wa.me/+34681816030?text=${encodeURIComponent(t("piezaDetalle.whatsappMensaje", { title: p.title, price: p.price }))}`;
-
-  const handleBuy = async (p: Piece) => {
-    setPurchasing(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("create-piece-checkout", {
-        body: { pieceId: p.id },
-      });
-      if (error) throw error;
-      if (data?.url) window.open(data.url, "_blank");
-    } catch (err: any) {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
-    }
-    setPurchasing(false);
-  };
 
   if (isLoading) {
     return (
@@ -150,24 +132,14 @@ const PiezaDetalle = () => {
               </p>
 
               {piece.stock > 0 && (
-                <div className="space-y-3">
-                  <button
-                    onClick={() => handleBuy(piece)}
-                    disabled={purchasing}
-                    className="btn-outline flex items-center justify-center gap-2"
-                  >
-                    <CreditCard className="h-4 w-4" aria-hidden="true" />
-                    {purchasing ? t("piezaDetalle.procesando") : t("piezaDetalle.comprarAhora")}
-                  </button>
-                  <a
-                    href={whatsappUrl(piece)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn-outline flex items-center justify-center gap-2 !bg-transparent"
-                  >
-                    <MessageCircle className="h-4 w-4" aria-hidden="true" /> {t("piezaDetalle.consultarWhatsapp")}
-                  </a>
-                </div>
+                <a
+                  href={whatsappUrl(piece)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-outline flex items-center justify-center gap-2"
+                >
+                  <MessageCircle className="h-4 w-4" aria-hidden="true" /> {t("piezaDetalle.consultarWhatsapp")}
+                </a>
               )}
             </div>
           </div>
