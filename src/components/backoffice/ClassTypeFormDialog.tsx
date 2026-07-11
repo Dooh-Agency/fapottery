@@ -93,6 +93,7 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
   const [uploadingGallery, setUploadingGallery] = useState(false);
   const galleryFileRef = useRef<HTMLInputElement>(null);
   const descriptionRef = useRef<HTMLTextAreaElement | null>(null);
+  const faqAnswerRefs = useRef<Record<number, HTMLTextAreaElement | null>>({});
 
   const { fields: faqFields, append: appendFaq, remove: removeFaq } = useFieldArray({
     control: form.control,
@@ -149,13 +150,16 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
     setImages((prev) => prev.filter((_, i) => i !== idx));
   };
 
-  const wrapDescriptionSelectionBold = () => {
-    const el = descriptionRef.current;
-    if (!el || el.selectionStart === el.selectionEnd) return;
+  const wrapSelectionBold = (el: HTMLTextAreaElement | null, fieldName: "description" | `faq.${number}.answer`) => {
+    if (!el) return;
+    if (el.selectionStart === el.selectionEnd) {
+      toast.info("Primero seleccioná (marcá) el texto que querés poner en negrita");
+      return;
+    }
     const { selectionStart, selectionEnd, value } = el;
     const selected = value.slice(selectionStart, selectionEnd);
     const newValue = value.slice(0, selectionStart) + `**${selected}**` + value.slice(selectionEnd);
-    form.setValue("description", newValue, { shouldDirty: true });
+    form.setValue(fieldName, newValue, { shouldDirty: true });
     requestAnimationFrame(() => {
       el.focus();
       el.setSelectionRange(selectionStart + 2, selectionEnd + 2);
@@ -249,7 +253,7 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
               <FormItem>
                 <FormLabel>Descripción</FormLabel>
                 <div className="flex items-center gap-2 mb-1">
-                  <Button type="button" variant="outline" size="sm" onClick={wrapDescriptionSelectionBold}>
+                  <Button type="button" variant="outline" size="sm" onClick={() => wrapSelectionBold(descriptionRef.current, "description")}>
                     <Bold className="h-3.5 w-3.5 mr-1" /> Negrita
                   </Button>
                   <p className="text-xs text-muted-foreground">Seleccioná texto y hacé clic para resaltarlo</p>
@@ -481,10 +485,28 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
                     <FormMessage />
                   </FormItem>
                 )} />
-                <FormField control={form.control} name={`faq.${index}.answer`} render={({ field }) => (
+                <FormField control={form.control} name={`faq.${index}.answer`} render={({ field: { ref, ...field } }) => (
                   <FormItem>
-                    <FormLabel className="text-xs">Respuesta</FormLabel>
-                    <FormControl><Textarea rows={2} placeholder="No, te guiamos desde cero..." {...field} /></FormControl>
+                    <div className="flex items-center justify-between">
+                      <FormLabel className="text-xs">Respuesta</FormLabel>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="h-6 px-2 text-xs"
+                        onClick={() => wrapSelectionBold(faqAnswerRefs.current[index] || null, `faq.${index}.answer`)}
+                      >
+                        <Bold className="h-3 w-3 mr-1" /> Negrita
+                      </Button>
+                    </div>
+                    <FormControl>
+                      <Textarea
+                        rows={2}
+                        placeholder="No, te guiamos desde cero..."
+                        {...field}
+                        ref={(el) => { ref(el); faqAnswerRefs.current[index] = el; }}
+                      />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />

@@ -88,128 +88,114 @@ const ClaseDetalle = () => {
             <ArrowLeft className="h-4 w-4" /> {t("claseDetalle.volver")}
           </Link>
 
-          {images.length > 0 && (
-            <div className="mb-10">
-              <div className="relative w-full aspect-[16/6] overflow-hidden">
-                <img
-                  src={images[selectedImgIdx]}
-                  alt={title}
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                />
-                {images.length > 1 && (
-                  <>
-                    <button
-                      onClick={() => setSelectedImgIdx((i) => (i - 1 + images.length) % images.length)}
-                      className="absolute left-3 top-1/2 -translate-y-1/2 bg-background/80 rounded-full p-1.5 hover:bg-background transition-colors"
-                      aria-label={t("claseDetalle.imagenAnterior")}
-                    >
-                      <ChevronLeft className="h-5 w-5" />
-                    </button>
-                    <button
-                      onClick={() => setSelectedImgIdx((i) => (i + 1) % images.length)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 bg-background/80 rounded-full p-1.5 hover:bg-background transition-colors"
-                      aria-label={t("claseDetalle.imagenSiguiente")}
-                    >
-                      <ChevronRight className="h-5 w-5" />
-                    </button>
-                  </>
-                )}
-              </div>
-              {images.length > 1 && (
-                <div className="flex gap-2 mt-3 overflow-x-auto">
-                  {images.map((url, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setSelectedImgIdx(idx)}
-                      className={`w-16 h-16 md:w-20 md:h-20 flex-shrink-0 overflow-hidden border-2 transition-colors ${
-                        idx === selectedImgIdx ? "border-foreground" : "border-transparent hover:border-border"
-                      }`}
-                      aria-label={t("claseDetalle.verImagen", { n: idx + 1 })}
-                      aria-current={idx === selectedImgIdx ? "true" : undefined}
-                    >
-                      <img src={url} alt="" className="w-full h-full object-cover" />
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-            {/* Columna principal */}
-            <div className="lg:col-span-2 space-y-6">
-              <h1 className="font-serif font-bold text-2xl md:text-3xl lg:text-4xl mb-2">{title}</h1>
-
-              {description && (
-                <div className="body-text whitespace-pre-line space-y-4">{renderBoldText(description)}</div>
-              )}
-
-              {faq.length > 0 && (
-                <div className="mt-6">
-                  <h2 className="text-base font-semibold text-foreground mb-3">{t("claseDetalle.faqTitle")}</h2>
-                  <Accordion type="single" collapsible className="w-full">
-                    {faq.map((f, i) => (
-                      <AccordionItem key={i} value={`faq-${i}`}>
-                        <AccordionTrigger className="text-sm text-left font-medium">
-                          {f.question}
-                        </AccordionTrigger>
-                        <AccordionContent className="text-sm text-muted-foreground whitespace-pre-line">
-                          {f.answer}
-                        </AccordionContent>
-                      </AccordionItem>
-                    ))}
-                  </Accordion>
-                </div>
-              )}
-            </div>
-
-            {/* Columna lateral — info + reserva */}
-            <div className="space-y-5">
-              <div className="border border-border bg-card p-5 space-y-4">
-                {Number(item.price) > 0 && (
-                  <div>
-                    <p className="text-2xl font-serif font-semibold text-foreground">€{item.price}</p>
-                    <p className="text-xs text-muted-foreground">{t("claseDetalle.porPersona")}</p>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
+            {/* Galería */}
+            <div>
+              {images.length > 0 ? (
+                <>
+                  <div className="relative aspect-square bg-muted overflow-hidden">
+                    <img
+                      src={images[selectedImgIdx]}
+                      alt={title}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                    {images.length > 1 && (
+                      <>
+                        <button
+                          onClick={() => setSelectedImgIdx((i) => (i - 1 + images.length) % images.length)}
+                          className="absolute left-3 top-1/2 -translate-y-1/2 bg-background/80 rounded-full p-1.5 hover:bg-background transition-colors"
+                          aria-label={t("claseDetalle.imagenAnterior")}
+                        >
+                          <ChevronLeft className="h-5 w-5" />
+                        </button>
+                        <button
+                          onClick={() => setSelectedImgIdx((i) => (i + 1) % images.length)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 bg-background/80 rounded-full p-1.5 hover:bg-background transition-colors"
+                          aria-label={t("claseDetalle.imagenSiguiente")}
+                        >
+                          <ChevronRight className="h-5 w-5" />
+                        </button>
+                      </>
+                    )}
                   </div>
-                )}
-
-                <div className="space-y-2 text-sm">
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <Clock className="h-4 w-4 shrink-0" />
-                    <span>{item.duration_minutes} {t("claseDetalle.minutos")}</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <Users className="h-4 w-4 shrink-0" />
-                    <span>{t("claseDetalle.maxAlumnos", { count: item.max_students })}</span>
-                  </div>
-                  {cta.location_text && (
-                    <div className="flex items-start gap-2 text-muted-foreground">
-                      <MapPin className="h-4 w-4 shrink-0 mt-0.5" />
-                      <div>
-                        <span>{cta.location_text}</span>
-                        {cta.location_map_url && (
-                          <a
-                            href={cta.location_map_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center gap-1 text-xs text-foreground underline underline-offset-2 mt-0.5"
-                          >
-                            {t("claseDetalle.verMapa")} <ExternalLink className="h-3 w-3" />
-                          </a>
-                        )}
-                      </div>
+                  {images.length > 1 && (
+                    <div className="flex gap-2 mt-3 flex-wrap">
+                      {images.map((url, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => setSelectedImgIdx(idx)}
+                          className={`w-16 h-16 md:w-20 md:h-20 flex-shrink-0 overflow-hidden border-2 transition-colors ${
+                            idx === selectedImgIdx ? "border-foreground" : "border-transparent hover:border-border"
+                          }`}
+                          aria-label={t("claseDetalle.verImagen", { n: idx + 1 })}
+                          aria-current={idx === selectedImgIdx ? "true" : undefined}
+                        >
+                          <img src={url} alt="" className="w-full h-full object-cover" />
+                        </button>
+                      ))}
                     </div>
                   )}
+                </>
+              ) : (
+                <div className="aspect-square bg-muted flex items-center justify-center text-muted-foreground text-sm">
+                  {t("claseDetalle.sinImagen")}
                 </div>
+              )}
+            </div>
 
+            {/* Info */}
+            <div className="space-y-6">
+              <h1 className="font-serif font-bold text-2xl md:text-3xl lg:text-4xl">{title}</h1>
+
+              {Number(item.price) > 0 && (
+                <div>
+                  <p className="text-2xl font-serif font-semibold text-foreground">€{item.price}</p>
+                  <p className="text-xs text-muted-foreground">{t("claseDetalle.porPersona")}</p>
+                </div>
+              )}
+
+              <div className="space-y-2 text-sm">
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <Clock className="h-4 w-4 shrink-0" />
+                  <span>{item.duration_minutes} {t("claseDetalle.minutos")}</span>
+                </div>
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <Users className="h-4 w-4 shrink-0" />
+                  <span>{t("claseDetalle.maxAlumnos", { count: item.max_students })}</span>
+                </div>
+                {cta.location_text && (
+                  <div className="flex items-start gap-2 text-muted-foreground">
+                    <MapPin className="h-4 w-4 shrink-0 mt-0.5" />
+                    <div>
+                      <span>{cta.location_text}</span>
+                      {cta.location_map_url && (
+                        <a
+                          href={cta.location_map_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-1 text-xs text-foreground underline underline-offset-2 mt-0.5"
+                        >
+                          {t("claseDetalle.verMapa")} <ExternalLink className="h-3 w-3" />
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {description && (
+                <div className="body-text whitespace-pre-line space-y-4 pt-2 border-t border-border">{renderBoldText(description)}</div>
+              )}
+
+              <div className="pt-2 border-t border-border">
                 {loadingSchedules ? (
-                  <p className="text-sm text-muted-foreground pt-2 border-t border-border">{t("claseDetalle.cargandoFechas")}</p>
+                  <p className="text-sm text-muted-foreground">{t("claseDetalle.cargandoFechas")}</p>
                 ) : upcoming.length > 0 ? (
-                  <div className="space-y-2 pt-2 border-t border-border">
+                  <div className="space-y-3">
                     <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("claseDetalle.proximasFechas")}</p>
                     {upcoming.map((s) => (
-                      <div key={s.id} className="space-y-1">
+                      <div key={s.id} className="space-y-1 border border-border bg-card p-3">
                         <div className="flex items-center gap-2">
                           <CalendarDays className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
                           <span className="text-sm font-medium capitalize">
@@ -239,13 +225,31 @@ const ClaseDetalle = () => {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-sm text-muted-foreground pt-2 border-t border-border">
+                  <p className="text-sm text-muted-foreground">
                     {t("claseDetalle.sinFechas")}
                   </p>
                 )}
               </div>
             </div>
           </div>
+
+          {faq.length > 0 && (
+            <div className="mt-16 max-w-2xl">
+              <h2 className="text-base font-semibold text-foreground mb-3">{t("claseDetalle.faqTitle")}</h2>
+              <Accordion type="single" collapsible className="w-full">
+                {faq.map((f, i) => (
+                  <AccordionItem key={i} value={`faq-${i}`}>
+                    <AccordionTrigger className="text-sm text-left font-medium">
+                      {f.question}
+                    </AccordionTrigger>
+                    <AccordionContent className="text-sm text-muted-foreground whitespace-pre-line">
+                      {renderBoldText(f.answer)}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </div>
+          )}
         </div>
       </section>
     </Layout>

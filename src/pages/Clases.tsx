@@ -13,8 +13,11 @@ import { renderBoldText } from "@/lib/richText";
 const CLASS_CATEGORIES = ["regulares", "workshops", "personalizadas"] as const;
 
 const isPastClassType = (ct: ClassTypeWithSchedules) => {
+  // Las clases regulares y personalizadas son ofertas permanentes, no eventos puntuales:
+  // solo los workshops (fecha única) pueden pasar a "eventos pasados".
+  if (ct.category !== "workshops") return false;
   const activeSchedules = ct.class_schedules.filter((s) => !s.is_cancelled);
-  if (activeSchedules.length === 0) return false; // recurrente sin fechas cargadas: siempre vigente
+  if (activeSchedules.length === 0) return false; // sin fechas cargadas todavía: sigue vigente
   return !activeSchedules.some((s) => new Date(s.scheduled_date + "T23:59:59") >= new Date());
 };
 
@@ -86,6 +89,31 @@ const Clases = () => {
             </span>
           </div>
         </div>
+      </Link>
+    );
+  };
+
+  const renderPastCard = (ct: ClassTypeWithSchedules) => {
+    const cta = ct as any;
+    const title = (isEn && cta.title_en) || ct.title;
+    return (
+      <Link
+        key={ct.id}
+        to={`/actividades/${ct.id}`}
+        className="group border border-border bg-card overflow-hidden flex flex-col focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+        aria-label={title}
+      >
+        {cta.image_url && (
+          <div className="aspect-square overflow-hidden">
+            <img
+              src={cta.image_url}
+              alt={title}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 motion-reduce:transition-none"
+              loading="lazy"
+            />
+          </div>
+        )}
+        <p className="font-sans text-xs font-medium truncate p-2">{title}</p>
       </Link>
     );
   };
@@ -191,8 +219,8 @@ const Clases = () => {
               {past.length > 0 && (
                 <div className="mt-20">
                   <h2 className="font-serif text-xl md:text-2xl mb-6">{t("clases.eventosPasados")}</h2>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 opacity-70">
-                    {past.map((ct) => renderCard(ct))}
+                  <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-3">
+                    {past.map((ct) => renderPastCard(ct))}
                   </div>
                 </div>
               )}

@@ -198,7 +198,8 @@
     "verImagen": "Ver imagen {{n}}",
     "tipoRegulares": "clase",
     "tipoWorkshops": "workshop",
-    "tipoPersonalizadas": "clase personalizada"
+    "tipoPersonalizadas": "clase personalizada",
+    "sinImagen": "Sin imagen"
   },
   "catalogo": {
     "seoTitle": "Tienda",
