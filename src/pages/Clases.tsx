@@ -76,7 +76,7 @@ const Clases = () => {
             {title}
           </h2>
           {description && (
-            <p className={`body-text flex-1 ${big ? "line-clamp-4 md:line-clamp-6" : "line-clamp-3"}`}>{renderBoldText(description)}</p>
+            <p className={`body-text whitespace-pre-line flex-1 ${big ? "line-clamp-4 md:line-clamp-6" : "line-clamp-3"}`}>{renderBoldText(description)}</p>
           )}
           <div className="flex items-center justify-between mt-3">
             {Number(ct.price) > 0 && (
