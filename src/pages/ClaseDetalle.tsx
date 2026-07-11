@@ -102,11 +102,11 @@ const ClaseDetalle = () => {
             <div>
               {images.length > 0 ? (
                 <>
-                  <div className="relative aspect-square bg-muted overflow-hidden">
+                  <div className="relative aspect-[4/5] bg-muted overflow-hidden">
                     <img
                       src={images[selectedImgIdx]}
                       alt={title}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-contain"
                       loading="lazy"
                     />
                     {images.length > 1 && (
@@ -147,7 +147,7 @@ const ClaseDetalle = () => {
                   )}
                 </>
               ) : (
-                <div className="aspect-square bg-muted flex items-center justify-center text-muted-foreground text-sm">
+                <div className="aspect-[4/5] bg-muted flex items-center justify-center text-muted-foreground text-sm">
                   {t("claseDetalle.sinImagen")}
                 </div>
               )}
