@@ -7,7 +7,8 @@ import { getLanguageFromPathname } from "@/i18n";
 import { CalendarDays, MapPin, Users, Check, MessageCircle, ExternalLink } from "lucide-react";
 import inspiracionFresas from "@/assets/inspiracion-fresas.png";
 import lugarMaui from "@/assets/lugar-maui.jpg";
-import florenciaTaller from "@/assets/florencia-taller-1.jpg";
+import florenciaTaller from "@/assets/flor-taller.png";
+import potteryBananas from "@/assets/pottery.bananas.png";
 
 // Landing de campaña para el workshop "Breakfast & Paint" (sábado 18 de julio).
 // Pensada como destino del anuncio/reel de Instagram: una sola pieza, un solo objetivo
@@ -34,6 +35,7 @@ const GALLERY = [
   "https://pglbbwycichoaeltulin.supabase.co/storage/v1/object/public/class-images/600ac69e-8cc6-4e79-a07f-6e37f957ebc1.png",
   "https://pglbbwycichoaeltulin.supabase.co/storage/v1/object/public/class-images/59ca0a9f-a6f6-4380-8113-d966cc5ec773.png",
   inspiracionFresas,
+  potteryBananas,
 ];
 
 const COPY = {
@@ -491,7 +493,7 @@ const BreakfastPaint = () => {
             <h2 className="font-serif text-3xl md:text-4xl text-foreground">{c.galeriaTitle}</h2>
             <p className="body-text text-muted-foreground mt-3">{c.galeriaSub}</p>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             {GALLERY.map((src, i) => (
               <div key={i} className="aspect-[4/5] bg-muted overflow-hidden">
                 <img src={src} alt="" className="w-full h-full object-cover" loading="lazy" />
@@ -509,7 +511,7 @@ const BreakfastPaint = () => {
               <img
                 src={florenciaTaller}
                 alt="Flor — FA Pottery Studio"
-                className="w-full h-full object-cover object-top"
+                className="w-full h-full object-cover"
                 loading="lazy"
               />
             </div>
