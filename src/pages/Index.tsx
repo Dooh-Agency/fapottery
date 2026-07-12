@@ -1,5 +1,6 @@
 import Layout from "@/components/Layout";
 import SEO from "@/components/SEO";
+import EventPromoModal from "@/components/EventPromoModal";
 import HeroSection from "@/components/home/HeroSection";
 import MarcaPersonalSection from "@/components/home/MarcaPersonalSection";
 import ServiciosSection from "@/components/home/ServiciosSection";
@@ -12,6 +13,7 @@ const Index = () => {
   return (
     <Layout>
       <SEO path="/" />
+      <EventPromoModal />
       <HeroSection />
       <MarcaPersonalSection />
       <ServiciosSection />
