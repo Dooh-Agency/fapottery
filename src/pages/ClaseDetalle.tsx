@@ -107,7 +107,7 @@ const ClaseDetalle = () => {
                 <div className="flex flex-col-reverse md:flex-row gap-3">
                   {/* Miniaturas — columna a la izquierda en desktop */}
                   {images.length > 1 && (
-                    <div className="flex md:flex-col gap-2 overflow-x-auto md:overflow-y-auto md:max-h-[600px] shrink-0">
+                    <div className="flex md:flex-col gap-2 overflow-x-auto md:overflow-y-auto md:justify-between md:self-stretch md:min-h-0 shrink-0 md:bg-secondary/50 md:p-2">
                       {images.map((url, idx) => (
                         <button
                           key={idx}
