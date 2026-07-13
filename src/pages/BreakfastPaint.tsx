@@ -46,8 +46,9 @@ const COPY = {
     whatsapp:
       "Hola! Quiero reservar mi plaza en «Workshop: Pinta tu Set de Desayuno» el sábado 18 de julio a las 11:00. ¿Confirmamos?",
     heroLabel: "Sábado 18 de julio · Málaga · a pasos del mar",
-    heroLead:
-      "Pinta tu propio Set de cerámica, mientras desayunas a pasos del mar. En unos días te lo llevarás a casa, listo para usar.",
+    heroLeadStrong: "Pinta tu propio Set de cerámica,",
+    heroLeadRest:
+      " mientras desayunas a pasos del mar. En unos días te lo llevarás a casa, listo para usar.",
     heroCta: "Reservar plaza",
     perPerson: "/ persona",
     strip: ["2 horas de taller", "Set de cerámica incluido", "Desayuno a pasos del mar", "Sin experiencia previa"],
@@ -147,8 +148,9 @@ const COPY = {
     whatsapp:
       "Hi! I'd like to book my spot for the Breakfast & Paint workshop on Saturday, July 18 at 11:00. Shall we confirm?",
     heroLabel: "Saturday, July 18 · Málaga · steps from the sea",
-    heroLead:
-      "Paint your own ceramic set while you have breakfast steps from the sea. In a few days you'll take it home, ready to use.",
+    heroLeadStrong: "Paint your own ceramic set",
+    heroLeadRest:
+      " while you have breakfast steps from the sea. In a few days you'll take it home, ready to use.",
     heroCta: "Book your spot",
     perPerson: "/ per person",
     strip: ["2-hour workshop", "Ceramic set included", "Breakfast steps from the sea", "No experience needed"],
@@ -309,7 +311,10 @@ const BreakfastPaint = () => {
           >
             Breakfast <span className="text-background/85">&amp;</span> Paint
           </h1>
-          <p className="body-text text-background/90 max-w-md mb-8">{c.heroLead}</p>
+          <p className="max-w-lg mb-8 text-lg md:text-2xl leading-relaxed text-background/80 font-sans">
+            <span className="font-semibold text-background">{c.heroLeadStrong}</span>
+            {c.heroLeadRest}
+          </p>
 
           <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
             <a
