@@ -1,0 +1,11 @@
+---
+description: Puntero al estándar AGENTS.md
+alwaysApply: true
+---
+
+Las reglas de este proyecto viven en `AGENTS.md` (estándar abierto) para no duplicar
+instrucciones entre herramientas. Cursor también lee `AGENTS.md` de forma nativa; esta
+regla existe por compatibilidad.
+
+**Seguí [`AGENTS.md`](../../AGENTS.md)** y los `AGENTS.md` anidados (gana el más cercano
+al archivo editado). La documentación completa del equipo está en [`/docs`](../../docs/README.md).

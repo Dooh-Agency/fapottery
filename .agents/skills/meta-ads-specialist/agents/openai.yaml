@@ -1,0 +1,4 @@
+interface:
+  display_name: "Especialista en Meta Ads"
+  short_description: "Campañas rentables para FA Pottery"
+  default_prompt: "Usá $meta-ads-specialist para diseñar o analizar una campaña de Meta Ads de FA Pottery."
