@@ -3,7 +3,7 @@
 Panel de administración bajo la ruta `/backoffice`. Complementa al
 [`AGENTS.md` raíz](../../../AGENTS.md).
 
-> 📚 Detalle completo → [docs/backoffice.md](../../../docs/backoffice.md)
+> 📚 Detalle completo → [docs/tecnica/backoffice.md](../../../docs/tecnica/backoffice.md)
 
 ## Contexto rápido
 

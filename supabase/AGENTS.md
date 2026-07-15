@@ -3,7 +3,7 @@
 Base de datos, migraciones y edge functions. Complementa al
 [`AGENTS.md` raíz](../AGENTS.md).
 
-> 📚 Detalle completo → [docs/backend.md](../docs/backend.md)
+> 📚 Detalle completo → [docs/tecnica/backend.md](../docs/tecnica/backend.md)
 
 ## Contexto rápido
 

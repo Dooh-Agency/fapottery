@@ -9,13 +9,13 @@ sobre **Supabase**, desplegada en Netlify (`fapottery.com`).
 
 ## Empezá acá
 
-- Arquitectura y estructura → [docs/architecture.md](docs/architecture.md)
-- Setup y comandos → [docs/development.md](docs/development.md)
-- Convenciones (código, i18n, commits) → [docs/conventions.md](docs/conventions.md)
-- Backend Supabase (BD, migraciones, functions) → [docs/backend.md](docs/backend.md)
-- Backoffice / CMS → [docs/backoffice.md](docs/backoffice.md)
-- Deploy → [docs/deployment.md](docs/deployment.md)
-- Agentes y especialistas → [docs/ai-agents.md](docs/ai-agents.md)
+- Arquitectura y estructura → [docs/tecnica/architecture.md](docs/tecnica/architecture.md)
+- Setup y comandos → [docs/tecnica/development.md](docs/tecnica/development.md)
+- Convenciones (código, i18n, commits) → [docs/tecnica/conventions.md](docs/tecnica/conventions.md)
+- Backend Supabase (BD, migraciones, functions) → [docs/tecnica/backend.md](docs/tecnica/backend.md)
+- Backoffice / CMS → [docs/tecnica/backoffice.md](docs/tecnica/backoffice.md)
+- Deploy → [docs/tecnica/deployment.md](docs/tecnica/deployment.md)
+- Agentes y especialistas → [docs/tecnica/ai-agents.md](docs/tecnica/ai-agents.md)
 
 ## Comandos esenciales
 
@@ -49,4 +49,4 @@ npm run build     # build de producción a dist/
 
 Gana el `AGENTS.md` más cercano al archivo editado. Además de este hay:
 `src/pages/backoffice/AGENTS.md` y `supabase/AGENTS.md`. Cómo está configurado todo
-esto (Claude Code, Antigravity, Cursor, Codex…) → [docs/ai-agents.md](docs/ai-agents.md).
+esto (Claude Code, Antigravity, Cursor, Codex…) → [docs/tecnica/ai-agents.md](docs/tecnica/ai-agents.md).
