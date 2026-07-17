@@ -257,7 +257,7 @@ const ClaseDetalle = () => {
                         <div className="flex items-center justify-between pl-5">
                           <span className="text-xs text-muted-foreground">{formatTime(s.start_time)} – {formatTime(s.end_time)}</span>
                           <Badge variant={s.spots_available > 0 ? "default" : "secondary"} className="text-[10px]">
-                            {s.spots_available > 0 ? t("claseDetalle.vacantes", { count: s.spots_available }) : t("claseDetalle.completo")}
+                            {s.spots_available > 0 ? t("claseDetalle.vacantes", { count: s.spots_available }) : isBreakfastPaint ? t("claseDetalle.cuposAgotados") : t("claseDetalle.completo")}
                           </Badge>
                         </div>
                         {s.notes && <p className="text-xs text-muted-foreground italic pl-5">{s.notes}</p>}

@@ -32,17 +32,17 @@ interface Props {
 
 const COPY = {
   es: {
-    title: "Sumate a la lista de interés",
-    description: "Dejá tu email y te enviamos la información para reservar el próximo Breakfast & Paint: sábado 1 de agosto · 11:00 a 13:00 h.",
+    title: "¡Súmate a la lista de interés!",
+    description: "Deja tu email y te enviaré la información para reservar el próximo Breakfast & Paint: sábado 1 de agosto · 11:00 a 13:00.",
     name: "Nombre (opcional)",
     email: "Tu email",
     marketing: "Opcional: quiero recibir por email próximas actividades, piezas y novedades de FA Pottery.",
-    privacy: "Usaremos tus datos para enviarte la información de este evento. Podés consultar cómo los tratamos en nuestra política de privacidad.",
+    privacy: "Usaré tus datos para enviarte la información de este evento. Puedes consultar cómo los trato en mi política de privacidad.",
     submit: "Quiero recibir la información",
     successTitle: "¡Listo! Ya estás en la lista de interés.",
-    successDescription: "Te enviaremos la información para reservar el próximo Breakfast & Paint.",
-    whatsappPrompt: "¿Preferís hablar ahora?",
-    whatsappCta: "Escribir por WhatsApp",
+    successDescription: "Te enviaré la información para reservar el próximo Breakfast & Paint.",
+    whatsappPrompt: "¿Prefieres hablar ahora?",
+    whatsappCta: "Escríbeme por WhatsApp",
     whatsapp: "¡Hola! Soy {{name}}. Me anoté con {{email}} en la preinscripción del Breakfast & Paint del sábado 1 de agosto, de 11:00 a 13:00 h. Quiero recibir la información para reservar.",
   },
   en: {

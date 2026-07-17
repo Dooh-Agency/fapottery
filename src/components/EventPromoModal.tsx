@@ -20,7 +20,7 @@ const PROMO_IMG =
 const COPY = {
   es: {
     badge: "Sábado 18 de julio · Málaga",
-    soldOut: "VACANTES AGOTADAS",
+    soldOut: "CUPOS AGOTADOS",
     waitlist: "Lista de interés abierta para el próximo evento.",
     cta: "Ver el evento",
     wa: "Quiero recibir info del próximo evento",

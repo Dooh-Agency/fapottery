@@ -41,20 +41,20 @@ const GALLERY = [
 
 const COPY = {
   es: {
-    seoTitle: "Breakfast & Paint · Vacantes agotadas",
+    seoTitle: "Breakfast & Paint · Cupos agotados",
     seoDesc:
-      "El workshop Breakfast & Paint del sábado 18 de julio en Málaga tiene las vacantes agotadas. La lista de interés está abierta para el próximo evento.",
+      "El workshop Breakfast & Paint del sábado 18 de julio en Málaga tiene los cupos agotados. La lista de interés está abierta para el próximo evento.",
     whatsapp:
       "¡Hola! Quiero sumarme a la lista de interés para el próximo evento de «Workshop: Pinta tu Set de Desayuno»: sábado 1 de agosto, de 11:00 a 13:00 h. ¿Me enviáis la información para reservar?",
     heroLabel: "Sábado 18 de julio · Málaga · a pasos del mar",
-    heroStatus: "VACANTES AGOTADAS",
+    heroStatus: "CUPOS AGOTADOS",
     heroWaitlist: "Lista de interés abierta para el próximo evento.",
     heroLeadStrong: "Pinta tu propio Set de cerámica,",
     heroLeadRest:
       " mientras desayunas a pasos del mar. En unos días te lo llevarás a casa, listo para usar.",
     heroCta: "Quiero recibir info del próximo evento",
     perPerson: "/ persona",
-    strip: ["VACANTES AGOTADAS", "2 horas de taller", "Set de cerámica incluido", "Desayuno a pasos del mar"],
+    strip: ["CUPOS AGOTADOS", "2 horas de taller", "Set de cerámica incluido", "Desayuno a pasos del mar"],
     planLabel: "El plan",
     planLeadPre: "¿Hay algo mejor que empezar el día con un buen desayuno? Sí: ",
     planLeadEm: "hacerlo en una vajilla pintada por ti.",
@@ -102,7 +102,7 @@ const COPY = {
     dPrecio: "45 € por persona",
     dPrecioSub: "Todo incluido",
     dPlazasLabel: "Plazas",
-    dPlazas: "Vacantes agotadas",
+    dPlazas: "Cupos agotados",
     dPlazasSub: "Lista de interés abierta",
     lugarLabel: "El lugar",
     lugarTitle: "A pasos del mar",
@@ -132,14 +132,14 @@ const COPY = {
       },
       {
         q: "¿Cómo reservo mi plaza?",
-        a: "Las vacantes para esta fecha están agotadas. Sumate a la lista de interés y te enviaremos la información para reservar el próximo evento.",
+        a: "Los cupos para esta fecha están agotados. Súmate a la lista de interés y te enviaré la información para reservar el próximo evento.",
       },
     ],
-    cierreLabel: "Vacantes agotadas",
+    cierreLabel: "Cupos agotados",
     cierreTitlePre: "Este workshop ya está ",
     cierreTitleEm: "completo",
     cierreBody:
-      "La edición del sábado 18 de julio en Maui Paddle Surf está completa. Sumate a la lista de interés y te enviaremos la información para reservar el próximo evento.",
+      "La edición del sábado 18 de julio en Maui Paddle Surf está completa. Súmate a la lista de interés y te enviaré la información para reservar el próximo evento.",
     cierreCta: "Quiero recibir info del próximo evento",
     cierreContact: "Te responde Florencia · FA Pottery Studio · +34 681 816 030",
     cierreLink: "Ver todos los detalles de la actividad",
