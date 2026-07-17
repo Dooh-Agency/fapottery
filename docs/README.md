@@ -28,6 +28,7 @@ La documentación está separada en dos áreas:
 
 | Documento | Contenido |
 |-----------|-----------|
+| [negocio/contexto-negocio-fa-pottery.md](negocio/contexto-negocio-fa-pottery.md) | Identidad, líneas de negocio, clientes, restricciones, evidencia y métricas de FA Pottery |
 | [negocio/campana-meta-breakfast-and-paint-mija.md](negocio/campana-meta-breakfast-and-paint-mija.md) | Registro de continuidad de la campaña Meta de Breakfast & Paint (La Cala de Mijas) |
 
 ## Cómo mantener esta documentación

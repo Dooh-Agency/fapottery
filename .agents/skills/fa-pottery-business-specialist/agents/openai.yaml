@@ -1,0 +1,4 @@
+interface:
+  display_name: "Especialista de negocio FA Pottery"
+  short_description: "Estrategia integral para FA Pottery"
+  default_prompt: "Usá $fa-pottery-business-specialist para analizar una decisión de negocio de FA Pottery y proponer el próximo paso."

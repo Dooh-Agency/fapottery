@@ -41,6 +41,10 @@ npm run build     # build de producción a dist/
 
 ## Especialistas disponibles
 
+- **Negocio FA Pottery:** ante tareas de estrategia, modelo de negocio, ofertas,
+  pricing, rentabilidad, capacidad, ventas, operaciones, alianzas, prioridades o
+  crecimiento, leé y seguí
+  [`.agents/skills/fa-pottery-business-specialist/SKILL.md`](.agents/skills/fa-pottery-business-specialist/SKILL.md).
 - **Meta Ads:** ante tareas de pauta en Facebook/Instagram, estrategia de campañas,
   creatividades, audiencias, presupuesto, Pixel/CAPI, CPA o ROAS, leé y seguí
   [`.agents/skills/meta-ads-specialist/SKILL.md`](.agents/skills/meta-ads-specialist/SKILL.md).

@@ -32,23 +32,25 @@ Especialistas actuales:
 
 | Especialista | Fuente canónica | Uso |
 |---|---|---|
+| Negocio FA Pottery | `.agents/skills/fa-pottery-business-specialist/SKILL.md` | Estrategia, ofertas, pricing, rentabilidad, capacidad, ventas, operaciones, alianzas y crecimiento |
 | Meta Ads | `.agents/skills/meta-ads-specialist/SKILL.md` | Campañas, anuncios, audiencias, presupuesto, Pixel/CAPI, CPA y ROAS |
 
 Para herramientas que ofrecen subagentes propios hay adaptadores breves. Estos no
 repiten el conocimiento: ordenan leer la skill canónica y aplican un modo de solo
-lectura para evitar cambios de campaña o gasto sin aprobación.
+lectura para evitar cambios externos, gasto o compromisos sin aprobación.
 
 | Herramienta | Descubrimiento de la skill | Adaptador de subagente |
 |---|---|---|
-| OpenAI Codex | `.agents/skills/meta-ads-specialist/` | `.codex/agents/meta-ads-specialist.toml` |
-| Cursor | `.agents/skills/meta-ads-specialist/` | `.cursor/agents/meta-ads-specialist.md` |
-| Google Antigravity | `.agents/skills/meta-ads-specialist/` | No hace falta |
-| Claude Code | Vía el adaptador | `.claude/agents/meta-ads-specialist.md` |
+| OpenAI Codex | `.agents/skills/<especialista>/` | `.codex/agents/<especialista>.toml` |
+| Cursor | `.agents/skills/<especialista>/` | `.cursor/agents/<especialista>.md` |
+| Google Antigravity | `.agents/skills/<especialista>/` | No hace falta |
+| Claude Code | Vía el adaptador | `.claude/agents/<especialista>.md` |
 | Otras IAs que leen `AGENTS.md` | Puntero en `/AGENTS.md` | No hace falta |
 
-Invocación sugerida: `Usá el especialista meta-ads-specialist para...`. Codex,
-Cursor y Antigravity también permiten invocar la skill desde sus selectores; Claude
-Code puede delegar al subagente por nombre.
+Invocación sugerida: `Usá el especialista fa-pottery-business-specialist para...` o
+`Usá el especialista meta-ads-specialist para...`. Codex, Cursor y Antigravity
+también permiten invocar la skill desde sus selectores; Claude Code puede delegar
+al subagente por nombre.
 
 ## AGENTS.md anidados
 
