@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import Layout from "@/components/Layout";
 import SEO from "@/components/SEO";
@@ -9,15 +10,15 @@ import inspiracionFresas from "@/assets/inspiracion-fresas.png";
 import lugarMaui from "@/assets/lugar-maui.jpg";
 import florenciaTaller from "@/assets/flor-taller.png";
 import potteryBananas from "@/assets/pottery.bananas.png";
+import EventInterestDialog from "@/components/EventInterestDialog";
 
 // Landing de campaña para el workshop "Breakfast & Paint" (sábado 18 de julio).
 // Pensada como destino del anuncio/reel de Instagram: una sola pieza, un solo objetivo
-// (reservar por WhatsApp). Reutiliza el sistema visual del sitio: Gilroy, paleta crema/oliva,
+// (lista de espera por WhatsApp cuando se agota el aforo). Reutiliza el sistema visual del sitio: Gilroy, paleta crema/oliva,
 // esquinas rectas y tipografía editorial con énfasis en itálica.
 // Bilingüe es/en: el mismo componente sirve /breakfast-and-paint y /en/breakfast-and-paint;
 // el idioma se resuelve por la ruta (getLanguageFromPathname) y el copy vive en el diccionario COPY.
 
-const WHATSAPP_NUMBER = "+34681816030";
 const MAPS_URL = "https://maps.app.goo.gl/mXd7rfaHWKiPZJ9A7";
 // Maui Paddle Surf · Playa Butibamba (Mijas): 36.5011708, -4.6830377
 const MAP_EMBED = "https://maps.google.com/maps?q=36.5011708,-4.6830377&z=16&output=embed";
@@ -40,18 +41,20 @@ const GALLERY = [
 
 const COPY = {
   es: {
-    seoTitle: "Breakfast & Paint · Pinta tu Set de Desayuno",
+    seoTitle: "Breakfast & Paint · Vacantes agotadas",
     seoDesc:
-      "Sábado 18 de julio en Málaga, frente al mar. Decora tu propio set de desayuno de cerámica mientras desayunas. Plazas limitadas — reserva por WhatsApp.",
+      "El workshop Breakfast & Paint del sábado 18 de julio en Málaga tiene las vacantes agotadas. La lista de interés está abierta para el próximo evento.",
     whatsapp:
-      "Hola! Quiero reservar mi plaza en «Workshop: Pinta tu Set de Desayuno» el sábado 18 de julio a las 11:00. ¿Confirmamos?",
+      "¡Hola! Quiero sumarme a la lista de interés para el próximo evento de «Workshop: Pinta tu Set de Desayuno»: sábado 1 de agosto, de 11:00 a 13:00 h. ¿Me enviáis la información para reservar?",
     heroLabel: "Sábado 18 de julio · Málaga · a pasos del mar",
+    heroStatus: "VACANTES AGOTADAS",
+    heroWaitlist: "Lista de interés abierta para el próximo evento.",
     heroLeadStrong: "Pinta tu propio Set de cerámica,",
     heroLeadRest:
       " mientras desayunas a pasos del mar. En unos días te lo llevarás a casa, listo para usar.",
-    heroCta: "Reservar plaza",
+    heroCta: "Quiero recibir info del próximo evento",
     perPerson: "/ persona",
-    strip: ["2 horas de taller", "Set de cerámica incluido", "Desayuno a pasos del mar", "Sin experiencia previa"],
+    strip: ["VACANTES AGOTADAS", "2 horas de taller", "Set de cerámica incluido", "Desayuno a pasos del mar"],
     planLabel: "El plan",
     planLeadPre: "¿Hay algo mejor que empezar el día con un buen desayuno? Sí: ",
     planLeadEm: "hacerlo en una vajilla pintada por ti.",
@@ -99,8 +102,8 @@ const COPY = {
     dPrecio: "45 € por persona",
     dPrecioSub: "Todo incluido",
     dPlazasLabel: "Plazas",
-    dPlazas: "Máximo 16",
-    dPlazasSub: "Aforo limitado · reserva la tuya",
+    dPlazas: "Vacantes agotadas",
+    dPlazasSub: "Lista de interés abierta",
     lugarLabel: "El lugar",
     lugarTitle: "A pasos del mar",
     lugarBody:
@@ -129,31 +132,33 @@ const COPY = {
       },
       {
         q: "¿Cómo reservo mi plaza?",
-        a: "Las plazas son limitadas y se confirman por WhatsApp. Escríbenos y te guardamos tu lugar para el sábado 18 de julio.",
+        a: "Las vacantes para esta fecha están agotadas. Sumate a la lista de interés y te enviaremos la información para reservar el próximo evento.",
       },
     ],
-    cierreLabel: "Plazas limitadas",
-    cierreTitlePre: "Reserva tu mañana de ",
-    cierreTitleEm: "cerámica y café",
+    cierreLabel: "Vacantes agotadas",
+    cierreTitlePre: "Este workshop ya está ",
+    cierreTitleEm: "completo",
     cierreBody:
-      "El sábado 18 de julio, en Maui Paddle Surf. Diseño, cerámica y un buen desayuno se encuentran a pasos del mar.",
-    cierreCta: "Reservar por WhatsApp",
+      "La edición del sábado 18 de julio en Maui Paddle Surf está completa. Sumate a la lista de interés y te enviaremos la información para reservar el próximo evento.",
+    cierreCta: "Quiero recibir info del próximo evento",
     cierreContact: "Te responde Florencia · FA Pottery Studio · +34 681 816 030",
     cierreLink: "Ver todos los detalles de la actividad",
   },
   en: {
-    seoTitle: "Breakfast & Paint · Paint Your Own Breakfast Set",
+    seoTitle: "Breakfast & Paint · Sold out",
     seoDesc:
-      "Saturday, July 18 in Málaga, by the sea. Decorate your own ceramic breakfast set while you have breakfast. Limited spots — book via WhatsApp.",
+      "The Breakfast & Paint workshop on Saturday, July 18 in Málaga is sold out. The interest list is open for the next event.",
     whatsapp:
-      "Hi! I'd like to book my spot for the Breakfast & Paint workshop on Saturday, July 18 at 11:00. Shall we confirm?",
+      "Hi! I'd like to join the interest list for the next Breakfast & Paint event: Saturday, August 1, from 11:00 am to 1:00 pm. Could you send me the booking information?",
     heroLabel: "Saturday, July 18 · Málaga · steps from the sea",
+    heroStatus: "SOLD OUT",
+    heroWaitlist: "Interest list open for the next event.",
     heroLeadStrong: "Paint your own ceramic set",
     heroLeadRest:
       " while you have breakfast steps from the sea. In a few days you'll take it home, ready to use.",
-    heroCta: "Book your spot",
+    heroCta: "Get info about the next event",
     perPerson: "/ per person",
-    strip: ["2-hour workshop", "Ceramic set included", "Breakfast steps from the sea", "No experience needed"],
+    strip: ["SOLD OUT", "2-hour workshop", "Ceramic set included", "Breakfast steps from the sea"],
     planLabel: "The plan",
     planLeadPre: "Is there anything better than starting the day with a good breakfast? Yes: ",
     planLeadEm: "doing it on tableware you painted yourself.",
@@ -201,8 +206,8 @@ const COPY = {
     dPrecio: "€45 per person",
     dPrecioSub: "Everything included",
     dPlazasLabel: "Spots",
-    dPlazas: "Max. 16",
-    dPlazasSub: "Limited availability · book yours",
+    dPlazas: "Sold out",
+    dPlazasSub: "Interest list open",
     lugarLabel: "The venue",
     lugarTitle: "Steps from the sea",
     lugarBody:
@@ -231,15 +236,15 @@ const COPY = {
       },
       {
         q: "How do I book my spot?",
-        a: "Spots are limited and confirmed via WhatsApp. Message us and we'll save your place for Saturday, July 18.",
+        a: "This date is sold out. Join the interest list and we will send you the information to book the next event.",
       },
     ],
-    cierreLabel: "Limited spots",
-    cierreTitlePre: "Book your morning of ",
-    cierreTitleEm: "ceramics & coffee",
+    cierreLabel: "Sold out",
+    cierreTitlePre: "This workshop is already ",
+    cierreTitleEm: "fully booked",
     cierreBody:
-      "Saturday, July 18, at Maui Paddle Surf. Design, ceramics and a good breakfast meet steps from the sea.",
-    cierreCta: "Book via WhatsApp",
+      "The Saturday, July 18 edition at Maui Paddle Surf is fully booked. Join the interest list and we will send you the information to book the next event.",
+    cierreCta: "Get info about the next event",
     cierreContact: "Florencia will reply · FA Pottery Studio · +34 681 816 030",
     cierreLink: "See all the activity details",
   },
@@ -249,8 +254,7 @@ const BreakfastPaint = () => {
   const location = useLocation();
   const lang = getLanguageFromPathname(location.pathname);
   const c = COPY[lang];
-
-  const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(c.whatsapp)}`;
+  const [interestOpen, setInterestOpen] = useState(false);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -271,7 +275,7 @@ const BreakfastPaint = () => {
       "@type": "Offer",
       price: "45",
       priceCurrency: "EUR",
-      availability: "https://schema.org/LimitedAvailability",
+      availability: "https://schema.org/SoldOut",
       url: "https://fapottery.com/breakfast-and-paint",
     },
     organizer: { "@type": "Organization", name: "FA Pottery Studio", url: "https://fapottery.com" },
@@ -316,15 +320,20 @@ const BreakfastPaint = () => {
             {c.heroLeadRest}
           </p>
 
-          <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
-            <a
-              href={whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 border border-background bg-background text-foreground font-sans text-xs tracking-[0.2em] uppercase px-8 py-4 hover:bg-transparent hover:text-background transition-colors duration-300"
-            >
-              <MessageCircle className="h-4 w-4" aria-hidden="true" /> {c.heroCta}
-            </a>
+          <div className="flex flex-col gap-3">
+            <div className="flex flex-col sm:flex-row sm:items-stretch gap-3 sm:gap-0">
+              <p className="inline-flex items-center justify-center border border-background bg-background px-5 py-4 font-sans text-xs font-bold uppercase tracking-[0.2em] text-foreground">
+                {c.heroStatus}
+              </p>
+              <button
+                type="button"
+                onClick={() => setInterestOpen(true)}
+                className="inline-flex items-center justify-center gap-2 border border-background bg-foreground/30 px-5 py-4 font-sans text-xs font-medium uppercase tracking-[0.12em] text-background transition-colors duration-300 hover:bg-background hover:text-foreground"
+              >
+                <MessageCircle className="h-4 w-4" aria-hidden="true" /> {c.heroCta}
+              </button>
+            </div>
+            <p className="text-sm text-background/90 font-sans">{c.heroWaitlist}</p>
             <p className="text-background/90 font-sans">
               <span className="font-serif text-2xl align-middle">€45</span>{" "}
               <span className="text-xs uppercase tracking-[0.15em] align-middle">{c.perPerson}</span>
@@ -556,14 +565,13 @@ const BreakfastPaint = () => {
             <span className="text-accent">{c.cierreTitleEm}</span>
           </h2>
           <p className="body-text text-background/80 max-w-lg mx-auto mb-10">{c.cierreBody}</p>
-          <a
-            href={whatsappUrl}
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            type="button"
+            onClick={() => setInterestOpen(true)}
             className="inline-flex items-center justify-center gap-2 border border-background bg-background text-foreground font-sans text-xs tracking-[0.2em] uppercase px-10 py-4 hover:bg-transparent hover:text-background transition-colors duration-300"
           >
             <MessageCircle className="h-4 w-4" aria-hidden="true" /> {c.cierreCta}
-          </a>
+          </button>
           <p className="text-xs text-background/50 mt-6">{c.cierreContact}</p>
           <div className="mt-8">
             <Link
@@ -575,6 +583,7 @@ const BreakfastPaint = () => {
           </div>
         </div>
       </section>
+      <EventInterestDialog open={interestOpen} onOpenChange={setInterestOpen} source="landing" />
     </Layout>
   );
 };

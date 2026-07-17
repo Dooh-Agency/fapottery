@@ -35,6 +35,8 @@ import NewsManager from "./pages/backoffice/NewsManager";
 import SiteImagesManager from "./pages/backoffice/SiteImagesManager";
 import HomeServicesManager from "./pages/backoffice/HomeServicesManager";
 import Placeholder from "./pages/backoffice/Placeholder";
+import Privacy from "./pages/Privacy";
+import EventInterestLeadsManager from "./pages/backoffice/EventInterestLeadsManager";
 
 const queryClient = new QueryClient();
 
@@ -78,6 +80,7 @@ const PublicPages = () => (
     <Route path="/catalogo/:id" element={<PiezaDetalle />} />
     <Route path="/fa" element={<FaLanding />} />
     <Route path="/breakfast-and-paint" element={<BreakfastPaint />} />
+    <Route path="/privacidad" element={<Privacy />} />
     <Route path="/actividades" element={<Clases />} />
     <Route path="/actividades/:id" element={<ClaseDetalle />} />
     <Route path="/clases" element={<RedirectToActividades />} />
@@ -109,6 +112,7 @@ const AppRoutes = () => {
         <Route path="novedades" element={<NewsManager />} />
         <Route path="imagenes" element={<SiteImagesManager />} />
         <Route path="servicios-home" element={<HomeServicesManager />} />
+        <Route path="leads" element={<EventInterestLeadsManager />} />
         <Route path="usuarios" element={<Placeholder title="Usuarios" description="Gestión de usuarios y roles. Próximamente." />} />
       </Route>
     </Routes>

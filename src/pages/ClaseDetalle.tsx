@@ -12,9 +12,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, CalendarDays, Clock, Users, MapPin, ExternalLink, MessageCircle, ChevronLeft, ChevronRight } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { renderBoldText } from "@/lib/richText";
+import { renderActivityDescription, renderBoldText } from "@/lib/richText";
+import EventInterestDialog from "@/components/EventInterestDialog";
 
 const WHATSAPP_NUMBER = "+34681816030";
+const BREAKFAST_PAINT_ACTIVITY_ID = "56fbca84-e350-4738-a57f-9d6be48501cf";
 
 const TIPO_LABEL_KEYS: Record<string, string> = {
   regulares: "claseDetalle.tipoRegulares",
@@ -33,6 +35,7 @@ const ClaseDetalle = () => {
   const { data: schedules, isLoading: loadingSchedules } = useClassSchedules(id);
   const [selectedImgIdx, setSelectedImgIdx] = useState(0);
   const [selectedOptionIdx, setSelectedOptionIdx] = useState(0);
+  const [interestOpen, setInterestOpen] = useState(false);
 
   const formatTime = (time: string) => time.slice(0, 5);
 
@@ -78,10 +81,17 @@ const ClaseDetalle = () => {
   const tipoLabel = t(TIPO_LABEL_KEYS[cta.category] || TIPO_LABEL_KEYS.regulares);
   const options: { label: string; price: number }[] = Array.isArray(cta.options) ? cta.options : [];
   const selectedOption = options[selectedOptionIdx];
+  const isBreakfastPaint = item.id === BREAKFAST_PAINT_ACTIVITY_ID;
 
   const whatsappUrl = (s: ClassSchedule) => {
     const dateStr = format(new Date(s.scheduled_date + "T00:00:00"), "EEEE d 'de' MMMM", { locale: dateLocale });
     const message = t("claseDetalle.whatsappMensaje", { title, date: dateStr, time: formatTime(s.start_time) });
+    return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+  };
+
+  const waitlistWhatsappUrl = (s: ClassSchedule) => {
+    const dateStr = format(new Date(s.scheduled_date + "T00:00:00"), "EEEE d 'de' MMMM", { locale: dateLocale });
+    const message = t("claseDetalle.whatsappMensajeListaEspera", { title, date: dateStr });
     return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
   };
 
@@ -200,7 +210,7 @@ const ClaseDetalle = () => {
               </div>
 
               {description && (
-                <div className="body-text whitespace-pre-line space-y-4 pt-2 border-t border-border">{renderBoldText(description)}</div>
+                <div className="body-text whitespace-pre-line space-y-4 pt-2 border-t border-border">{renderActivityDescription(description)}</div>
               )}
 
               <div className="pt-2 border-t border-border">
@@ -258,9 +268,17 @@ const ClaseDetalle = () => {
                               {t("claseDetalle.reservarWhatsapp", { tipo: tipoLabel })}
                             </a>
                           </Button>
+                        ) : isBreakfastPaint ? (
+                          <Button className="w-full mt-1" variant="default" onClick={() => setInterestOpen(true)}>
+                            <MessageCircle className="h-4 w-4 mr-1.5" aria-hidden="true" />
+                            {t("claseDetalle.listaInteresProximoEvento")}
+                          </Button>
                         ) : (
-                          <Button className="w-full mt-1" variant="default" disabled>
-                            {t("claseDetalle.sinVacantes")}
+                          <Button className="w-full mt-1" variant="default" asChild>
+                            <a href={waitlistWhatsappUrl(s)} target="_blank" rel="noopener noreferrer">
+                              <MessageCircle className="h-4 w-4 mr-1.5" aria-hidden="true" />
+                              {t("claseDetalle.listaEsperaWhatsapp")}
+                            </a>
                           </Button>
                         )}
                       </div>
@@ -294,6 +312,7 @@ const ClaseDetalle = () => {
           )}
         </div>
       </section>
+      {isBreakfastPaint && <EventInterestDialog open={interestOpen} onOpenChange={setInterestOpen} source="activity" />}
     </Layout>
   );
 };

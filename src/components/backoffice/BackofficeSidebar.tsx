@@ -1,4 +1,4 @@
-import { LayoutDashboard, ShoppingBag, GraduationCap, Newspaper, Image, LayoutGrid, Users, LogOut } from "lucide-react";
+import { LayoutDashboard, ShoppingBag, GraduationCap, Newspaper, Image, LayoutGrid, Users, LogOut, ContactRound } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useAuth } from "@/hooks/useAuth";
 import {
@@ -22,6 +22,7 @@ const menuItems = [
   { title: "Novedades", url: "/backoffice/novedades", icon: Newspaper },
   { title: "Imágenes", url: "/backoffice/imagenes", icon: Image },
   { title: "Servicios Home", url: "/backoffice/servicios-home", icon: LayoutGrid },
+  { title: "Leads", url: "/backoffice/leads", icon: ContactRound },
 ];
 
 const adminItems = [

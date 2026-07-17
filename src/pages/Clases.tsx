@@ -8,7 +8,7 @@ import { useSearchParams } from "react-router-dom";
 import { useState } from "react";
 import { Link } from "@/components/LocalizedLink";
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
-import { renderBoldText } from "@/lib/richText";
+import { renderBoldText, stripActivityDescriptionMarkup } from "@/lib/richText";
 
 const CLASS_CATEGORIES = ["regulares", "workshops", "personalizadas"] as const;
 
@@ -84,7 +84,7 @@ const Clases = () => {
             {title}
           </h2>
           {description && (
-            <p className={`body-text whitespace-pre-line flex-1 ${big ? "line-clamp-4 md:line-clamp-6" : "line-clamp-3"}`}>{renderBoldText(description)}</p>
+            <p className={`body-text whitespace-pre-line flex-1 ${big ? "line-clamp-4 md:line-clamp-6" : "line-clamp-3"}`}>{renderBoldText(stripActivityDescriptionMarkup(description))}</p>
           )}
           <div className="flex items-center justify-between mt-3">
             {Number(ct.price) > 0 && (

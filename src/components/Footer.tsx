@@ -59,12 +59,12 @@ const Footer = () => {
             </h2>
             <p className="text-sm text-muted-foreground font-sans mb-1">{t("footer.buenosAiresLabel")}</p>
             <a
-              href="https://wa.me/+5491121788786"
+              href="https://wa.me/+5491154681888"
               target="_blank"
               rel="noopener noreferrer"
               className="text-sm text-muted-foreground hover:text-foreground font-sans underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
             >
-              Whatsapp: +54 9 11 21 78 87 86
+              Whatsapp: +54 9 11 5468 1888
             </a>
           </div>
 

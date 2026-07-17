@@ -13,7 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
-import { CalendarIcon, Plus, Trash2, Bold, Upload, X } from "lucide-react";
+import { CalendarIcon, Plus, Trash2, Bold, Upload, X, PanelTop } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { cn } from "@/lib/utils";
@@ -180,6 +180,24 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
     });
   };
 
+  const wrapDescriptionAsCallout = () => {
+    const el = descriptionRef.current;
+    if (!el || el.selectionStart === el.selectionEnd) {
+      toast.info("Primero seleccioná el texto que querés destacar");
+      return;
+    }
+    const { selectionStart, selectionEnd, value } = el;
+    const selected = value.slice(selectionStart, selectionEnd);
+    const prefix = ":::destacado\n";
+    const suffix = "\n:::";
+    const newValue = value.slice(0, selectionStart) + prefix + selected + suffix + value.slice(selectionEnd);
+    form.setValue("description", newValue, { shouldDirty: true });
+    requestAnimationFrame(() => {
+      el.focus();
+      el.setSelectionRange(selectionStart + prefix.length, selectionStart + prefix.length + selected.length);
+    });
+  };
+
   const onSubmit = async (values: FormValues) => {
     try {
       // 1. Guardar tipo de clase
@@ -271,7 +289,10 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
                   <Button type="button" variant="outline" size="sm" onClick={() => wrapSelectionBold(descriptionRef.current, "description")}>
                     <Bold className="h-3.5 w-3.5 mr-1" /> Negrita
                   </Button>
-                  <p className="text-xs text-muted-foreground">Seleccioná texto y hacé clic para resaltarlo</p>
+                  <Button type="button" variant="outline" size="sm" onClick={wrapDescriptionAsCallout}>
+                    <PanelTop className="h-3.5 w-3.5 mr-1" /> Destacado
+                  </Button>
+                  <p className="text-xs text-muted-foreground">Seleccioná texto y elegí un estilo</p>
                 </div>
                 <FormControl>
                   <Textarea
@@ -430,7 +451,7 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
                 {/* Vacantes y notas */}
                 <div className="grid grid-cols-2 gap-3">
                   <FormField control={form.control} name={`new_schedules.${index}.spots_available`} render={({ field }) => (
-                    <FormItem><FormLabel>Vacantes</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
+                    <FormItem><FormLabel>Vacantes</FormLabel><FormControl><Input type="number" min={0} step={1} {...field} /></FormControl><FormMessage /></FormItem>
                   )} />
                   <FormField control={form.control} name={`new_schedules.${index}.notes`} render={({ field }) => (
                     <FormItem><FormLabel>Notas</FormLabel><FormControl><Input placeholder="Opcional..." {...field} /></FormControl></FormItem>
@@ -467,7 +488,12 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
                 <FormItem><FormLabel>Duración (min)</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
               )} />
               <FormField control={form.control} name="max_students" render={({ field }) => (
-                <FormItem><FormLabel>Máx. alumnos</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
+                <FormItem>
+                  <FormLabel>Capacidad máxima de la actividad</FormLabel>
+                  <FormControl><Input type="number" min={1} step={1} {...field} /></FormControl>
+                  <p className="text-xs text-muted-foreground">No uses 0 aquí. Para cerrar una fecha ya creada, abrí la pestaña Horarios y editá sus Vacantes.</p>
+                  <FormMessage />
+                </FormItem>
               )} />
             </div>
 

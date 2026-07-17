@@ -130,6 +130,66 @@ export type Database = {
           },
         ]
       }
+      event_interest_leads: {
+        Row: {
+          created_at: string
+          email: string
+          entry_point: string
+          event_consent: boolean
+          event_key: string
+          full_name: string | null
+          id: string
+          marketing_consent: boolean
+          referrer: string | null
+          source_path: string
+          status: string
+          updated_at: string
+          utm_campaign: string | null
+          utm_content: string | null
+          utm_medium: string | null
+          utm_source: string | null
+          utm_term: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          entry_point: string
+          event_consent?: boolean
+          event_key: string
+          full_name?: string | null
+          id?: string
+          marketing_consent?: boolean
+          referrer?: string | null
+          source_path: string
+          status?: string
+          updated_at?: string
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          entry_point?: string
+          event_consent?: boolean
+          event_key?: string
+          full_name?: string | null
+          id?: string
+          marketing_consent?: boolean
+          referrer?: string | null
+          source_path?: string
+          status?: string
+          updated_at?: string
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+        }
+        Relationships: []
+      }
       class_types: {
         Row: {
           badge_label: string | null

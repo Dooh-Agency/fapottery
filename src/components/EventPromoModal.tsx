@@ -4,37 +4,39 @@ import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { X, MessageCircle, ArrowRight } from "lucide-react";
 import { Link } from "@/components/LocalizedLink";
 import { getLanguageFromPathname } from "@/i18n";
+import EventInterestDialog from "@/components/EventInterestDialog";
 
 // Lightbox de promoción del evento "Breakfast & Paint" (sábado 18 de julio).
 // - Aparece solo en la Home (se monta desde Index).
 // - Se muestra una vez por sesión, a los ~3 segundos.
 // - Se auto-desactiva pasado el evento, para no dejar un popup vencido.
-// Enlaza a la landing /breakfast-and-paint y a la reserva por WhatsApp.
+// Enlaza a la landing /breakfast-and-paint y a la lista de interés del próximo evento.
 
-const WHATSAPP_NUMBER = "+34681816030";
 const EVENT_END = new Date("2026-07-18T23:59:00+02:00");
-const SESSION_KEY = "bp-promo-shown";
+const SESSION_KEY = "bp-promo-sold-out-2026-07-18-shown";
 const PROMO_IMG =
   "https://pglbbwycichoaeltulin.supabase.co/storage/v1/object/public/class-images/7ad16f01-f5eb-416b-86cd-396acda40cba.png";
 
 const COPY = {
   es: {
     badge: "Sábado 18 de julio · Málaga",
-    sub: "Pinta tu set de desayuno de cerámica a pasos del mar. 45 € · plazas limitadas.",
+    soldOut: "VACANTES AGOTADAS",
+    waitlist: "Lista de interés abierta para el próximo evento.",
     cta: "Ver el evento",
-    wa: "Reservar por WhatsApp",
+    wa: "Quiero recibir info del próximo evento",
     close: "Cerrar",
     whatsapp:
-      "Hola! Quiero reservar mi plaza en «Workshop: Pinta tu Set de Desayuno» el sábado 18 de julio a las 11:00. ¿Confirmamos?",
+      "¡Hola! Quiero sumarme a la lista de interés para el próximo evento de «Workshop: Pinta tu Set de Desayuno»: sábado 1 de agosto, de 11:00 a 13:00 h. ¿Me enviáis la información para reservar?",
   },
   en: {
     badge: "Saturday, July 18 · Málaga",
-    sub: "Paint your ceramic breakfast set steps from the sea. €45 · limited spots.",
+    soldOut: "SOLD OUT",
+    waitlist: "Interest list open for the next event.",
     cta: "See the event",
-    wa: "Book on WhatsApp",
+    wa: "Get info about the next event",
     close: "Close",
     whatsapp:
-      "Hi! I'd like to book my spot for the Breakfast & Paint workshop on Saturday, July 18 at 11:00. Shall we confirm?",
+      "Hi! I'd like to join the interest list for the next Breakfast & Paint event: Saturday, August 1, from 11:00 am to 1:00 pm. Could you send me the booking information?",
   },
 } as const;
 
@@ -43,8 +45,7 @@ const EventPromoModal = () => {
   const lang = getLanguageFromPathname(location.pathname);
   const c = COPY[lang];
   const [open, setOpen] = useState(false);
-
-  const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(c.whatsapp)}`;
+  const [interestOpen, setInterestOpen] = useState(false);
 
   useEffect(() => {
     if (Date.now() > EVENT_END.getTime()) return; // evento pasado — no mostrar
@@ -92,7 +93,12 @@ const EventPromoModal = () => {
             >
               Breakfast &amp; Paint
             </DialogPrimitive.Title>
-            <p className="body-text mt-3 text-sm text-muted-foreground">{c.sub}</p>
+            <div className="mt-4 space-y-2">
+              <p className="inline-flex bg-foreground px-3 py-1.5 font-sans text-xs font-bold uppercase tracking-[0.16em] text-background">
+                {c.soldOut}
+              </p>
+              <p className="body-text text-sm text-muted-foreground">{c.waitlist}</p>
+            </div>
 
             <div className="mt-6 flex flex-col gap-2.5">
               <Link
@@ -102,18 +108,18 @@ const EventPromoModal = () => {
               >
                 {c.cta} <ArrowRight className="h-4 w-4" />
               </Link>
-              <a
-                href={whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                type="button"
+                onClick={() => setInterestOpen(true)}
                 className="inline-flex items-center justify-center gap-1.5 text-xs uppercase tracking-[0.15em] text-muted-foreground transition-colors hover:text-foreground"
               >
                 <MessageCircle className="h-3.5 w-3.5" /> {c.wa}
-              </a>
+              </button>
             </div>
           </div>
         </DialogPrimitive.Content>
       </DialogPrimitive.Portal>
+      <EventInterestDialog open={interestOpen} onOpenChange={setInterestOpen} source="popup" />
     </DialogPrimitive.Root>
   );
 };

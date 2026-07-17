@@ -140,7 +140,12 @@ const ScheduleFormDialog = ({ open, onOpenChange, schedule }: Props) => {
             </div>
 
             <FormField control={form.control} name="spots_available" render={({ field }) => (
-              <FormItem><FormLabel>Vacantes</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
+              <FormItem>
+                <FormLabel>Vacantes</FormLabel>
+                <FormControl><Input type="number" min={0} step={1} {...field} /></FormControl>
+                <p className="text-xs text-muted-foreground">Ingresá 0 para marcar el horario como completo y abrir la lista de espera.</p>
+                <FormMessage />
+              </FormItem>
             )} />
 
             <FormField control={form.control} name="notes" render={({ field }) => (
