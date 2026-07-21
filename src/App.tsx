@@ -19,6 +19,7 @@ import Produccion from "./pages/Produccion";
 import Colaboraciones from "./pages/Colaboraciones";
 import FaLanding from "./pages/FaLanding";
 import BreakfastPaint from "./pages/BreakfastPaint";
+import BreakfastPaintAugust from "./pages/BreakfastPaintAugust";
 import Clases from "./pages/Clases";
 import ClaseDetalle from "./pages/ClaseDetalle";
 import Catalogo from "./pages/Catalogo";
@@ -80,6 +81,7 @@ const PublicPages = () => (
     <Route path="/catalogo/:id" element={<PiezaDetalle />} />
     <Route path="/fa" element={<FaLanding />} />
     <Route path="/breakfast-and-paint" element={<BreakfastPaint />} />
+    <Route path="/breakfast-and-paint-agosto" element={<BreakfastPaintAugust />} />
     <Route path="/privacidad" element={<Privacy />} />
     <Route path="/actividades" element={<Clases />} />
     <Route path="/actividades/:id" element={<ClaseDetalle />} />

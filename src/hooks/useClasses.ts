@@ -41,9 +41,16 @@ export const useUpsertClassType = () => {
     mutationFn: async (values: Partial<TablesInsert<"class_types">> & { id?: string; title: string }) => {
       const { id, ...rest } = values;
       if (id) {
-        const { error } = await supabase.from("class_types").update(rest as TablesUpdate<"class_types">).eq("id", id);
+        // Pedimos la fila actualizada para no informar éxito si RLS o una sesión vencida
+        // dejaron el update sin filas afectadas.
+        const { data, error } = await supabase
+          .from("class_types")
+          .update(rest as TablesUpdate<"class_types">)
+          .eq("id", id)
+          .select()
+          .single();
         if (error) throw error;
-        return { id };
+        return data;
       } else {
         const { data, error } = await supabase.from("class_types").insert(rest as TablesInsert<"class_types">).select().single();
         if (error) throw error;
@@ -98,7 +105,12 @@ export const useUpsertSchedule = () => {
     mutationFn: async (values: Partial<TablesInsert<"class_schedules">> & { id?: string; class_type_id: string; scheduled_date: string; start_time: string; end_time: string }) => {
       const { id, ...rest } = values;
       if (id) {
-        const { error } = await supabase.from("class_schedules").update(rest as TablesUpdate<"class_schedules">).eq("id", id);
+        const { error } = await supabase
+          .from("class_schedules")
+          .update(rest as TablesUpdate<"class_schedules">)
+          .eq("id", id)
+          .select()
+          .single();
         if (error) throw error;
       } else {
         const { error } = await supabase.from("class_schedules").insert(rest as TablesInsert<"class_schedules">);

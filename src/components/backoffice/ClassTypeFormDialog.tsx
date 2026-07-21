@@ -13,14 +13,15 @@ import { Separator } from "@/components/ui/separator";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
-import { CalendarIcon, Plus, Trash2, Bold, Upload, X, PanelTop } from "lucide-react";
+import { CalendarIcon, Plus, Trash2, Bold, Upload, X, PanelTop, Pencil } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { cn } from "@/lib/utils";
-import { useUpsertClassType, useUpsertSchedule, useClassSchedules, useDeleteSchedule, uploadClassImage, type ClassType } from "@/hooks/useClasses";
+import { useUpsertClassType, useUpsertSchedule, useClassSchedules, useDeleteSchedule, uploadClassImage, type ClassSchedule, type ClassType } from "@/hooks/useClasses";
 import { useTranslateContent } from "@/hooks/useTranslateContent";
 import { toast } from "sonner";
 import ImageUploader from "./ImageUploader";
+import ScheduleFormDialog from "./ScheduleFormDialog";
 
 const CLASS_CATEGORIES = [
   { value: "regulares", label: "Clases regulares" },
@@ -98,6 +99,8 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
 
   const [images, setImages] = useState<string[]>([]);
   const [uploadingGallery, setUploadingGallery] = useState(false);
+  const [editingSchedule, setEditingSchedule] = useState<ClassSchedule | null>(null);
+  const [scheduleDialogOpen, setScheduleDialogOpen] = useState(false);
   const galleryFileRef = useRef<HTMLInputElement>(null);
   const descriptionRef = useRef<HTMLTextAreaElement | null>(null);
   const faqAnswerRefs = useRef<Record<number, HTMLTextAreaElement | null>>({});
@@ -231,9 +234,19 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
       toast.success(classType ? "Clase actualizada" : "Clase creada");
       onOpenChange(false);
       if (classTypeId) translateContent.mutate(classTypeId);
-    } catch (e: any) {
-      toast.error(e.message);
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : "No pudimos guardar la actividad. Probá nuevamente.");
     }
+  };
+
+  const onInvalid = () => {
+    toast.error("Revisá los campos marcados antes de guardar.");
+    // El diálogo es largo: llevar al primer error evita que el botón parezca no responder.
+    requestAnimationFrame(() => {
+      const firstInvalid = document.querySelector<HTMLElement>("[aria-invalid='true']");
+      firstInvalid?.scrollIntoView({ behavior: "smooth", block: "center" });
+      firstInvalid?.focus();
+    });
   };
 
   const handleDeleteSchedule = async (id: string) => {
@@ -258,7 +271,7 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
           <DialogTitle className="font-serif">{classType ? "Editar clase" : "Nueva clase"}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+          <form onSubmit={form.handleSubmit(onSubmit, onInvalid)} className="space-y-5">
 
             {/* Info básica */}
             <FormField control={form.control} name="title" render={({ field }) => (
@@ -388,6 +401,16 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
                       type="button"
                       variant="ghost"
                       size="sm"
+                      aria-label={`Editar fecha del ${format(new Date(s.scheduled_date + "T00:00:00"), "d 'de' MMMM", { locale: es })}`}
+                      onClick={() => { setEditingSchedule(s); setScheduleDialogOpen(true); }}
+                    >
+                      <Pencil className="h-3.5 w-3.5" />
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      aria-label={`Eliminar fecha del ${format(new Date(s.scheduled_date + "T00:00:00"), "d 'de' MMMM", { locale: es })}`}
                       onClick={() => handleDeleteSchedule(s.id)}
                     >
                       <Trash2 className="h-3.5 w-3.5 text-destructive" />
@@ -637,6 +660,11 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
           </form>
         </Form>
       </DialogContent>
+      <ScheduleFormDialog
+        open={scheduleDialogOpen}
+        onOpenChange={setScheduleDialogOpen}
+        schedule={editingSchedule}
+      />
     </Dialog>
   );
 };
