@@ -65,10 +65,10 @@ const PiezaDetalle = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-start">
             {/* Gallery */}
-            <div className="flex flex-col-reverse md:flex-row gap-3">
+            <div className="flex flex-col-reverse gap-3 md:flex-row md:items-stretch">
               {/* Thumbnails — vertical sidebar like Kanso */}
               {images.length > 1 && (
-                <div className="flex md:flex-col gap-2 overflow-x-auto md:overflow-y-auto md:max-h-[600px] shrink-0">
+                <div className="flex gap-2 overflow-x-auto md:h-auto md:w-20 md:flex-col md:items-start md:overflow-hidden md:self-stretch md:min-h-0 shrink-0">
                   {images.map((url, idx) => (
                     <button
                       key={idx}
@@ -86,7 +86,7 @@ const PiezaDetalle = () => {
               )}
 
               {/* Main image */}
-              <div className="relative flex-1 aspect-square bg-muted overflow-hidden">
+              <div className="relative flex-1 aspect-square overflow-hidden">
                 {images.length > 0 ? (
                   <img
                     src={images[selectedImgIdx]}

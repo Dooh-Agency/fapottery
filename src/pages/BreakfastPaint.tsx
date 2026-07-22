@@ -12,7 +12,7 @@ import florenciaTaller from "@/assets/flor-taller.png";
 import potteryBananas from "@/assets/pottery.bananas.png";
 import EventInterestDialog from "@/components/EventInterestDialog";
 
-// Landing de campaña para el workshop "Breakfast & Paint" (sábado 18 de julio).
+// Landing de campaña para el workshop "PAINT & BREAKFAST" (sábado 18 de julio).
 // Pensada como destino del anuncio/reel de Instagram: una sola pieza, un solo objetivo
 // (lista de espera por WhatsApp cuando se agota el aforo). Reutiliza el sistema visual del sitio: Gilroy, paleta crema/oliva,
 // esquinas rectas y tipografía editorial con énfasis en itálica.
@@ -41,9 +41,9 @@ const GALLERY = [
 
 const COPY = {
   es: {
-    seoTitle: "Breakfast & Paint · Cupos agotados",
+    seoTitle: "PAINT & BREAKFAST · Cupos agotados",
     seoDesc:
-      "El workshop Breakfast & Paint del sábado 18 de julio en Málaga tiene los cupos agotados. La lista de interés está abierta para el próximo evento.",
+      "El workshop PAINT & BREAKFAST del sábado 18 de julio en Málaga tiene los cupos agotados. La lista de interés está abierta para el próximo evento.",
     whatsapp:
       "¡Hola! Quiero sumarme a la lista de interés para el próximo evento de «Workshop: Pinta tu Set de Desayuno»: sábado 1 de agosto, de 11:00 a 13:00 h. ¿Me enviáis la información para reservar?",
     heroLabel: "Sábado 18 de julio · Málaga · a pasos del mar",
@@ -145,11 +145,11 @@ const COPY = {
     cierreLink: "Ver todos los detalles de la actividad",
   },
   en: {
-    seoTitle: "Breakfast & Paint · Sold out",
+    seoTitle: "PAINT & BREAKFAST · Sold out",
     seoDesc:
-      "The Breakfast & Paint workshop on Saturday, July 18 in Málaga is sold out. The interest list is open for the next event.",
+      "The PAINT & BREAKFAST workshop on Saturday, July 18 in Málaga is sold out. The interest list is open for the next event.",
     whatsapp:
-      "Hi! I'd like to join the interest list for the next Breakfast & Paint event: Saturday, August 1, from 11:00 am to 1:00 pm. Could you send me the booking information?",
+      "Hi! I'd like to join the interest list for the next PAINT & BREAKFAST event: Saturday, August 1, from 11:00 am to 1:00 pm. Could you send me the booking information?",
     heroLabel: "Saturday, July 18 · Málaga · steps from the sea",
     heroStatus: "SOLD OUT",
     heroWaitlist: "Interest list open for the next event.",
@@ -259,7 +259,7 @@ const BreakfastPaint = () => {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Event",
-    name: "Breakfast & Paint — Pinta tu Set de Desayuno",
+    name: "PAINT & BREAKFAST — Pinta tu Set de Desayuno",
     startDate: "2026-07-18T11:00:00+02:00",
     endDate: "2026-07-18T13:00:00+02:00",
     eventStatus: "https://schema.org/EventScheduled",
@@ -295,7 +295,7 @@ const BreakfastPaint = () => {
       {/* ─────────────── HERO ─────────────── */}
       <section
         className="relative h-[88vh] min-h-[560px] flex flex-col justify-end"
-        aria-label="Breakfast & Paint"
+        aria-label="PAINT & BREAKFAST"
       >
         <div className="absolute inset-0" aria-hidden="true">
           <img src={HERO_IMG} alt="" className="w-full h-full object-cover" />

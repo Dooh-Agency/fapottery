@@ -96,9 +96,11 @@
     }
   },
   "breakfastPaintAugust": {
-    "seoTitle": "Breakfast & Paint · 1 de agosto",
+    "seoTitle": "PAINT & BREAKFAST · 1 de agosto",
     "seoDescription": "Pinta tu propio set de desayuno frente al mar en La Cala de Mijas. Sábado 1 de agosto, de 11 a 13 h.",
     "eyebrow": "FA Pottery Studio · Maui Paddle Surf",
+    "titleFirstLine": "PAINT",
+    "titleSecondLine": "BREAKFAST",
     "heroText": "Una mañana para pintar tu propio set de cerámica, desayunar a pasos del mar y llevarte a casa un objeto hecho por ti.",
     "dateShort": "sábado · agosto",
     "duration": "2 horas de taller",
@@ -112,6 +114,7 @@
     "whenValue": "De 11:00 a 13:00 h",
     "where": "Lugar",
     "whereValue": "Maui Paddle Surf · Playa Butibamba",
+    "mapCta": "Ver en Google Maps",
     "experienceLabel": "Una mañana distinta",
     "experienceTitle": "Café, cerámica y el mar cerca.",
     "experienceText": "No hace falta experiencia previa. Te acompaño paso a paso para que explores el color y crees un set que puedas usar todos los días. Después nos encargamos de cocer y dar acabado a tus piezas.",

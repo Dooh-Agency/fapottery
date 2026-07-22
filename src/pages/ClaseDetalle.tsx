@@ -114,10 +114,10 @@ const ClaseDetalle = () => {
             {/* Galería */}
             <div>
               {images.length > 0 ? (
-                <div className="flex flex-col-reverse md:flex-row gap-3">
+                <div className="flex flex-col-reverse gap-3 md:flex-row md:items-stretch">
                   {/* Miniaturas — columna a la izquierda en desktop */}
                   {images.length > 1 && (
-                    <div className="flex md:flex-col gap-2 overflow-x-auto md:overflow-y-auto md:justify-between md:self-stretch md:min-h-0 shrink-0 md:bg-secondary/50 md:p-2">
+                    <div className="flex gap-2 overflow-x-auto md:h-auto md:w-20 md:flex-col md:items-start md:overflow-hidden md:self-stretch md:min-h-0 shrink-0">
                       {images.map((url, idx) => (
                         <button
                           key={idx}
@@ -135,7 +135,7 @@ const ClaseDetalle = () => {
                   )}
 
                   {/* Imagen principal */}
-                  <div className="relative flex-1 aspect-[4/5] bg-muted overflow-hidden">
+                  <div className="relative flex-1 aspect-[4/5] overflow-hidden">
                     <img
                       src={images[selectedImgIdx]}
                       alt={title}

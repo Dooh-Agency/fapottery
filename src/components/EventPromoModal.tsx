@@ -6,7 +6,7 @@ import { Link } from "@/components/LocalizedLink";
 import { getLanguageFromPathname } from "@/i18n";
 import EventInterestDialog from "@/components/EventInterestDialog";
 
-// Lightbox de promoción del evento "Breakfast & Paint" (sábado 18 de julio).
+// Lightbox de promoción del evento "PAINT & BREAKFAST" (sábado 18 de julio).
 // - Aparece solo en la Home (se monta desde Index).
 // - Se muestra una vez por sesión, a los ~3 segundos.
 // - Se auto-desactiva pasado el evento, para no dejar un popup vencido.
@@ -36,7 +36,7 @@ const COPY = {
     wa: "Get info about the next event",
     close: "Close",
     whatsapp:
-      "Hi! I'd like to join the interest list for the next Breakfast & Paint event: Saturday, August 1, from 11:00 am to 1:00 pm. Could you send me the booking information?",
+      "Hi! I'd like to join the interest list for the next PAINT & BREAKFAST event: Saturday, August 1, from 11:00 am to 1:00 pm. Could you send me the booking information?",
   },
 } as const;
 

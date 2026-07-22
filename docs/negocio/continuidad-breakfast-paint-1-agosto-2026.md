@@ -288,13 +288,114 @@ La versión pública fue publicada y comprobada el 22 de julio de 2026:
    `https://pglbbwycichoaeltulin.supabase.co/storage/v1/object/public/class-images/1784736703353.png`
 2. Usar en toda la web el nombre exacto **PAINT & BREAKFAST**, en ese orden y en
    mayúsculas.
-3. Florencia pidió borrar registros para hacer pruebas, pero no terminó de
+3. En `/breakfast-and-paint-agosto`, hacer visible el enlace/botón **“Ver en
+   Google Maps”** para Maui Paddle Surf, igual que en la landing anterior. Usar
+   `https://maps.app.goo.gl/mXd7rfaHWKiPZJ9A7`. El componente ya declara esa URL,
+   pero no la renderiza aún.
+4. Florencia pidió borrar registros para hacer pruebas, pero no terminó de
    especificar cuáles. Antes de eliminar datos, preguntar si se refiere a leads
    de formulario, actividades, horarios u otro registro concreto.
-4. En el backoffice, permitir añadir enlaces en los detalles de actividades y
+5. En el backoffice, permitir añadir enlaces en los detalles de actividades y
    renderizarlos como enlaces clicables en el sitio público.
-5. Rediseñar galerías: sin fondo en miniaturas ni imagen grande; alinear la fila
+6. Rediseñar galerías: sin fondo en miniaturas ni imagen grande; alinear la fila
    de miniaturas arriba respecto de la imagen grande; ocultar el excedente cuando
    supere la altura de la foto grande y mostrar una flecha pequeña de navegación.
-6. Agrupar estas mejoras en una próxima publicación para no consumir créditos en
+7. Agrupar estas mejoras en una próxima publicación para no consumir créditos en
    varios despliegues pequeños.
+
+---
+
+## Actualización de continuidad — 22 de julio de 2026, noche
+
+Esta sección registra el estado final de la sesión de Ads Manager y prevalece
+sobre instrucciones anteriores que indiquen que la campaña no existía.
+
+### Campaña publicada
+
+La sesión se recuperó correctamente en una ventana privada de Chrome. Meta
+mostró el borrador guardado:
+
+| Campo | Estado confirmado |
+|---|---|
+| Cuenta publicitaria | `FA Pottery (575814233209737)` |
+| Portfolio comercial | `440811599928100` |
+| Campaña | `PAINT & BREAKFAST · 1 AGO · WhatsApp directo` |
+| Estado | Publicada en Meta; pendiente de revisión/entrega según el estado que muestre Ads Manager |
+| Importe gastado | 0 |
+| Conjunto | `Nuevo conjunto de anuncios de Tráfico` |
+| Anuncio | `Nuevo anuncio de Tráfico` |
+| Presupuesto configurado | ARS 10.000 diarios |
+| Calendario configurado | 22–31 de julio de 2026; interfaz de la cuenta en GMT-3 |
+
+Meta confirmó: **“Se publicaron 1 campaña, 1 conjunto de anuncios y 1 anuncio.”**
+IDs: campaña `120246522400510571`, conjunto `120246522400520571` y anuncio
+`120246522400500571`.
+
+Configuración final: público de 25 a 55 años, radio de 12 km desde Maui Paddle
+Surf, finalización el 31 de julio a las 23:59 (hora de Madrid), Reel vertical de
+26 segundos y llamada a la acción hacia WhatsApp `+34 681 816 030`.
+
+### WhatsApp: evidencia y decisión operativa
+
+- Número comercial: **+34 681 816 030**.
+- El número está asociado a la página de FA Pottery y se usa en la app WhatsApp
+  Business del móvil.
+- Ads Manager mostró inicialmente el error `#2923012`, que se resolvió durante
+  la configuración.
+- Al pulsar `Instalar`, Meta abrió `Conectar cuenta de WhatsApp Business`, pero
+  rechazó el mismo número con el mensaje: **“Este número de WhatsApp Business
+  ya está conectado a esta página.”**
+- El número quedó seleccionado como destino nativo y CTA del anuncio. No hace
+  falta usar el enlace alternativo `wa.me` en esta campaña.
+
+#### Ruta alternativa documentada
+
+Si la integración nativa vuelve a fallar en una campaña futura, se puede usar
+temporalmente `Sitio web` con un enlace directo `wa.me`. Meta mediría clics al
+enlace, no conversaciones nativas.
+
+URL sugerida (revisar/codificar el texto final antes de publicarla):
+
+```text
+https://wa.me/34681816030?text=Hola%2C%20quiero%20reservar%20mi%20plaza%20para%20PAINT%20%26%20BREAKFAST%20del%201%20de%20agosto.%20%C2%BFC%C3%B3mo%20confirmo%20mi%20reserva%3F
+```
+
+### Ubicación local requerida
+
+La ubicación exacta proporcionada y verificada para el workshop es:
+
+```text
+Maui Paddle Surf
+C. Butibamba, 7, 29649 La Cala de Mijas, Málaga
+```
+
+La geolocalización del conjunto debe centrarse en ese punto, con un **radio de
+12 km**. No usar Málaga capital ni un centro genérico de La Cala si el pin no
+coincide con Maui Paddle Surf.
+
+### Creatividad, landing y Linktree
+
+- El Reel orgánico con recordatorio no era elegible como publicación existente.
+  Se subió manualmente el mismo vídeo de 26 segundos como creatividad del
+  anuncio, sin volver a crear el contenido orgánico.
+- La landing pública continúa siendo
+  `https://fapottery.com/breakfast-and-paint-agosto`; sirve para información y
+  captación orgánica, pero no es requisito para el destino urgente del anuncio.
+- Linktree envió un correo indicando que revisó y restableció el botón
+  `Whatsapp` de `linktr.ee/fapottery`. El URL mostrado incluía una cadena de
+  redirecciones Instagram/bit.ly; cuando haya acceso a Linktree, sustituirla por
+  un enlace `wa.me` directo. No bloquea el lanzamiento de Meta.
+
+### Problema de sesión de Meta ya superado
+
+La sesión original de Ads Manager repetía avisos `Actualiza la pantalla`,
+`Invalid request (#1)` y errores de API. Abrir Ads Manager en una ventana privada
+de Chrome con la cuenta de Florencia Alvarez permitió recuperar el borrador.
+Si reaparece el bucle, usar primero una sesión privada; no asumir que el
+borrador fue eliminado.
+
+### Tareas centralizadas
+
+La lista operativa actual vive en
+[`TAREAS_PENDIENTES.md`](TAREAS_PENDIENTES.md). Consultarla antes de una nueva
+acción de campaña o despliegue.

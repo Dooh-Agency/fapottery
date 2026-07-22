@@ -30,6 +30,7 @@ La documentación está separada en dos áreas:
 |-----------|-----------|
 | [negocio/contexto-negocio-fa-pottery.md](negocio/contexto-negocio-fa-pottery.md) | Identidad, líneas de negocio, clientes, restricciones, evidencia y métricas de FA Pottery |
 | [negocio/campana-meta-breakfast-and-paint-mija.md](negocio/campana-meta-breakfast-and-paint-mija.md) | Registro de continuidad de la campaña Meta de Breakfast & Paint (La Cala de Mijas) |
+| [negocio/continuidad-breakfast-paint-1-agosto-2026.md](negocio/continuidad-breakfast-paint-1-agosto-2026.md) | Continuidad de la edición del 1 de agosto: campaña, landing, backoffice y despliegue en Cloudflare |
 
 ## Cómo mantener esta documentación
 

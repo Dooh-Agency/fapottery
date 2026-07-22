@@ -3,13 +3,12 @@ import { useTranslation } from "react-i18next";
 import Layout from "@/components/Layout";
 import SEO from "@/components/SEO";
 import EventInterestDialog from "@/components/EventInterestDialog";
-import { CalendarDays, Check, Clock3, MapPin, MessageCircle, Sparkles } from "lucide-react";
+import { CalendarDays, Check, Clock3, ExternalLink, MapPin, MessageCircle, Sparkles } from "lucide-react";
 import lugarMaui from "@/assets/lugar-maui.jpg";
 import florenciaTaller from "@/assets/flor-taller.png";
-import inspiracionFresas from "@/assets/inspiracion-fresas.png";
 
 const MAPS_URL = "https://maps.app.goo.gl/mXd7rfaHWKiPZJ9A7";
-const SOCIAL_IMG = "https://pglbbwycichoaeltulin.supabase.co/storage/v1/object/public/class-images/1783717916521.png";
+const WORKSHOP_SET_IMG = "https://pglbbwycichoaeltulin.supabase.co/storage/v1/object/public/class-images/1784736703353.png";
 
 const BreakfastPaintAugust = () => {
   const { t } = useTranslation();
@@ -22,7 +21,7 @@ const BreakfastPaintAugust = () => {
         title={t("breakfastPaintAugust.seoTitle")}
         description={t("breakfastPaintAugust.seoDescription")}
         path="/breakfast-and-paint-agosto"
-        image={SOCIAL_IMG}
+        image={WORKSHOP_SET_IMG}
       />
 
       <section className="bg-secondary/50">
@@ -31,7 +30,7 @@ const BreakfastPaintAugust = () => {
             <p className="label-sm">{t("breakfastPaintAugust.eyebrow")}</p>
             <div className="my-12 lg:my-0">
               <h1 className="font-serif text-5xl leading-[.92] tracking-[-.04em] text-foreground sm:text-7xl lg:text-[5.7rem]">
-                Breakfast<br />&amp; <em className="text-accent">Paint</em>
+                {t("breakfastPaintAugust.titleFirstLine")}<br />&amp; <em className="text-accent">{t("breakfastPaintAugust.titleSecondLine")}</em>
               </h1>
               <p className="mt-7 max-w-xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
                 {t("breakfastPaintAugust.heroText")}
@@ -50,7 +49,7 @@ const BreakfastPaintAugust = () => {
             </div>
           </div>
           <div className="min-h-[440px] overflow-hidden bg-muted lg:min-h-full">
-            <img src={inspiracionFresas} alt={t("breakfastPaintAugust.heroAlt")} className="h-full w-full object-cover" />
+            <img src={WORKSHOP_SET_IMG} alt={t("breakfastPaintAugust.heroAlt")} className="h-full w-full object-cover" />
           </div>
         </div>
       </section>
@@ -60,11 +59,20 @@ const BreakfastPaintAugust = () => {
           {[
             [CalendarDays, t("breakfastPaintAugust.date"), t("breakfastPaintAugust.dateValue")],
             [Clock3, t("breakfastPaintAugust.when"), t("breakfastPaintAugust.whenValue")],
-            [MapPin, t("breakfastPaintAugust.where"), t("breakfastPaintAugust.whereValue")],
           ].map(([Icon, label, value]) => {
             const DetailIcon = Icon as typeof CalendarDays;
             return <div key={label as string} className="flex gap-4 px-6 py-6 sm:px-10"><DetailIcon className="mt-1 h-5 w-5 text-accent" /><p><span className="label-sm block mb-1">{label as string}</span><span className="font-serif text-lg">{value as string}</span></p></div>;
           })}
+          <div className="flex gap-4 px-6 py-6 sm:px-10">
+            <MapPin className="mt-1 h-5 w-5 shrink-0 text-accent" />
+            <p>
+              <span className="label-sm mb-1 block">{t("breakfastPaintAugust.where")}</span>
+              <span className="block font-serif text-lg">{t("breakfastPaintAugust.whereValue")}</span>
+              <a href={MAPS_URL} target="_blank" rel="noopener noreferrer" className="mt-1 inline-flex items-center gap-1 text-xs text-foreground underline underline-offset-2">
+                {t("breakfastPaintAugust.mapCta")} <ExternalLink className="h-3 w-3" />
+              </a>
+            </p>
+          </div>
         </div>
       </section>
 

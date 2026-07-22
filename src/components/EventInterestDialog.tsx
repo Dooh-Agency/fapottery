@@ -33,7 +33,7 @@ interface Props {
 const COPY = {
   es: {
     title: "Empieza tu reserva",
-    description: "Deja tu email y te enviaré por WhatsApp los datos para confirmar tu plaza en Breakfast & Paint: sábado 1 de agosto · 11:00 a 13:00.",
+    description: "Deja tu email y te enviaré por WhatsApp los datos para confirmar tu plaza en PAINT & BREAKFAST: sábado 1 de agosto · 11:00 a 13:00.",
     name: "Nombre (opcional)",
     email: "Tu email",
     marketing: "Opcional: quiero recibir por email próximas actividades, piezas y novedades de FA Pottery.",
@@ -43,11 +43,11 @@ const COPY = {
     successDescription: "Escríbeme por WhatsApp para recibir los datos de la reserva y confirmar tu plaza.",
     whatsappPrompt: "¿Prefieres hablar ahora?",
     whatsappCta: "Escríbeme por WhatsApp",
-    whatsapp: "¡Hola! Quiero reservar una plaza para Breakfast & Paint del sábado 1 de agosto. Ya dejé mis datos en la web. ¿Cómo confirmo mi reserva?",
+    whatsapp: "¡Hola! Quiero reservar una plaza para PAINT & BREAKFAST del sábado 1 de agosto. Ya dejé mis datos en la web. ¿Cómo confirmo mi reserva?",
   },
   en: {
     title: "Start your booking",
-    description: "Leave your email and we will send you the details on WhatsApp to confirm your place at Breakfast & Paint: Saturday, August 1 · 11 am to 1 pm.",
+    description: "Leave your email and we will send you the details on WhatsApp to confirm your place at PAINT & BREAKFAST: Saturday, August 1 · 11 am to 1 pm.",
     name: "Name (optional)",
     email: "Your email",
     marketing: "Optional: I would like to receive upcoming activities, pieces and FA Pottery news by email.",
@@ -57,7 +57,7 @@ const COPY = {
     successDescription: "Write to us on WhatsApp to receive the booking details and confirm your place.",
     whatsappPrompt: "Would you rather talk now?",
     whatsappCta: "Write on WhatsApp",
-    whatsapp: "Hi! I'd like to reserve a place for Breakfast & Paint on Saturday, August 1. I have already left my details on the website. How can I confirm my booking?",
+    whatsapp: "Hi! I'd like to reserve a place for PAINT & BREAKFAST on Saturday, August 1. I have already left my details on the website. How can I confirm my booking?",
   },
 } as const;
 

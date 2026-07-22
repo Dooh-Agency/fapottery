@@ -315,7 +315,7 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
                     ref={(el) => { ref(el); descriptionRef.current = el; }}
                   />
                 </FormControl>
-                <p className="text-xs text-muted-foreground">Puedes usar saltos de línea para separar párrafos.</p>
+                <p className="text-xs text-muted-foreground">Puedes usar saltos de línea para separar párrafos. Las URLs completas (https://...) se mostrarán como enlaces clicables.</p>
                 <FormMessage />
               </FormItem>
             )} />
