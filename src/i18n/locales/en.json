@@ -120,7 +120,7 @@
     "includedLabel": "All included",
     "includedTitle": "Just come ready to make.",
     "included": ["Breakfast set: a ceramic cup and tray.", "Engobes, pigments and all materials.", "Breakfast with coffee, fresh juice, fruit and tasty things.", "Professional firing and finishing of your pieces."],
-    "reserveLabel": "18 spots",
+    "reserveLabel": "16 spots",
     "reserveTitle": "Book your place for August 1.",
     "reserveText": "Leave your details and we will continue on WhatsApp. I will send the information to confirm your place with a €22.50 deposit.",
     "reserveCta": "I want to book my place"
@@ -235,7 +235,7 @@
     "tipoPersonalizadas": "personalized class",
     "sinImagen": "No image",
     "elegirOpcion": "Choose an option",
-    "whatsappMensajeOpcion": "Hi! I'd like \"{{title}}\" - option \"{{option}}\" (€{{price}}). Can we confirm?"
+    "whatsappMensajeOpcion": "Hi! I'd like to reserve a place for \"{{title}}\" - option \"{{option}}\" (€{{price}}). How can I confirm my booking?"
   },
   "catalogo": {
     "seoTitle": "Shop",

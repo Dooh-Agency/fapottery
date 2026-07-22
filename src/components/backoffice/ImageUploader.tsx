@@ -89,7 +89,7 @@ const ImageUploader = ({ value, onChange, bucket = "class-images", folder = "", 
         >
           <Upload className="h-6 w-6 mx-auto text-muted-foreground mb-2" />
           <p className="text-sm text-muted-foreground">
-            {uploading ? "Subiendo..." : "Arrastrá una imagen o hacé clic para seleccionar"}
+            {uploading ? "Subiendo..." : "Arrastra una imagen o haz clic para seleccionar"}
           </p>
           <p className="text-xs text-muted-foreground mt-1">JPG, PNG, WEBP — máx. 5MB</p>
         </div>

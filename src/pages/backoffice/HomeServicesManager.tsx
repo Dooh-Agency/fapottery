@@ -66,7 +66,7 @@ const HomeServicesManager = () => {
       <div>
         <h1 className="font-serif text-2xl">Servicios (Home)</h1>
         <p className="text-muted-foreground text-sm mt-1">
-          Configurá las 3 tarjetas de "¿Qué podés encontrar en FA Pottery?" en la home. Tamaño de imagen recomendado: 800×600 px (relación 4:3).
+          Configura las 3 tarjetas de "¿Qué puedes encontrar en FA Pottery?" en la home. Tamaño de imagen recomendado: 800×600 px (relación 4:3).
         </p>
       </div>
 

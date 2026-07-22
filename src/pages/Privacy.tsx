@@ -10,7 +10,7 @@ const COPY = {
     sections: [
       ["Responsable y contacto", "FA Pottery Studio. Para consultas, acceso, corrección, eliminación o para retirar tu consentimiento, escribinos a hola@fapottery.com."],
       ["Datos y finalidad", "Recogemos el nombre si lo facilitás, tu email y datos técnicos de origen de la campaña (por ejemplo, UTM o página de entrada). Los usamos para enviarte información y gestionar tu interés en el evento al que te anotaste."],
-      ["Novedades", "Sólo recibirás novedades de FA Pottery si marcaste expresamente la casilla correspondiente. Podés retirar ese consentimiento en cualquier momento escribiendo a hola@fapottery.com."],
+      ["Novedades", "Sólo recibirás novedades de FA Pottery si marcaste expresamente la casilla correspondiente. Puedes retirar ese consentimiento en cualquier momento escribiendo a hola@fapottery.com."],
       ["Conservación y acceso", "Guardamos los datos del evento durante el tiempo necesario para gestionarlo y el seguimiento comercial razonable posterior. El acceso está limitado al equipo autorizado de FA Pottery Studio; no vendemos tus datos."],
     ],
   },

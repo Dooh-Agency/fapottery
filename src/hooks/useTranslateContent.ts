@@ -19,7 +19,7 @@ export const useTranslateContent = (table: TranslatableTable) => {
       toast.success("Traducción al inglés generada");
     },
     onError: () => {
-      toast.error("No se pudo traducir automáticamente. Podés reintentar guardando de nuevo.");
+      toast.error("No se pudo traducir automáticamente. Puedes intentarlo de nuevo guardando otra vez.");
     },
   });
 };

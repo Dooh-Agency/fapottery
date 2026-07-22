@@ -32,18 +32,18 @@ interface Props {
 
 const COPY = {
   es: {
-    title: "Empezá tu reserva",
+    title: "Empieza tu reserva",
     description: "Deja tu email y te enviaré por WhatsApp los datos para confirmar tu plaza en Breakfast & Paint: sábado 1 de agosto · 11:00 a 13:00.",
     name: "Nombre (opcional)",
     email: "Tu email",
     marketing: "Opcional: quiero recibir por email próximas actividades, piezas y novedades de FA Pottery.",
     privacy: "Usaré tus datos para enviarte la información de este evento. Puedes consultar cómo los trato en mi política de privacidad.",
     submit: "Continuar mi reserva",
-    successTitle: "¡Listo! Ya recibí tus datos.",
+    successTitle: "¡Listo! Ya he recibido tus datos.",
     successDescription: "Escríbeme por WhatsApp para recibir los datos de la reserva y confirmar tu plaza.",
     whatsappPrompt: "¿Prefieres hablar ahora?",
     whatsappCta: "Escríbeme por WhatsApp",
-    whatsapp: "¡Hola! Soy {{name}}. Me anoté con {{email}} en la preinscripción del Breakfast & Paint del sábado 1 de agosto, de 11:00 a 13:00 h. Quiero recibir la información para reservar.",
+    whatsapp: "¡Hola! Quiero reservar una plaza para Breakfast & Paint del sábado 1 de agosto. Ya dejé mis datos en la web. ¿Cómo confirmo mi reserva?",
   },
   en: {
     title: "Start your booking",
@@ -57,7 +57,7 @@ const COPY = {
     successDescription: "Write to us on WhatsApp to receive the booking details and confirm your place.",
     whatsappPrompt: "Would you rather talk now?",
     whatsappCta: "Write on WhatsApp",
-    whatsapp: "Hi! I'm {{name}}. I registered with {{email}} for the Breakfast & Paint pre-registration list on Saturday, August 1, from 11:00 am to 1:00 pm. I'd like to receive the booking information.",
+    whatsapp: "Hi! I'd like to reserve a place for Breakfast & Paint on Saturday, August 1. I have already left my details on the website. How can I confirm my booking?",
   },
 } as const;
 
