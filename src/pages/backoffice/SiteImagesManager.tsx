@@ -134,7 +134,7 @@ const SiteImagesManager = () => {
       <div>
         <h1 className="font-serif text-2xl">Imágenes de cabecera</h1>
         <p className="text-muted-foreground text-sm mt-1">
-          Configurá la imagen hero de cada sección del sitio. Tamaño recomendado: 1920×270 px.
+          Configura la imagen hero de cada sección del sitio. Tamaño recomendado: 1920×270 px.
         </p>
       </div>
 
@@ -231,7 +231,7 @@ const SiteImagesManager = () => {
                   </Button>
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Si el título de esta sección se muestra en blanco, elegí un color oscuro para que se lea bien.
+                  Si el título de esta sección se muestra en blanco, elige un color oscuro para que se lea bien.
                 </p>
               </div>
 
@@ -281,7 +281,7 @@ const SiteImagesManager = () => {
                   onChange={(e) =>
                     setSubtitleDrafts((prev) => ({ ...prev, [img.section_key]: e.target.value }))
                   }
-                  placeholder="Ej: Explorá las opciones de talleres y reservá tu lugar."
+                  placeholder="Ej.: Explora las opciones de talleres y reserva tu plaza."
                 />
                 <Button
                   size="sm"

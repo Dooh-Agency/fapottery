@@ -170,7 +170,7 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
   const wrapSelectionBold = (el: HTMLTextAreaElement | null, fieldName: "description" | `faq.${number}.answer`) => {
     if (!el) return;
     if (el.selectionStart === el.selectionEnd) {
-      toast.info("Primero seleccioná (marcá) el texto que querés poner en negrita");
+      toast.info("Primero selecciona (marca) el texto que quieres poner en negrita");
       return;
     }
     const { selectionStart, selectionEnd, value } = el;
@@ -186,7 +186,7 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
   const wrapDescriptionAsCallout = () => {
     const el = descriptionRef.current;
     if (!el || el.selectionStart === el.selectionEnd) {
-      toast.info("Primero seleccioná el texto que querés destacar");
+      toast.info("Primero selecciona el texto que quieres destacar");
       return;
     }
     const { selectionStart, selectionEnd, value } = el;
@@ -305,7 +305,7 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
                   <Button type="button" variant="outline" size="sm" onClick={wrapDescriptionAsCallout}>
                     <PanelTop className="h-3.5 w-3.5 mr-1" /> Destacado
                   </Button>
-                  <p className="text-xs text-muted-foreground">Seleccioná texto y elegí un estilo</p>
+                  <p className="text-xs text-muted-foreground">Selecciona texto y elige un estilo</p>
                 </div>
                 <FormControl>
                   <Textarea
@@ -315,7 +315,7 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
                     ref={(el) => { ref(el); descriptionRef.current = el; }}
                   />
                 </FormControl>
-                <p className="text-xs text-muted-foreground">Podés usar saltos de línea para separar párrafos.</p>
+                <p className="text-xs text-muted-foreground">Puedes usar saltos de línea para separar párrafos.</p>
                 <FormMessage />
               </FormItem>
             )} />

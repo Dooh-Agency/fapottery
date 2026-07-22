@@ -70,7 +70,7 @@
       "ctaHablamos": "¿Hablamos?"
     },
     "servicios": {
-      "heading": "¿Qué podés encontrar en FA Pottery?",
+      "heading": "¿Qué puedes encontrar en FA Pottery?",
       "subtitle": "Clases, piezas y experiencias cerámicas. Todo con una mirada de diseño y un proceso artesanal.",
       "cargando": "Cargando…"
     },
@@ -118,11 +118,11 @@
     "placeAlt": "Maui Paddle Surf, junto a Playa Butibamba",
     "florAlt": "Florencia trabajando en cerámica",
     "includedLabel": "Todo incluido",
-    "includedTitle": "Solo vení con ganas de crear.",
+    "includedTitle": "Solo ven con ganas de crear.",
     "included": ["Set de desayuno: taza y bandeja de cerámica.", "Engobes, pigmentos y todos los materiales.", "Desayuno con café, zumo natural, fruta y cosas ricas.", "Cocción y acabado profesional de las piezas."],
-    "reserveLabel": "18 plazas",
-    "reserveTitle": "Reservá tu lugar para el 1 de agosto.",
-    "reserveText": "Dejá tus datos y seguiremos por WhatsApp. Te enviaré la información para confirmar tu plaza con una reserva de 22,50 €.",
+    "reserveLabel": "16 plazas",
+    "reserveTitle": "Reserva tu plaza para el 1 de agosto.",
+    "reserveText": "Deja tus datos y seguiremos por WhatsApp. Te enviaré la información para confirmar tu plaza con una reserva de 22,50 €.",
     "reserveCta": "Quiero reservar mi plaza"
   },
   "propuestaEducativa": {
@@ -191,10 +191,10 @@
   },
   "clases": {
     "seoTitle": "Actividades",
-    "seoDescription": "Reservá tu lugar en clases de cerámica. Torno, modelado, workshops y más.",
+    "seoDescription": "Reserva tu plaza en clases de cerámica. Torno, modelado, workshops y más.",
     "heroAlt": "Clases del estudio",
     "heroTitle": "Actividades",
-    "defaultSubtitle": "Explorá las opciones de talleres y reservá tu lugar.",
+    "defaultSubtitle": "Explora las opciones de talleres y reserva tu plaza.",
     "cargando": "Cargando clases…",
     "vacio": "Próximamente se publicarán actividades.",
     "verMas": "Ver más →",
@@ -236,7 +236,7 @@
     "tipoPersonalizadas": "clase personalizada",
     "sinImagen": "Sin imagen",
     "elegirOpcion": "Elige",
-    "whatsappMensajeOpcion": "Hola! Quiero \"{{title}}\" - opción \"{{option}}\" (€{{price}}). ¿Confirmamos?"
+    "whatsappMensajeOpcion": "¡Hola! Quiero reservar una plaza para \"{{title}}\" - opción \"{{option}}\" (€{{price}}). ¿Cómo confirmo mi reserva?"
   },
   "catalogo": {
     "seoTitle": "Tienda",
