@@ -35,6 +35,10 @@ const schema = z.object({
   category: z.enum(["regulares", "workshops", "personalizadas"]),
   location_text: z.string().optional(),
   location_map_url: z.string().url("Debe ser una URL válida").optional().or(z.literal("")),
+  locations: z.array(z.object({
+    name: z.string().min(1, "El nombre de la sede es requerido"),
+    map_url: z.string().url("Debe ser una URL válida").optional().or(z.literal("")),
+  })),
   image_url: z.string().url("Debe ser una URL válida").optional().or(z.literal("")),
   price: z.coerce.number().min(0),
   duration_minutes: z.coerce.number().min(15),
@@ -73,6 +77,7 @@ const emptyDefaults: FormValues = {
   category: "regulares",
   location_text: "",
   location_map_url: "",
+  locations: [],
   image_url: "",
   price: 0,
   duration_minutes: 120,
@@ -115,6 +120,11 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
     name: "options",
   });
 
+  const { fields: locationFields, append: appendLocation, remove: removeLocation } = useFieldArray({
+    control: form.control,
+    name: "locations",
+  });
+
   const { fields: scheduleFields, append: appendSchedule, remove: removeSchedule } = useFieldArray({
     control: form.control,
     name: "new_schedules",
@@ -130,6 +140,7 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
           category: ct.category || "regulares",
           location_text: ct.location_text || "",
           location_map_url: ct.location_map_url || "",
+          locations: Array.isArray(ct.locations) ? ct.locations : [],
           image_url: ct.image_url || "",
           price: Number(ct.price),
           duration_minutes: ct.duration_minutes,
@@ -366,18 +377,42 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
 
             <Separator />
 
-            {/* Locación */}
-            <p className="text-sm font-semibold text-foreground">Locación</p>
-            <FormField control={form.control} name="location_text" render={({ field }) => (
-              <FormItem><FormLabel>Nombre del lugar</FormLabel><FormControl><Input placeholder="Ej: MAUI, Málaga (a pasos de la playa)" {...field} /></FormControl><FormMessage /></FormItem>
-            )} />
-            <FormField control={form.control} name="location_map_url" render={({ field }) => (
-              <FormItem>
-                <FormLabel>Link de Google Maps</FormLabel>
-                <FormControl><Input placeholder="https://maps.google.com/..." {...field} /></FormControl>
-                <FormMessage />
-              </FormItem>
-            )} />
+            {/* Las regulares pueden tener varias sedes; el resto conserva una ubicación única. */}
+            {form.watch("category") === "regulares" ? (
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-semibold text-foreground">Sedes</p>
+                    <p className="text-xs text-muted-foreground">Agregá cada zona donde das esta clase regular.</p>
+                  </div>
+                  <Button type="button" variant="outline" size="sm" onClick={() => appendLocation({ name: "", map_url: "" })}>
+                    <Plus className="h-3.5 w-3.5 mr-1" /> Agregar sede
+                  </Button>
+                </div>
+                {locationFields.length === 0 && <p className="text-xs text-muted-foreground">No hay sedes cargadas.</p>}
+                {locationFields.map((locationField, index) => (
+                  <div key={locationField.id} className="border border-border rounded p-3 flex items-end gap-2">
+                    <FormField control={form.control} name={`locations.${index}.name`} render={({ field }) => (
+                      <FormItem className="flex-1"><FormLabel className="text-xs">Nombre o zona</FormLabel><FormControl><Input placeholder="Ej: La Cala de Mijas" {...field} /></FormControl><FormMessage /></FormItem>
+                    )} />
+                    <FormField control={form.control} name={`locations.${index}.map_url`} render={({ field }) => (
+                      <FormItem className="flex-1"><FormLabel className="text-xs">Link de Google Maps</FormLabel><FormControl><Input placeholder="https://maps.google.com/..." {...field} /></FormControl><FormMessage /></FormItem>
+                    )} />
+                    <Button type="button" variant="ghost" size="sm" aria-label={`Eliminar sede ${index + 1}`} onClick={() => removeLocation(index)}><Trash2 className="h-3.5 w-3.5 text-destructive" /></Button>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="space-y-3">
+                <p className="text-sm font-semibold text-foreground">Locación</p>
+                <FormField control={form.control} name="location_text" render={({ field }) => (
+                  <FormItem><FormLabel>Nombre del lugar</FormLabel><FormControl><Input placeholder="Ej: MAUI, Málaga (a pasos de la playa)" {...field} /></FormControl><FormMessage /></FormItem>
+                )} />
+                <FormField control={form.control} name="location_map_url" render={({ field }) => (
+                  <FormItem><FormLabel>Link de Google Maps</FormLabel><FormControl><Input placeholder="https://maps.google.com/..." {...field} /></FormControl><FormMessage /></FormItem>
+                )} />
+              </div>
+            )}
 
             <Separator />
 
