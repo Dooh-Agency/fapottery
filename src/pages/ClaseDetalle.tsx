@@ -80,6 +80,7 @@ const ClaseDetalle = () => {
     : galleryImages;
   const tipoLabel = t(TIPO_LABEL_KEYS[cta.category] || TIPO_LABEL_KEYS.regulares);
   const options: { label: string; price: number }[] = Array.isArray(cta.options) ? cta.options : [];
+  const locations: { name: string; map_url?: string }[] = Array.isArray(cta.locations) ? cta.locations : [];
   const selectedOption = options[selectedOptionIdx];
   const isBreakfastPaint = item.id === BREAKFAST_PAINT_ACTIVITY_ID;
 
@@ -189,7 +190,23 @@ const ClaseDetalle = () => {
                   <Users className="h-4 w-4 shrink-0" />
                   <span>{t("claseDetalle.maxAlumnos", { count: item.max_students })}</span>
                 </div>
-                {cta.location_text && (
+                {locations.length > 0 ? (
+                  <div className="flex items-start gap-2 text-muted-foreground">
+                    <MapPin className="h-4 w-4 shrink-0 mt-0.5" />
+                    <div className="space-y-1">
+                      {locations.map((venue, index) => (
+                        <div key={`${venue.name}-${index}`}>
+                          <span>{venue.name}</span>
+                          {venue.map_url && (
+                            <a href={venue.map_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-xs text-foreground underline underline-offset-2 mt-0.5">
+                              {t("claseDetalle.verMapa")} <ExternalLink className="h-3 w-3" />
+                            </a>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : cta.location_text && (
                   <div className="flex items-start gap-2 text-muted-foreground">
                     <MapPin className="h-4 w-4 shrink-0 mt-0.5" />
                     <div>
