@@ -207,6 +207,7 @@ export type Database = {
           is_featured: boolean
           location_map_url: string | null
           location_text: string | null
+          locations: Json
           max_students: number
           options: Json
           price: number
@@ -230,6 +231,7 @@ export type Database = {
           is_featured?: boolean
           location_map_url?: string | null
           location_text?: string | null
+          locations?: Json
           max_students?: number
           options?: Json
           price?: number
@@ -253,6 +255,7 @@ export type Database = {
           is_featured?: boolean
           location_map_url?: string | null
           location_text?: string | null
+          locations?: Json
           max_students?: number
           options?: Json
           price?: number
