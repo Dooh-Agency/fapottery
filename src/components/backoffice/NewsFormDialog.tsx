@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { Bold, PanelTop } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import type { NewsItem } from "@/hooks/useNews";
 
@@ -21,8 +22,10 @@ export function NewsFormDialog({ open, onOpenChange, initial, onSave, saving }: 
   const [body, setBody] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [instagramUrl, setInstagramUrl] = useState("");
+  const [locationMapUrl, setLocationMapUrl] = useState("");
   const [isPublished, setIsPublished] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const bodyRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     if (open) {
@@ -30,6 +33,7 @@ export function NewsFormDialog({ open, onOpenChange, initial, onSave, saving }: 
       setBody(initial?.body ?? "");
       setImageUrl(initial?.image_url ?? "");
       setInstagramUrl(initial?.instagram_url ?? "");
+      setLocationMapUrl(initial?.location_map_url ?? "");
       setIsPublished(initial?.is_published ?? false);
     }
   }, [open, initial]);
@@ -50,6 +54,32 @@ export function NewsFormDialog({ open, onOpenChange, initial, onSave, saving }: 
     setUploading(false);
   };
 
+  const wrapSelectionBold = () => {
+    const textarea = bodyRef.current;
+    if (!textarea || textarea.selectionStart === textarea.selectionEnd) return;
+    const { selectionStart, selectionEnd, value } = textarea;
+    const selected = value.slice(selectionStart, selectionEnd);
+    setBody(value.slice(0, selectionStart) + `**${selected}**` + value.slice(selectionEnd));
+    requestAnimationFrame(() => {
+      textarea.focus();
+      textarea.setSelectionRange(selectionStart + 2, selectionEnd + 2);
+    });
+  };
+
+  const wrapSelectionAsCallout = () => {
+    const textarea = bodyRef.current;
+    if (!textarea || textarea.selectionStart === textarea.selectionEnd) return;
+    const { selectionStart, selectionEnd, value } = textarea;
+    const selected = value.slice(selectionStart, selectionEnd);
+    const prefix = ":::destacado\n";
+    const suffix = "\n:::";
+    setBody(value.slice(0, selectionStart) + prefix + selected + suffix + value.slice(selectionEnd));
+    requestAnimationFrame(() => {
+      textarea.focus();
+      textarea.setSelectionRange(selectionStart + prefix.length, selectionStart + prefix.length + selected.length);
+    });
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSave({
@@ -58,6 +88,7 @@ export function NewsFormDialog({ open, onOpenChange, initial, onSave, saving }: 
       body: body || null,
       image_url: imageUrl || null,
       instagram_url: instagramUrl || null,
+      location_map_url: locationMapUrl || null,
       is_published: isPublished,
       published_at: isPublished ? (initial?.published_at ?? new Date().toISOString()) : null,
     });
@@ -74,9 +105,22 @@ export function NewsFormDialog({ open, onOpenChange, initial, onSave, saving }: 
             <Label>Título *</Label>
             <Input value={title} onChange={(e) => setTitle(e.target.value)} required />
           </div>
-          <div>
-            <Label>Texto</Label>
-            <Textarea value={body} onChange={(e) => setBody(e.target.value)} rows={4} />
+          <div className="space-y-2">
+            <div className="flex items-center justify-between gap-3">
+              <Label>Texto de detalle</Label>
+              <div className="flex gap-1">
+                <Button type="button" variant="outline" size="sm" onClick={wrapSelectionBold} title="Negrita">
+                  <Bold className="h-4 w-4" />
+                  <span className="sr-only">Negrita</span>
+                </Button>
+                <Button type="button" variant="outline" size="sm" onClick={wrapSelectionAsCallout} title="Destacado">
+                  <PanelTop className="h-4 w-4" />
+                  <span className="sr-only">Destacado</span>
+                </Button>
+              </div>
+            </div>
+            <Textarea ref={bodyRef} value={body} onChange={(e) => setBody(e.target.value)} rows={7} />
+            <p className="text-xs text-muted-foreground">Seleccioná un texto y usá los botones para ponerlo en negrita o destacado.</p>
           </div>
           <div>
             <Label>Imagen</Label>
@@ -88,6 +132,10 @@ export function NewsFormDialog({ open, onOpenChange, initial, onSave, saving }: 
           <div>
             <Label>Link de Instagram</Label>
             <Input value={instagramUrl} onChange={(e) => setInstagramUrl(e.target.value)} placeholder="https://www.instagram.com/p/..." />
+          </div>
+          <div>
+            <Label>URL de Google Maps</Label>
+            <Input value={locationMapUrl} onChange={(e) => setLocationMapUrl(e.target.value)} placeholder="https://maps.app.goo.gl/..." />
           </div>
           <div className="flex items-center gap-3">
             <Switch checked={isPublished} onCheckedChange={setIsPublished} />

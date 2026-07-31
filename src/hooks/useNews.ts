@@ -9,6 +9,7 @@ export interface NewsItem {
   body_en: string | null;
   image_url: string | null;
   instagram_url: string | null;
+  location_map_url: string | null;
   is_published: boolean;
   published_at: string | null;
   created_at: string;

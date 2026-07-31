@@ -202,6 +202,7 @@
     "categoriaWorkshops": "Workshops",
     "categoriaPersonalizadas": "Clases personalizadas",
     "destacados": "Destacados",
+    "proximosEventos": "Próximos eventos",
     "eventosPasados": "Eventos anteriores",
     "sinPasados": "Todavía no hay eventos pasados.",
     "todas": "Todas",
@@ -231,6 +232,8 @@
     "imagenAnterior": "Imagen anterior",
     "imagenSiguiente": "Imagen siguiente",
     "verImagen": "Ver imagen {{n}}",
+    "verMiniaturasAnteriores": "Ver miniaturas anteriores",
+    "verMiniaturasSiguientes": "Ver miniaturas siguientes",
     "tipoRegulares": "clase",
     "tipoWorkshops": "workshop",
     "tipoPersonalizadas": "clase personalizada",
@@ -269,6 +272,8 @@
     "imagenAnterior": "Imagen anterior",
     "imagenSiguiente": "Imagen siguiente",
     "verImagen": "Ver imagen {{n}}",
+    "verMiniaturasAnteriores": "Ver miniaturas anteriores",
+    "verMiniaturasSiguientes": "Ver miniaturas siguientes",
     "whatsappMensaje": "Hola! Me interesa la pieza \"{{title}}\" (€{{price}}). ¿Está disponible?"
   },
   "novedades": {
@@ -284,6 +289,7 @@
   "novedadDetalle": {
     "cargando": "Cargando…",
     "noEncontradaTitle": "Novedad no encontrada",
+    "verMapa": "Ver en Google Maps",
     "volver": "Volver a novedades",
     "verInstagram": "Ver en Instagram"
   },

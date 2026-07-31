@@ -202,6 +202,7 @@
     "categoriaWorkshops": "Workshops",
     "categoriaPersonalizadas": "Personalized classes",
     "destacados": "Featured",
+    "proximosEventos": "Upcoming events",
     "eventosPasados": "Past events",
     "sinPasados": "No past events yet.",
     "todas": "All",
@@ -230,6 +231,8 @@
     "imagenAnterior": "Previous image",
     "imagenSiguiente": "Next image",
     "verImagen": "View image {{n}}",
+    "verMiniaturasAnteriores": "View previous thumbnails",
+    "verMiniaturasSiguientes": "View next thumbnails",
     "tipoRegulares": "class",
     "tipoWorkshops": "workshop",
     "tipoPersonalizadas": "personalized class",
@@ -268,6 +271,8 @@
     "imagenAnterior": "Previous image",
     "imagenSiguiente": "Next image",
     "verImagen": "View image {{n}}",
+    "verMiniaturasAnteriores": "View previous thumbnails",
+    "verMiniaturasSiguientes": "View next thumbnails",
     "whatsappMensaje": "Hi! I'm interested in the piece \"{{title}}\" (€{{price}}). Is it available?"
   },
   "novedades": {
@@ -283,6 +288,7 @@
   "novedadDetalle": {
     "cargando": "Loading…",
     "noEncontradaTitle": "News item not found",
+    "verMapa": "View on Google Maps",
     "volver": "Back to news",
     "verInstagram": "View on Instagram"
   },

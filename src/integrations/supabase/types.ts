@@ -312,6 +312,7 @@ export type Database = {
           id: string
           image_url: string | null
           instagram_url: string | null
+          location_map_url: string | null
           is_published: boolean
           published_at: string | null
           title: string
@@ -325,6 +326,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           instagram_url?: string | null
+          location_map_url?: string | null
           is_published?: boolean
           published_at?: string | null
           title: string
@@ -338,6 +340,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           instagram_url?: string | null
+          location_map_url?: string | null
           is_published?: boolean
           published_at?: string | null
           title?: string

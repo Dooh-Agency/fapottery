@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Link } from "@/components/LocalizedLink";
@@ -10,7 +10,7 @@ import { es, enUS } from "date-fns/locale";
 import { getLanguageFromPathname } from "@/i18n";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, CalendarDays, Clock, Users, MapPin, ExternalLink, MessageCircle, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, CalendarDays, Clock, Users, MapPin, ExternalLink, MessageCircle, ChevronDown, ChevronLeft, ChevronRight, ChevronUp } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { renderActivityDescription, renderBoldText } from "@/lib/richText";
 import EventInterestDialog from "@/components/EventInterestDialog";
@@ -33,15 +33,36 @@ const ClaseDetalle = () => {
   const { data: classTypes, isLoading: loadingTypes } = useClassTypes(true);
   const item = classTypes?.find((ct) => ct.id === id);
   const { data: schedules, isLoading: loadingSchedules } = useClassSchedules(id);
+  const rawGalleryImages: string[] = item?.images || [];
+  const coverImageUrl = (item as any)?.image_url;
+  const images: string[] = coverImageUrl
+    ? [coverImageUrl, ...rawGalleryImages.filter((url) => url !== coverImageUrl)]
+    : rawGalleryImages;
+  const imagesKey = images.join("|");
   const [selectedImgIdx, setSelectedImgIdx] = useState(0);
   const [selectedOptionIdx, setSelectedOptionIdx] = useState(0);
   const [interestOpen, setInterestOpen] = useState(false);
+  const [hasHiddenThumbnails, setHasHiddenThumbnails] = useState(false);
+  const thumbnailScrollRef = useRef<HTMLDivElement>(null);
 
   const formatTime = (time: string) => time.slice(0, 5);
 
   const upcoming = (schedules || []).filter(
     (s) => !s.is_cancelled && new Date(s.scheduled_date + "T23:59:59") >= new Date()
   );
+
+  useEffect(() => {
+    const container = thumbnailScrollRef.current;
+    if (!container) return;
+
+    // Las flechas aparecen únicamente cuando la columna no alcanza a mostrar toda la galería.
+    const updateOverflow = () => setHasHiddenThumbnails(container.scrollHeight > container.clientHeight + 1);
+    updateOverflow();
+
+    const observer = new ResizeObserver(updateOverflow);
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, [imagesKey]);
 
   if (loadingTypes) {
     return (
@@ -74,10 +95,6 @@ const ClaseDetalle = () => {
   const description = (isEn && cta.description_en) || item.description;
   const faq: { question: string; answer: string }[] =
     (isEn && Array.isArray(cta.faq_en) && cta.faq_en.length > 0 ? cta.faq_en : Array.isArray(cta.faq) ? cta.faq : []);
-  const galleryImages: string[] = item.images || [];
-  const images: string[] = cta.image_url
-    ? [cta.image_url, ...galleryImages.filter((url) => url !== cta.image_url)]
-    : galleryImages;
   const tipoLabel = t(TIPO_LABEL_KEYS[cta.category] || TIPO_LABEL_KEYS.regulares);
   const options: { label: string; price: number }[] = Array.isArray(cta.options) ? cta.options : [];
   const locations: { name: string; map_url?: string }[] = Array.isArray(cta.locations) ? cta.locations : [];
@@ -102,6 +119,13 @@ const ClaseDetalle = () => {
     return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
   };
 
+  const scrollThumbnails = (direction: "up" | "down") => {
+    thumbnailScrollRef.current?.scrollBy({
+      top: direction === "up" ? -176 : 176,
+      behavior: "smooth",
+    });
+  };
+
   return (
     <Layout>
       <SEO title={title} description={description?.slice(0, 155) || ""} path={`/actividades/${item.id}`} />
@@ -115,32 +139,71 @@ const ClaseDetalle = () => {
             {/* Galería */}
             <div>
               {images.length > 0 ? (
-                <div className="flex flex-col-reverse md:flex-row gap-3">
-                  {/* Miniaturas — columna a la izquierda en desktop */}
+                <div className="relative md:pl-[92px]">
+                  {/* Miniaturas: en desktop se recortan al alto de la foto y se recorren con flechas. */}
                   {images.length > 1 && (
-                    <div className="flex md:flex-col gap-2 overflow-x-auto md:overflow-y-auto md:justify-between md:self-stretch md:min-h-0 shrink-0 md:bg-secondary/50 md:p-2">
-                      {images.map((url, idx) => (
-                        <button
-                          key={idx}
-                          onClick={() => setSelectedImgIdx(idx)}
-                          className={`w-16 h-16 md:w-20 md:h-20 flex-shrink-0 overflow-hidden border-2 transition-colors ${
-                            idx === selectedImgIdx ? "border-foreground" : "border-transparent hover:border-border"
-                          }`}
-                          aria-label={t("claseDetalle.verImagen", { n: idx + 1 })}
-                          aria-current={idx === selectedImgIdx ? "true" : undefined}
-                        >
-                          <img src={url} alt="" className="w-full h-full object-cover" />
-                        </button>
-                      ))}
-                    </div>
+                    <>
+                      <div className="hidden md:flex md:absolute md:left-0 md:top-0 md:bottom-0 md:w-20 md:min-h-0">
+                        {hasHiddenThumbnails && (
+                          <button
+                            type="button"
+                            onClick={() => scrollThumbnails("up")}
+                            className="absolute left-1/2 top-1 z-10 flex h-6 w-6 -translate-x-1/2 items-center justify-center rounded-full bg-background/85 text-muted-foreground shadow-sm hover:text-foreground"
+                            aria-label={t("claseDetalle.verMiniaturasAnteriores")}
+                          >
+                            <ChevronUp className="h-4 w-4" />
+                          </button>
+                        )}
+                        <div ref={thumbnailScrollRef} className="flex min-h-0 flex-1 flex-col items-start gap-2 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                          {images.map((url, idx) => (
+                            <button
+                              key={idx}
+                              onClick={() => setSelectedImgIdx(idx)}
+                              className={`w-20 h-20 flex-shrink-0 overflow-hidden border-2 transition-colors ${
+                                idx === selectedImgIdx ? "border-foreground" : "border-transparent hover:border-border"
+                              }`}
+                              aria-label={t("claseDetalle.verImagen", { n: idx + 1 })}
+                              aria-current={idx === selectedImgIdx ? "true" : undefined}
+                            >
+                              <img src={url} alt="" className="w-full h-full object-cover" />
+                            </button>
+                          ))}
+                        </div>
+                        {hasHiddenThumbnails && (
+                          <button
+                            type="button"
+                            onClick={() => scrollThumbnails("down")}
+                            className="absolute bottom-1 left-1/2 z-10 flex h-6 w-6 -translate-x-1/2 items-center justify-center rounded-full bg-background/85 text-muted-foreground shadow-sm hover:text-foreground"
+                            aria-label={t("claseDetalle.verMiniaturasSiguientes")}
+                          >
+                            <ChevronDown className="h-4 w-4" />
+                          </button>
+                        )}
+                      </div>
+                      <div className="order-2 mt-3 flex gap-2 overflow-x-auto md:hidden">
+                        {images.map((url, idx) => (
+                          <button
+                            key={idx}
+                            onClick={() => setSelectedImgIdx(idx)}
+                            className={`w-16 h-16 flex-shrink-0 overflow-hidden border-2 transition-colors ${
+                              idx === selectedImgIdx ? "border-foreground" : "border-transparent hover:border-border"
+                            }`}
+                            aria-label={t("claseDetalle.verImagen", { n: idx + 1 })}
+                            aria-current={idx === selectedImgIdx ? "true" : undefined}
+                          >
+                            <img src={url} alt="" className="w-full h-full object-cover" />
+                          </button>
+                        ))}
+                      </div>
+                    </>
                   )}
 
                   {/* Imagen principal */}
-                  <div className="relative flex-1 aspect-[4/5] bg-muted overflow-hidden">
+                  <div className="relative order-1 aspect-[4/5] overflow-hidden">
                     <img
                       src={images[selectedImgIdx]}
                       alt={title}
-                      className="w-full h-full object-contain"
+                      className="w-full h-full object-contain object-top"
                       loading="lazy"
                     />
                     {images.length > 1 && (

@@ -13,7 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
-import { CalendarIcon, Plus, Trash2, Bold, Upload, X, PanelTop, Pencil } from "lucide-react";
+import { CalendarIcon, Plus, Trash2, Bold, Upload, X, PanelTop, Pencil, GripVertical } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { cn } from "@/lib/utils";
@@ -103,6 +103,7 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
   });
 
   const [images, setImages] = useState<string[]>([]);
+  const [draggedGalleryIndex, setDraggedGalleryIndex] = useState<number | null>(null);
   const [uploadingGallery, setUploadingGallery] = useState(false);
   const [editingSchedule, setEditingSchedule] = useState<ClassSchedule | null>(null);
   const [scheduleDialogOpen, setScheduleDialogOpen] = useState(false);
@@ -176,6 +177,16 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
 
   const removeGalleryImage = (idx: number) => {
     setImages((prev) => prev.filter((_, i) => i !== idx));
+  };
+
+  const moveGalleryImage = (fromIndex: number, toIndex: number) => {
+    if (fromIndex === toIndex) return;
+    setImages((prev) => {
+      const next = [...prev];
+      const [image] = next.splice(fromIndex, 1);
+      next.splice(toIndex, 0, image);
+      return next;
+    });
   };
 
   const wrapSelectionBold = (el: HTMLTextAreaElement | null, fieldName: "description" | `faq.${number}.answer`) => {
@@ -349,11 +360,36 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
             {/* Galería de imágenes adicionales (vista de detalle) */}
             <div className="space-y-2">
               <p className="text-sm font-medium">Galería adicional (opcional)</p>
-              <p className="text-xs text-muted-foreground">Se muestran como slider con miniaturas en la vista de detalle de la clase.</p>
+              <p className="text-xs text-muted-foreground">Arrastrá las imágenes para ordenar las miniaturas. La primera será la imagen inicial de la galería.</p>
               <div className="flex flex-wrap gap-2">
                 {images.map((url, i) => (
-                  <div key={i} className="relative w-20 h-20 border border-border overflow-hidden group">
+                  <div
+                    key={url}
+                    draggable
+                    onDragStart={(event) => {
+                      setDraggedGalleryIndex(i);
+                      event.dataTransfer.effectAllowed = "move";
+                      event.dataTransfer.setData("text/plain", String(i));
+                    }}
+                    onDragEnd={() => setDraggedGalleryIndex(null)}
+                    onDragOver={(event) => {
+                      event.preventDefault();
+                      event.dataTransfer.dropEffect = "move";
+                    }}
+                    onDrop={(event) => {
+                      event.preventDefault();
+                      const sourceIndex = draggedGalleryIndex ?? Number(event.dataTransfer.getData("text/plain"));
+                      if (Number.isInteger(sourceIndex)) moveGalleryImage(sourceIndex, i);
+                      setDraggedGalleryIndex(null);
+                    }}
+                    className={`relative w-20 h-20 border border-border overflow-hidden group cursor-grab active:cursor-grabbing ${
+                      draggedGalleryIndex === i ? "opacity-50" : ""
+                    }`}
+                  >
                     <img src={url} alt="" className="w-full h-full object-cover" />
+                    <span className="absolute bottom-1 left-1 rounded-sm bg-foreground/75 p-1 text-primary-foreground" aria-hidden="true">
+                      <GripVertical className="h-4 w-4" />
+                    </span>
                     <button
                       type="button"
                       onClick={() => removeGalleryImage(i)}

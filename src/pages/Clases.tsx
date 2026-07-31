@@ -37,7 +37,8 @@ const Clases = () => {
   };
 
   const isPastFilter = filter === "pasados";
-  const categoryFilter = isPastFilter ? "all" : filter;
+  const isUpcomingFilter = filter === "proximos";
+  const categoryFilter = isPastFilter || isUpcomingFilter ? "all" : filter;
 
   const all = classTypes || [];
   const filtered = categoryFilter === "all" ? all : all.filter((ct) => ct.category === categoryFilter);
@@ -45,8 +46,19 @@ const Clases = () => {
   const featured = all.filter((ct) => ct.is_featured && !isPastClassType(ct));
   const featuredIds = new Set(featured.map((ct) => ct.id));
 
-  const current = filtered.filter((ct) => !isPastClassType(ct) && !featuredIds.has(ct.id));
+  const current = filtered.filter((ct) => {
+    if (isPastClassType(ct)) return false;
+    if (isUpcomingFilter) return ct.category === "workshops";
+    // En "Todas" los destacados se muestran en su bloque principal; en los demás filtros son parte del resultado normal.
+    return filter !== "all" || !featuredIds.has(ct.id);
+  });
   const past = filtered.filter((ct) => isPastClassType(ct));
+  const featuredHeading = featured.length === 1 ? featured[0] : null;
+  const featuredCategory = featuredHeading?.category === "workshops"
+    ? "WORKSHOP"
+    : featuredHeading?.category
+      ? CATEGORY_LABELS[featuredHeading.category]?.toUpperCase()
+      : "";
 
   const renderCard = (ct: ClassTypeWithSchedules, big = false) => {
     const cta = ct as any;
@@ -67,7 +79,7 @@ const Clases = () => {
           </span>
         )}
         {cta.image_url && (
-          <div className={big ? "md:w-1/2 aspect-[4/5] md:aspect-auto overflow-hidden" : "aspect-[4/5] overflow-hidden"}>
+          <div className={big ? "md:w-[35%] aspect-[4/5] overflow-hidden" : "aspect-[4/5] overflow-hidden"}>
             <img
               src={cta.image_url}
               alt={title}
@@ -76,17 +88,17 @@ const Clases = () => {
             />
           </div>
         )}
-        <div className={`p-5 flex flex-col flex-1 ${big ? "md:p-8 md:justify-center" : ""}`}>
+          <div className={`p-4 flex flex-col flex-1 ${big ? "md:p-6 md:justify-center" : ""}`}>
           {cta.category && (
             <span className="label-sm mb-2">{CATEGORY_LABELS[cta.category] || cta.category}</span>
           )}
-          <h2 className={big ? "font-serif font-bold text-2xl md:text-3xl mb-3" : "font-serif font-bold text-lg mb-2"}>
+          <h2 className={big ? "font-serif font-bold text-2xl mb-3" : "font-serif font-bold text-base mb-2"}>
             {title}
           </h2>
           {description && (
-            <p className={`body-text whitespace-pre-line flex-1 ${big ? "line-clamp-4 md:line-clamp-6" : "line-clamp-3"}`}>{renderBoldText(stripActivityDescriptionMarkup(description))}</p>
+            <p className={`body-text whitespace-pre-line flex-1 ${big ? "line-clamp-4" : "line-clamp-2 text-sm"}`}>{renderBoldText(stripActivityDescriptionMarkup(description))}</p>
           )}
-          <div className="flex items-center justify-between mt-3">
+          <div className="flex items-center justify-between mt-2">
             {Number(ct.price) > 0 && (
               <span className={big ? "text-base font-serif font-semibold text-foreground" : "text-sm font-serif font-semibold text-foreground"}>
                 €{ct.price}
@@ -138,30 +150,8 @@ const Clases = () => {
 
           {!isLoading && all.length > 0 && (
             <>
-              {/* Destacados */}
-              {!isPastFilter && featured.length > 0 && (
-                <div className="mb-16">
-                  <h2 className="font-serif text-xl md:text-2xl mb-6">{t("clases.destacados")}</h2>
-                  {featured.length === 1 ? (
-                    renderCard(featured[0], true)
-                  ) : (
-                    <Carousel opts={{ align: "start" }}>
-                      <CarouselContent>
-                        {featured.map((ct) => (
-                          <CarouselItem key={ct.id} className="basis-full lg:basis-[85%]">
-                            {renderCard(ct, true)}
-                          </CarouselItem>
-                        ))}
-                      </CarouselContent>
-                      <CarouselPrevious />
-                      <CarouselNext />
-                    </Carousel>
-                  )}
-                </div>
-              )}
-
               {/* Filtro por categoría */}
-              <div className="flex flex-wrap justify-center gap-2 mb-10" role="group" aria-label={t("clases.filtrarAria")}>
+              <div className="flex flex-wrap justify-center gap-2 mb-12" role="group" aria-label={t("clases.filtrarAria")}>
                 <button
                   onClick={() => setFilter("all")}
                   aria-pressed={filter === "all"}
@@ -188,6 +178,17 @@ const Clases = () => {
                   </button>
                 ))}
                 <button
+                  onClick={() => setFilter("proximos")}
+                  aria-pressed={isUpcomingFilter}
+                  className={`font-sans text-xs uppercase tracking-[0.15em] px-4 py-2 border transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring ${
+                    isUpcomingFilter
+                      ? "border-foreground bg-foreground text-primary-foreground"
+                      : "border-border text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {t("clases.proximosEventos")}
+                </button>
+                <button
                   onClick={() => setFilter("pasados")}
                   aria-pressed={isPastFilter}
                   className={`font-sans text-xs uppercase tracking-[0.15em] px-4 py-2 border transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring ${
@@ -200,9 +201,37 @@ const Clases = () => {
                 </button>
               </div>
 
+              {/* Destacados */}
+              {filter === "all" && featured.length > 0 && (
+                <div className="mb-14">
+                  {featuredHeading ? (
+                    <h2 className="mb-5 font-sans text-sm font-medium uppercase tracking-[0.08em] text-foreground">
+                      {t("clases.destacados").toUpperCase()} : {featuredCategory} : <span className="font-bold">{((isEn && (featuredHeading as any).title_en) || featuredHeading.title).toUpperCase()}</span>
+                    </h2>
+                  ) : (
+                    <h2 className="mb-5 font-sans text-sm font-medium uppercase tracking-[0.08em] text-foreground">{t("clases.destacados")}</h2>
+                  )}
+                  {featured.length === 1 ? (
+                    renderCard(featured[0], true)
+                  ) : (
+                    <Carousel opts={{ align: "start" }}>
+                      <CarouselContent>
+                        {featured.map((ct) => (
+                          <CarouselItem key={ct.id} className="basis-full lg:basis-[85%]">
+                            {renderCard(ct, true)}
+                          </CarouselItem>
+                        ))}
+                      </CarouselContent>
+                      <CarouselPrevious />
+                      <CarouselNext />
+                    </Carousel>
+                  )}
+                </div>
+              )}
+
               {/* Próximas / vigentes, o pasadas si se eligió ese filtro */}
               {(isPastFilter ? past : current).length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[21px]">
                   {(isPastFilter ? past : current).map((ct) => renderCard(ct))}
                 </div>
               ) : (
@@ -212,10 +241,10 @@ const Clases = () => {
               )}
 
               {/* Pasadas (listado automático debajo, salvo que ya se estén mostrando arriba) */}
-              {!isPastFilter && past.length > 0 && (
+              {filter === "all" && past.length > 0 && (
                 <div className="mt-20">
                   <h2 className="font-serif text-xl md:text-2xl mb-6">{t("clases.eventosPasados")}</h2>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[21px]">
                     {past.map((ct) => renderCard(ct))}
                   </div>
                 </div>
