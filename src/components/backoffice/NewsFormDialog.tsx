@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Bold, PanelTop } from "lucide-react";
+import { Bold, Link, PanelTop, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import type { NewsItem } from "@/hooks/useNews";
 
@@ -21,6 +21,7 @@ export function NewsFormDialog({ open, onOpenChange, initial, onSave, saving }: 
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [imageUrl, setImageUrl] = useState("");
+  const [images, setImages] = useState<string[]>([]);
   const [instagramUrl, setInstagramUrl] = useState("");
   const [locationMapUrl, setLocationMapUrl] = useState("");
   const [isPublished, setIsPublished] = useState(false);
@@ -32,6 +33,7 @@ export function NewsFormDialog({ open, onOpenChange, initial, onSave, saving }: 
       setTitle(initial?.title ?? "");
       setBody(initial?.body ?? "");
       setImageUrl(initial?.image_url ?? "");
+      setImages(initial?.images ?? []);
       setInstagramUrl(initial?.instagram_url ?? "");
       setLocationMapUrl(initial?.location_map_url ?? "");
       setIsPublished(initial?.is_published ?? false);
@@ -80,6 +82,47 @@ export function NewsFormDialog({ open, onOpenChange, initial, onSave, saving }: 
     });
   };
 
+  const wrapSelectionAsLink = () => {
+    const textarea = bodyRef.current;
+    if (!textarea || textarea.selectionStart === textarea.selectionEnd) return;
+    const url = window.prompt("Pegá la URL del enlace (https://...)");
+    if (!url) return;
+    try {
+      const parsed = new URL(url);
+      if (parsed.protocol !== "https:" && parsed.protocol !== "http:") throw new Error();
+    } catch {
+      window.alert("Ingresá una URL válida que empiece por http:// o https://");
+      return;
+    }
+    const { selectionStart, selectionEnd, value } = textarea;
+    const selected = value.slice(selectionStart, selectionEnd);
+    const link = `[${selected}](${url})`;
+    setBody(value.slice(0, selectionStart) + link + value.slice(selectionEnd));
+    requestAnimationFrame(() => {
+      textarea.focus();
+      textarea.setSelectionRange(selectionStart + 1, selectionStart + 1 + selected.length);
+    });
+  };
+
+  const handleGalleryUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files?.length) return;
+    setUploading(true);
+    try {
+      const urls = await Promise.all(Array.from(files).map(async (file) => {
+        const extension = file.name.split(".").pop();
+        const path = `${crypto.randomUUID()}.${extension}`;
+        const { error } = await supabase.storage.from("news-images").upload(path, file);
+        if (error) throw error;
+        return supabase.storage.from("news-images").getPublicUrl(path).data.publicUrl;
+      }));
+      setImages((current) => [...current, ...urls]);
+    } finally {
+      setUploading(false);
+      e.target.value = "";
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const values: Partial<NewsItem> & { title: string } = {
@@ -87,6 +130,7 @@ export function NewsFormDialog({ open, onOpenChange, initial, onSave, saving }: 
       title,
       body: body || null,
       image_url: imageUrl || null,
+      images,
       instagram_url: instagramUrl || null,
       is_published: isPublished,
       published_at: isPublished ? (initial?.published_at ?? new Date().toISOString()) : null,
@@ -124,10 +168,32 @@ export function NewsFormDialog({ open, onOpenChange, initial, onSave, saving }: 
                   <PanelTop className="h-4 w-4" />
                   <span className="sr-only">Destacado</span>
                 </Button>
+                <Button type="button" variant="outline" size="sm" onClick={wrapSelectionAsLink} title="Insertar enlace">
+                  <Link className="h-4 w-4" />
+                  <span className="sr-only">Insertar enlace</span>
+                </Button>
               </div>
             </div>
             <Textarea ref={bodyRef} value={body} onChange={(e) => setBody(e.target.value)} rows={7} />
-            <p className="text-xs text-muted-foreground">Seleccioná un texto y usá los botones para ponerlo en negrita o destacado.</p>
+            <p className="text-xs text-muted-foreground">Seleccioná un texto y usá los botones para ponerlo en negrita, destacado o enlazado.</p>
+          </div>
+          <div className="space-y-2">
+            <Label>Galería adicional</Label>
+            {images.length > 0 && (
+              <div className="grid grid-cols-3 gap-2">
+                {images.map((url, index) => (
+                  <div key={url} className="relative aspect-square overflow-hidden border border-border">
+                    <img src={url} alt="" className="h-full w-full object-cover" />
+                    <Button type="button" variant="destructive" size="icon" className="absolute right-1 top-1 h-7 w-7" onClick={() => setImages((current) => current.filter((_, i) => i !== index))}>
+                      <Trash2 className="h-3.5 w-3.5" />
+                      <span className="sr-only">Quitar imagen</span>
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            )}
+            <Input type="file" accept="image/*" multiple onChange={handleGalleryUpload} disabled={uploading} />
+            <p className="text-xs text-muted-foreground">Estas imágenes aparecerán después de la portada en el detalle público.</p>
           </div>
           <div>
             <Label>Imagen</Label>

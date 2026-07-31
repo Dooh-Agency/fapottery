@@ -23,10 +23,38 @@
     "buenosAiresLabel": "Buenos Aires, Argentina",
     "enlaces": "Enlaces del pie de página",
     "derechos": "Todos los derechos reservados.",
+    "privacidad": "Privacidad",
+    "cookies": "Cookies",
     "instagramAria": "Instagram de FA Pottery",
     "facebookAria": "Facebook de FA Pottery"
   },
   "skipLink": "Saltar al contenido principal",
+  "cookies": {
+    "title": "Política de cookies",
+    "intro": "Esta política explica qué cookies y tecnologías similares puede utilizar el sitio web de FA Pottery Studio.",
+    "sections": {
+      "what": {
+        "title": "Qué son las cookies",
+        "body": "Las cookies son pequeños archivos que se guardan en tu dispositivo al visitar una web. Permiten recordar determinadas preferencias y entender cómo se utiliza el sitio."
+      },
+      "technical": {
+        "title": "Cookies técnicas",
+        "body": "El sitio puede usar cookies estrictamente necesarias para su funcionamiento. En el área de gestión interna se guarda una cookie para recordar el estado visual del menú lateral."
+      },
+      "analytics": {
+        "title": "Medición y marketing",
+        "body": "Utilizamos Google Tag Manager para gestionar etiquetas de medición y campañas. Las cookies concretas que puedan instalarse dependen de los servicios activados mediante esa herramienta."
+      },
+      "manage": {
+        "title": "Cómo gestionar las cookies",
+        "body": "Puedes eliminar o bloquear cookies desde la configuración de tu navegador. Tené en cuenta que bloquear las cookies técnicas puede afectar al funcionamiento de algunas partes del sitio."
+      },
+      "contact": {
+        "title": "Más información",
+        "body": "Si tenés preguntas sobre el uso de cookies o el tratamiento de tus datos, escribinos a hola@fapottery.com. También puedes consultar nuestra Política de privacidad."
+      }
+    }
+  },
   "seo": {
     "defaultTitle": "FA Pottery Studio — Cerámica desde una mirada personal",
     "defaultDescription": "FA Pottery Studio por Florencia Alvarez. Cerámica artesanal, clases y producción en Málaga y Buenos Aires."
@@ -190,6 +218,7 @@
     "cta": "CONTÁCTAME"
   },
   "clases": {
+    "desde": "Desde",
     "seoTitle": "Actividades",
     "seoDescription": "Reserva tu plaza en clases de cerámica. Torno, modelado, workshops y más.",
     "heroAlt": "Clases del estudio",

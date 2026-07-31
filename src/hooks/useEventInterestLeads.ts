@@ -41,3 +41,14 @@ export const useUpdateEventInterestLeadStatus = () => {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["event_interest_leads"] }),
   });
 };
+
+export const useDeleteEventInterestLead = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("event_interest_leads").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["event_interest_leads"] }),
+  });
+};

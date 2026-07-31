@@ -311,6 +311,7 @@ export type Database = {
           created_at: string
           id: string
           image_url: string | null
+          images: string[]
           instagram_url: string | null
           location_map_url: string | null
           is_published: boolean
@@ -325,6 +326,7 @@ export type Database = {
           created_at?: string
           id?: string
           image_url?: string | null
+          images?: string[]
           instagram_url?: string | null
           location_map_url?: string | null
           is_published?: boolean
@@ -339,6 +341,7 @@ export type Database = {
           created_at?: string
           id?: string
           image_url?: string | null
+          images?: string[]
           instagram_url?: string | null
           location_map_url?: string | null
           is_published?: boolean

@@ -4,11 +4,12 @@ import { Link } from "@/components/LocalizedLink";
 import Layout from "@/components/Layout";
 import SEO from "@/components/SEO";
 import { useNews } from "@/hooks/useNews";
-import { Instagram, ArrowLeft, ExternalLink, MapPin } from "lucide-react";
+import { Instagram, ArrowLeft, ChevronLeft, ChevronRight, ExternalLink, MapPin } from "lucide-react";
 import { format } from "date-fns";
 import { es, enUS } from "date-fns/locale";
 import { getLanguageFromPathname } from "@/i18n";
 import { renderActivityDescription } from "@/lib/richText";
+import { useState } from "react";
 
 const NovedadDetalle = () => {
   const { id } = useParams<{ id: string }>();
@@ -18,6 +19,7 @@ const NovedadDetalle = () => {
   const location = useLocation();
   const isEn = getLanguageFromPathname(location.pathname) === "en";
   const dateLocale = isEn ? enUS : es;
+  const [selectedImage, setSelectedImage] = useState(0);
 
   if (isLoading) {
     return (
@@ -47,6 +49,7 @@ const NovedadDetalle = () => {
 
   const title = (isEn && item.title_en) || item.title;
   const body = (isEn && item.body_en) || item.body;
+  const images = [item.image_url, ...(item.images || [])].filter((image): image is string => Boolean(image));
 
   return (
     <Layout>
@@ -59,18 +62,31 @@ const NovedadDetalle = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-start">
             {/* Image */}
-            {item.image_url && (
-              <div className="w-full overflow-hidden">
-                <img
-                  src={item.image_url}
+            {images.length > 0 && (
+              <div className="w-full">
+                <div className="relative overflow-hidden">
+                  <img
+                  src={images[selectedImage]}
                   alt={title}
                   className="w-full h-auto object-cover"
                 />
+                  {images.length > 1 && (
+                    <>
+                      <button type="button" aria-label="Imagen anterior" onClick={() => setSelectedImage((current) => (current - 1 + images.length) % images.length)} className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-background/80 p-2 hover:bg-background">
+                        <ChevronLeft className="h-5 w-5" />
+                      </button>
+                      <button type="button" aria-label="Imagen siguiente" onClick={() => setSelectedImage((current) => (current + 1) % images.length)} className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-background/80 p-2 hover:bg-background">
+                        <ChevronRight className="h-5 w-5" />
+                      </button>
+                    </>
+                  )}
+                </div>
+                {images.length > 1 && <div className="mt-3 flex gap-2 overflow-x-auto">{images.map((image, index) => <button type="button" key={image} onClick={() => setSelectedImage(index)} className={`h-16 w-16 shrink-0 overflow-hidden border ${selectedImage === index ? "border-foreground" : "border-border"}`}><img src={image} alt="" className="h-full w-full object-cover" /></button>)}</div>}
               </div>
             )}
 
             {/* Content */}
-            <div className={!item.image_url ? "md:col-span-2 max-w-2xl" : ""}>
+            <div className={images.length === 0 ? "md:col-span-2 max-w-2xl" : ""}>
               {item.published_at && (
                 <time className="label-sm block mb-3" dateTime={item.published_at}>
                   {format(new Date(item.published_at), dateLocale === enUS ? "MMMM d, yyyy" : "d 'de' MMMM yyyy", { locale: dateLocale })}

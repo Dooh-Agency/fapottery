@@ -1,11 +1,11 @@
-import { useReservations, useUpdateReservationStatus, type ClassReservation } from "@/hooks/useClasses";
+import { useDeleteReservation, useReservations, useUpdateReservationStatus } from "@/hooks/useClasses";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { toast } from "sonner";
-import { Check, X } from "lucide-react";
+import { Check, Trash2, X } from "lucide-react";
 
 const statusLabels: Record<string, string> = { pending: "Pendiente", confirmed: "Confirmada", cancelled: "Cancelada" };
 const statusVariant: Record<string, "default" | "secondary" | "destructive"> = { pending: "secondary", confirmed: "default", cancelled: "destructive" };
@@ -14,6 +14,7 @@ const paymentLabels: Record<string, string> = { stripe: "Stripe", cash: "Efectiv
 const ReservationsList = () => {
   const { data: reservations, isLoading } = useReservations();
   const updateStatus = useUpdateReservationStatus();
+  const deleteReservation = useDeleteReservation();
 
   const handleStatus = async (id: string, status: string) => {
     try {
@@ -21,6 +22,16 @@ const ReservationsList = () => {
       toast.success(`Reserva ${statusLabels[status]?.toLowerCase()}`);
     } catch (e: any) {
       toast.error(e.message);
+    }
+  };
+
+  const handleDelete = async (id: string, name: string) => {
+    if (!confirm(`¿Eliminar la reserva de ${name}? Esta acción no se puede deshacer.`)) return;
+    try {
+      await deleteReservation.mutateAsync(id);
+      toast.success("Reserva eliminada");
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : "No se pudo eliminar la reserva");
     }
   };
 
@@ -68,6 +79,9 @@ const ReservationsList = () => {
                   </Button>
                 </div>
               )}
+              <Button variant="ghost" size="icon" title="Eliminar reserva" disabled={deleteReservation.isPending} onClick={() => handleDelete(r.id, r.full_name)}>
+                <Trash2 className="h-4 w-4 text-destructive" />
+              </Button>
             </TableCell>
           </TableRow>
         ))}

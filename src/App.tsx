@@ -37,6 +37,7 @@ import SiteImagesManager from "./pages/backoffice/SiteImagesManager";
 import HomeServicesManager from "./pages/backoffice/HomeServicesManager";
 import Placeholder from "./pages/backoffice/Placeholder";
 import Privacy from "./pages/Privacy";
+import CookiePolicy from "./pages/CookiePolicy";
 import EventInterestLeadsManager from "./pages/backoffice/EventInterestLeadsManager";
 
 const queryClient = new QueryClient();
@@ -83,6 +84,7 @@ const PublicPages = () => (
     <Route path="/breakfast-and-paint" element={<BreakfastPaint />} />
     <Route path="/breakfast-and-paint-agosto" element={<BreakfastPaintAugust />} />
     <Route path="/privacidad" element={<Privacy />} />
+    <Route path="/cookies" element={<CookiePolicy />} />
     <Route path="/actividades" element={<Clases />} />
     <Route path="/actividades/:id" element={<ClaseDetalle />} />
     <Route path="/clases" element={<RedirectToActividades />} />
