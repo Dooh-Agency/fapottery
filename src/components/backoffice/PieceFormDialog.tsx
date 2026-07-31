@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { X, Upload } from "lucide-react";
+import { GripVertical, X, Upload } from "lucide-react";
 import { useUpsertPiece, uploadPieceImage, type Piece } from "@/hooks/usePieces";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -38,6 +38,7 @@ const PieceFormDialog = ({ open, onOpenChange, piece }: Props) => {
   const [published, setPublished] = useState(false);
   const [images, setImages] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [draggedImageIndex, setDraggedImageIndex] = useState<number | null>(null);
 
   useEffect(() => {
     if (piece) {
@@ -74,6 +75,16 @@ const PieceFormDialog = ({ open, onOpenChange, piece }: Props) => {
 
   const removeImage = (idx: number) => {
     setImages((prev) => prev.filter((_, i) => i !== idx));
+  };
+
+  const moveImage = (fromIndex: number, toIndex: number) => {
+    if (fromIndex === toIndex) return;
+    setImages((prev) => {
+      const next = [...prev];
+      const [image] = next.splice(fromIndex, 1);
+      next.splice(toIndex, 0, image);
+      return next;
+    });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -137,10 +148,36 @@ const PieceFormDialog = ({ open, onOpenChange, piece }: Props) => {
           {/* Images */}
           <div className="space-y-2">
             <Label className="font-sans text-xs uppercase tracking-wider">Imágenes</Label>
+            <p className="text-xs text-muted-foreground">Arrastrá las imágenes para cambiar el orden de la galería.</p>
             <div className="flex flex-wrap gap-2">
               {images.map((url, i) => (
-                <div key={i} className="relative w-20 h-20 border border-border overflow-hidden group">
+                <div
+                  key={url}
+                  draggable
+                  onDragStart={(event) => {
+                    setDraggedImageIndex(i);
+                    event.dataTransfer.effectAllowed = "move";
+                    event.dataTransfer.setData("text/plain", String(i));
+                  }}
+                  onDragEnd={() => setDraggedImageIndex(null)}
+                  onDragOver={(event) => {
+                    event.preventDefault();
+                    event.dataTransfer.dropEffect = "move";
+                  }}
+                  onDrop={(event) => {
+                    event.preventDefault();
+                    const sourceIndex = draggedImageIndex ?? Number(event.dataTransfer.getData("text/plain"));
+                    if (Number.isInteger(sourceIndex)) moveImage(sourceIndex, i);
+                    setDraggedImageIndex(null);
+                  }}
+                  className={`relative w-20 h-20 border border-border overflow-hidden group cursor-grab active:cursor-grabbing ${
+                    draggedImageIndex === i ? "opacity-50" : ""
+                  }`}
+                >
                   <img src={url} alt="" className="w-full h-full object-cover" />
+                  <span className="absolute bottom-1 left-1 rounded-sm bg-foreground/75 p-1 text-primary-foreground" aria-hidden="true">
+                    <GripVertical className="h-4 w-4" />
+                  </span>
                   <button
                     type="button"
                     onClick={() => removeImage(i)}

@@ -1,17 +1,19 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Link } from "@/components/LocalizedLink";
 import Layout from "@/components/Layout";
 import SEO from "@/components/SEO";
 import { usePublishedPieces, type Piece } from "@/hooks/usePieces";
-import { ArrowLeft, MessageCircle, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, MessageCircle, ChevronDown, ChevronLeft, ChevronRight, ChevronUp } from "lucide-react";
 
 const PiezaDetalle = () => {
   const { id } = useParams<{ id: string }>();
   const { data: pieces, isLoading } = usePublishedPieces();
   const piece = pieces?.find((p) => p.id === id);
   const [selectedImgIdx, setSelectedImgIdx] = useState(0);
+  const [hasHiddenThumbnails, setHasHiddenThumbnails] = useState(false);
+  const thumbnailScrollRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
 
   const categoryLabels: Record<Piece["category"], string> = {
@@ -24,9 +26,29 @@ const PiezaDetalle = () => {
   };
 
   const images = piece?.images?.filter(Boolean) ?? [];
+  const imagesKey = images.join("|");
 
   const whatsappUrl = (p: Piece) =>
     `https://wa.me/+34681816030?text=${encodeURIComponent(t("piezaDetalle.whatsappMensaje", { title: p.title, price: p.price }))}`;
+
+  const scrollThumbnails = (direction: "up" | "down") => {
+    thumbnailScrollRef.current?.scrollBy({
+      top: direction === "up" ? -176 : 176,
+      behavior: "smooth",
+    });
+  };
+
+  useEffect(() => {
+    const container = thumbnailScrollRef.current;
+    if (!container) return;
+
+    const updateOverflow = () => setHasHiddenThumbnails(container.scrollHeight > container.clientHeight + 1);
+    updateOverflow();
+
+    const observer = new ResizeObserver(updateOverflow);
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, [imagesKey]);
 
   if (isLoading) {
     return (
@@ -65,33 +87,62 @@ const PiezaDetalle = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-start">
             {/* Gallery */}
-            <div className="flex flex-col-reverse md:flex-row gap-3">
-              {/* Thumbnails — vertical sidebar like Kanso */}
+            <div className="relative md:pl-[92px]">
+              {/* Las miniaturas se recortan al alto de la foto y se recorren con flechas. */}
               {images.length > 1 && (
-                <div className="flex md:flex-col gap-2 overflow-x-auto md:overflow-y-auto md:max-h-[600px] shrink-0">
-                  {images.map((url, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setSelectedImgIdx(idx)}
-                      className={`w-16 h-16 md:w-20 md:h-20 flex-shrink-0 overflow-hidden border-2 transition-colors ${
-                        idx === selectedImgIdx ? "border-foreground" : "border-transparent hover:border-border"
-                      }`}
-                      aria-label={t("piezaDetalle.verImagen", { n: idx + 1 })}
-                      aria-current={idx === selectedImgIdx ? "true" : undefined}
-                    >
-                      <img src={url} alt="" className="w-full h-full object-cover" />
-                    </button>
-                  ))}
-                </div>
+                <>
+                  <div className="hidden md:flex md:absolute md:left-0 md:top-0 md:bottom-0 md:w-20 md:min-h-0">
+                    {hasHiddenThumbnails && (
+                      <button type="button" onClick={() => scrollThumbnails("up")} className="absolute left-1/2 top-1 z-10 flex h-6 w-6 -translate-x-1/2 items-center justify-center rounded-full bg-background/85 text-muted-foreground shadow-sm hover:text-foreground" aria-label={t("piezaDetalle.verMiniaturasAnteriores")}>
+                        <ChevronUp className="h-4 w-4" />
+                      </button>
+                    )}
+                    <div ref={thumbnailScrollRef} className="flex min-h-0 flex-1 flex-col items-start gap-2 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                      {images.map((url, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => setSelectedImgIdx(idx)}
+                          className={`w-20 h-20 flex-shrink-0 overflow-hidden border-2 transition-colors ${
+                            idx === selectedImgIdx ? "border-foreground" : "border-transparent hover:border-border"
+                          }`}
+                          aria-label={t("piezaDetalle.verImagen", { n: idx + 1 })}
+                          aria-current={idx === selectedImgIdx ? "true" : undefined}
+                        >
+                          <img src={url} alt="" className="w-full h-full object-cover" />
+                        </button>
+                      ))}
+                    </div>
+                    {hasHiddenThumbnails && (
+                      <button type="button" onClick={() => scrollThumbnails("down")} className="absolute bottom-1 left-1/2 z-10 flex h-6 w-6 -translate-x-1/2 items-center justify-center rounded-full bg-background/85 text-muted-foreground shadow-sm hover:text-foreground" aria-label={t("piezaDetalle.verMiniaturasSiguientes")}>
+                        <ChevronDown className="h-4 w-4" />
+                      </button>
+                    )}
+                  </div>
+                  <div className="order-2 mt-3 flex gap-2 overflow-x-auto md:hidden">
+                    {images.map((url, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setSelectedImgIdx(idx)}
+                        className={`w-16 h-16 flex-shrink-0 overflow-hidden border-2 transition-colors ${
+                          idx === selectedImgIdx ? "border-foreground" : "border-transparent hover:border-border"
+                        }`}
+                        aria-label={t("piezaDetalle.verImagen", { n: idx + 1 })}
+                        aria-current={idx === selectedImgIdx ? "true" : undefined}
+                      >
+                        <img src={url} alt="" className="w-full h-full object-cover" />
+                      </button>
+                    ))}
+                  </div>
+                </>
               )}
 
               {/* Main image */}
-              <div className="relative flex-1 aspect-square bg-muted overflow-hidden">
+              <div className="relative order-1 aspect-square overflow-hidden">
                 {images.length > 0 ? (
                   <img
                     src={images[selectedImgIdx]}
                     alt={piece.title}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain object-top"
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-muted-foreground text-sm">{t("catalogo.sinImagen")}</div>

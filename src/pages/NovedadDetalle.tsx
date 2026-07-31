@@ -4,10 +4,11 @@ import { Link } from "@/components/LocalizedLink";
 import Layout from "@/components/Layout";
 import SEO from "@/components/SEO";
 import { useNews } from "@/hooks/useNews";
-import { Instagram, ArrowLeft } from "lucide-react";
+import { Instagram, ArrowLeft, ExternalLink, MapPin } from "lucide-react";
 import { format } from "date-fns";
 import { es, enUS } from "date-fns/locale";
 import { getLanguageFromPathname } from "@/i18n";
+import { renderActivityDescription } from "@/lib/richText";
 
 const NovedadDetalle = () => {
   const { id } = useParams<{ id: string }>();
@@ -77,14 +78,25 @@ const NovedadDetalle = () => {
               )}
               <h1 className="font-serif text-2xl md:text-3xl lg:text-4xl mb-6">{title}</h1>
               {body && (
-                <div className="body-text whitespace-pre-line space-y-4">{body}</div>
+                <div className="body-text whitespace-pre-line space-y-4">{renderActivityDescription(body)}</div>
+              )}
+              {item.location_map_url && (
+                <a
+                  href={item.location_map_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs uppercase tracking-[0.15em] font-sans text-muted-foreground hover:text-foreground transition-colors mt-8"
+                >
+                  <MapPin className="h-4 w-4" aria-hidden="true" />
+                  {t("novedadDetalle.verMapa")} <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+                </a>
               )}
               {item.instagram_url && (
                 <a
                   href={item.instagram_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-xs uppercase tracking-[0.15em] font-sans text-muted-foreground hover:text-foreground transition-colors mt-8"
+                  className="inline-flex items-center gap-1.5 text-xs uppercase tracking-[0.15em] font-sans text-muted-foreground hover:text-foreground transition-colors mt-8 ml-5"
                 >
                   <Instagram className="h-4 w-4" aria-hidden="true" />
                   {t("novedadDetalle.verInstagram")}
