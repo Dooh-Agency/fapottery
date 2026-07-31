@@ -82,16 +82,23 @@ export function NewsFormDialog({ open, onOpenChange, initial, onSave, saving }: 
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave({
+    const values: Partial<NewsItem> & { title: string } = {
       id: initial?.id,
       title,
       body: body || null,
       image_url: imageUrl || null,
       instagram_url: instagramUrl || null,
-      location_map_url: locationMapUrl || null,
       is_published: isPublished,
       published_at: isPublished ? (initial?.published_at ?? new Date().toISOString()) : null,
-    });
+    };
+
+    // Mientras la migración de Maps no se haya aplicado, no enviamos una columna inexistente.
+    // Cuando exista, también permite limpiar un enlace ya guardado.
+    if (locationMapUrl || initial?.location_map_url) {
+      values.location_map_url = locationMapUrl || null;
+    }
+
+    onSave(values);
   };
 
   return (
