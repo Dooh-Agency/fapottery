@@ -88,6 +88,18 @@ const Footer = () => {
             © {new Date().getFullYear()} FA Pottery Studio · Ceramics Design · {t("footer.derechos")}
           </p>
           <div className="flex items-center gap-4">
+            <Link
+              to="/privacidad"
+              className="text-xs text-muted-foreground hover:text-foreground font-sans underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+            >
+              {t("footer.privacidad")}
+            </Link>
+            <Link
+              to="/cookies"
+              className="text-xs text-muted-foreground hover:text-foreground font-sans underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+            >
+              {t("footer.cookies")}
+            </Link>
             {/* Instagram */}
             <a
               href="https://instagram.com/fapottery"

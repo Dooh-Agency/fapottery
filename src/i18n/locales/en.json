@@ -23,10 +23,38 @@
     "buenosAiresLabel": "Buenos Aires, Argentina",
     "enlaces": "Footer links",
     "derechos": "All rights reserved.",
+    "privacidad": "Privacy",
+    "cookies": "Cookies",
     "instagramAria": "FA Pottery's Instagram",
     "facebookAria": "FA Pottery's Facebook"
   },
   "skipLink": "Skip to main content",
+  "cookies": {
+    "title": "Cookie policy",
+    "intro": "This policy explains which cookies and similar technologies may be used on the FA Pottery Studio website.",
+    "sections": {
+      "what": {
+        "title": "What cookies are",
+        "body": "Cookies are small files stored on your device when you visit a website. They can remember certain preferences and help understand how the site is used."
+      },
+      "technical": {
+        "title": "Technical cookies",
+        "body": "The site may use cookies that are strictly necessary for it to work. In the internal management area, a cookie is stored to remember the visual state of the sidebar menu."
+      },
+      "analytics": {
+        "title": "Analytics and marketing",
+        "body": "We use Google Tag Manager to manage analytics and campaign tags. The specific cookies that may be installed depend on the services enabled through that tool."
+      },
+      "manage": {
+        "title": "How to manage cookies",
+        "body": "You can remove or block cookies in your browser settings. Please note that blocking technical cookies may affect the operation of some parts of the site."
+      },
+      "contact": {
+        "title": "Further information",
+        "body": "If you have questions about cookie use or how we process your data, email us at hola@fapottery.com. You can also read our Privacy policy."
+      }
+    }
+  },
   "seo": {
     "defaultTitle": "FA Pottery Studio — Ceramics from a personal perspective",
     "defaultDescription": "FA Pottery Studio by Florencia Alvarez. Handmade ceramics, classes and production in Málaga and Buenos Aires."
@@ -190,6 +218,7 @@
     "cta": "CONTACT ME"
   },
   "clases": {
+    "desde": "From",
     "seoTitle": "Activities",
     "seoDescription": "Book your spot in ceramics classes. Wheel-throwing, hand-building, workshops and more.",
     "heroAlt": "Studio classes",

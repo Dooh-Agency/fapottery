@@ -4,6 +4,9 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useEventInterestLeads, useUpdateEventInterestLeadStatus } from "@/hooks/useEventInterestLeads";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
+import { useDeleteEventInterestLead } from "@/hooks/useEventInterestLeads";
 
 const statusLabels: Record<string, string> = {
   new: "Nuevo",
@@ -17,6 +20,7 @@ const sourceLabels: Record<string, string> = { landing: "Landing", popup: "Popup
 const EventInterestLeadsManager = () => {
   const { data: leads, isLoading } = useEventInterestLeads();
   const updateStatus = useUpdateEventInterestLeadStatus();
+  const deleteLead = useDeleteEventInterestLead();
 
   const updateLeadStatus = async (id: string, status: string) => {
     try {
@@ -24,6 +28,16 @@ const EventInterestLeadsManager = () => {
       toast.success("Estado actualizado");
     } catch {
       toast.error("No se pudo actualizar el estado");
+    }
+  };
+
+  const removeLead = async (id: string, email: string) => {
+    if (!confirm(`¿Eliminar la preinscripción de ${email}? Esta acción no se puede deshacer.`)) return;
+    try {
+      await deleteLead.mutateAsync(id);
+      toast.success("Preinscripción eliminada");
+    } catch {
+      toast.error("No se pudo eliminar la preinscripción");
     }
   };
 
@@ -46,6 +60,7 @@ const EventInterestLeadsManager = () => {
               <TableHead>Novedades</TableHead>
               <TableHead>Fecha</TableHead>
               <TableHead>Estado</TableHead>
+              <TableHead className="text-right">Acciones</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -54,6 +69,11 @@ const EventInterestLeadsManager = () => {
                 <TableCell>
                   <p className="font-medium">{lead.full_name || "—"}</p>
                   <a className="text-sm underline underline-offset-2" href={`mailto:${lead.email}`}>{lead.email}</a>
+                </TableCell>
+                <TableCell className="text-right">
+                  <Button variant="ghost" size="icon" title="Eliminar preinscripción" disabled={deleteLead.isPending} onClick={() => removeLead(lead.id, lead.email)}>
+                    <Trash2 className="h-4 w-4 text-destructive" />
+                  </Button>
                 </TableCell>
                 <TableCell className="text-sm">
                   <p>{sourceLabels[lead.entry_point] || lead.entry_point}</p>

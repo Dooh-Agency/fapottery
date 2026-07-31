@@ -64,6 +64,11 @@ const Clases = () => {
     const cta = ct as any;
     const title = (isEn && cta.title_en) || ct.title;
     const description = (isEn && cta.description_en) || ct.description;
+    const optionPrices = Array.isArray(cta.options)
+      ? cta.options.map((option: { price?: unknown }) => Number(option.price)).filter((price: number) => price > 0)
+      : [];
+    const displayPrice = optionPrices.length > 0 ? Math.min(...optionPrices) : Number(ct.price);
+    const showsFromPrice = optionPrices.length > 1;
     return (
       <Link
         key={ct.id}
@@ -99,9 +104,9 @@ const Clases = () => {
             <p className={`body-text whitespace-pre-line flex-1 ${big ? "line-clamp-4" : "line-clamp-2 text-sm"}`}>{renderBoldText(stripActivityDescriptionMarkup(description))}</p>
           )}
           <div className="flex items-center justify-between mt-2">
-            {Number(ct.price) > 0 && (
+            {displayPrice > 0 && (
               <span className={big ? "text-base font-serif font-semibold text-foreground" : "text-sm font-serif font-semibold text-foreground"}>
-                €{ct.price}
+                {showsFromPrice ? `${t("clases.desde")} ` : ""}€{displayPrice}
               </span>
             )}
             <span className="text-xs uppercase tracking-[0.15em] font-sans text-muted-foreground">

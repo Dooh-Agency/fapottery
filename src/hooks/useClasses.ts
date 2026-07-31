@@ -180,3 +180,14 @@ export const useUpdateReservationStatus = () => {
     },
   });
 };
+
+export const useDeleteReservation = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("class_reservations").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["class_reservations"] }),
+  });
+};
