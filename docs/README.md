@@ -29,6 +29,14 @@ La documentación está separada en dos áreas:
 | Documento | Contenido |
 |-----------|-----------|
 | [negocio/contexto-negocio-fa-pottery.md](negocio/contexto-negocio-fa-pottery.md) | Identidad, líneas de negocio, clientes, restricciones, evidencia y métricas de FA Pottery |
+| [negocio/esencia-comunicacion-redes.md](negocio/esencia-comunicacion-redes.md) | Voz, referencias y formatos para comunicación orgánica en redes |
+| [negocio/rrss/primer-bloque-de-contenidos.md](negocio/rrss/primer-bloque-de-contenidos.md) | Boceto de grilla y base de producción para las primeras nueve publicaciones de Instagram |
+| [negocio/rrss/calendario-editorial-agosto-septiembre-2026.md](negocio/rrss/calendario-editorial-agosto-septiembre-2026.md) | Calendario de cuatro semanas para producir y publicar el primer bloque editorial de Instagram |
+| [negocio/rrss/copys-calendario-agosto-septiembre-2026.md](negocio/rrss/copys-calendario-agosto-septiembre-2026.md) | Copys listos para publicar del calendario editorial de Instagram |
+| [negocio/rrss/estrategia-compartida-fa-pottery-kanso.md](negocio/rrss/estrategia-compartida-fa-pottery-kanso.md) | Arquitectura, embudos y sistema de reutilización de contenidos entre FA Pottery y Kanso |
+| [negocio/rrss/prompts-canva-calendario-agosto-septiembre-2026.md](negocio/rrss/prompts-canva-calendario-agosto-septiembre-2026.md) | Prompts para crear imágenes base y portadas en Canva para el calendario editorial |
+| [negocio/rrss/guia-estilo-visual.md](negocio/rrss/guia-estilo-visual.md) | Principios, paleta, fotografía y reglas de diseño visual para todo el contenido de redes |
+| [negocio/rrss/README.md](negocio/rrss/README.md) | Panel de trabajo: acceso a grilla, calendario, copys, prompts y estrategia de RRSS |
 | [negocio/campana-meta-breakfast-and-paint-mija.md](negocio/campana-meta-breakfast-and-paint-mija.md) | Registro de continuidad de la campaña Meta de Breakfast & Paint (La Cala de Mijas) |
 
 ## Cómo mantener esta documentación
