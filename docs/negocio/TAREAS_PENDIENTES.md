@@ -25,8 +25,9 @@ La documentación de continuidad se conserva sólo como registro histórico.
 
 - [ ] Confirmar qué registros quiere borrar para pruebas antes de eliminar datos.
   No borrar leads, actividades ni horarios sin esa precisión.
-- [ ] Ejecutar validaciones, publicar el lote y comprobar producción después del
-  despliegue. En curso: lote de acceso, favicon y consentimiento de cookies.
+- [x] Ejecutar validaciones, publicar el lote y comprobar producción después del
+  despliegue. Lote de acceso, favicon y consentimiento de cookies publicado y
+  comprobado en `fapottery.com` el 6 de agosto de 2026.
 
 ## RRSS y estrategia de comunicación
 
@@ -63,8 +64,7 @@ Documentación y materiales de trabajo: [`docs/negocio/rrss/`](rrss/README.md).
   - Evitar mapas de Google incrustados antes del consentimiento; mostrar en su
     lugar un enlace o botón "Ver mapa" hacia Google Maps.
   - Mantener diseño e idiomas actuales y comprobar el funcionamiento tras
-    publicarlo. Verificado localmente el 6 de agosto de 2026; pendiente de
-    comprobación final en producción.
+    publicarlo. Verificado localmente y en producción el 6 de agosto de 2026.
 - [ ] Permitir borrar registros creados para pruebas, una vez identificados los
   tipos de registro y los elementos concretos que se pueden eliminar.
 - [x] Backoffice: habilitar el borrado con confirmación de reservas y
