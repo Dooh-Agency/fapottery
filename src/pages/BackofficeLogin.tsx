@@ -33,6 +33,31 @@ const BackofficeLogin = () => {
     setLoading(false);
   };
 
+  const handlePasswordRecovery = async () => {
+    if (!email) {
+      toast({
+        title: "Ingresá tu email",
+        description: "Escribí primero el email con el que accedés al backoffice.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setLoading(true);
+    // El destino se adapta al entorno: local para probar y fapottery.com en producción.
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/backoffice/reset-password`,
+    });
+    setLoading(false);
+
+    if (error) {
+      toast({ title: "No pudimos enviar el enlace", description: error.message, variant: "destructive" });
+      return;
+    }
+
+    toast({ title: "Revisá tu email", description: "Te enviamos un enlace para crear una contraseña nueva." });
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
       <Card className="w-full max-w-sm border-border">
@@ -78,6 +103,14 @@ const BackofficeLogin = () => {
             >
               {loading ? "Ingresando..." : "Ingresar"}
             </Button>
+            <button
+              type="button"
+              onClick={handlePasswordRecovery}
+              disabled={loading}
+              className="w-full text-xs text-muted-foreground underline underline-offset-4 hover:text-foreground disabled:opacity-50"
+            >
+              ¿Olvidaste tu contraseña?
+            </button>
           </form>
         </CardContent>
       </Card>

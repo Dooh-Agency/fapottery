@@ -20,8 +20,6 @@ import EventInterestDialog from "@/components/EventInterestDialog";
 // el idioma se resuelve por la ruta (getLanguageFromPathname) y el copy vive en el diccionario COPY.
 
 const MAPS_URL = "https://maps.app.goo.gl/mXd7rfaHWKiPZJ9A7";
-// Maui Paddle Surf · Playa Butibamba (Mijas): 36.5011708, -4.6830377
-const MAP_EMBED = "https://maps.google.com/maps?q=36.5011708,-4.6830377&z=16&output=embed";
 const ACTIVIDAD_ID = "56fbca84-e350-4738-a57f-9d6be48501cf";
 
 // Foto limpia (escena de desayuno) para el fondo del hero — legible bajo el titular.
@@ -484,15 +482,10 @@ const BreakfastPaint = () => {
               <div className="aspect-[4/3] bg-muted overflow-hidden">
                 <img src={lugarMaui} alt="Taller de cerámica montado en Maui Paddle Surf, Málaga" className="w-full h-full object-cover" loading="lazy" />
               </div>
-              <div className="border border-border bg-muted">
-                <iframe
-                  title={c.lugarTitle}
-                  src={MAP_EMBED}
-                  className="w-full h-[260px] md:h-[300px] block"
-                  style={{ border: 0 }}
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                />
+              <div className="flex min-h-[180px] items-center justify-center border border-border bg-muted p-6 text-center">
+                <a href={MAPS_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 border border-foreground px-5 py-3 font-sans text-xs uppercase tracking-[0.16em] transition-colors hover:bg-foreground hover:text-background">
+                  {c.dMapa} <ExternalLink className="h-3.5 w-3.5" />
+                </a>
               </div>
             </div>
           </div>

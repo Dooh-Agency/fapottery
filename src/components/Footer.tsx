@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { Link } from "@/components/LocalizedLink";
 import logoFooter from "@/assets/logo-footer.svg";
+import { openCookieSettings } from "@/components/CookieConsent";
 
 const Footer = () => {
   const { t } = useTranslation();
@@ -100,6 +101,13 @@ const Footer = () => {
             >
               {t("footer.cookies")}
             </Link>
+            <button
+              type="button"
+              onClick={openCookieSettings}
+              className="text-xs text-muted-foreground hover:text-foreground font-sans underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+            >
+              {t("footer.configurarCookies")}
+            </button>
             {/* Instagram */}
             <a
               href="https://instagram.com/fapottery"

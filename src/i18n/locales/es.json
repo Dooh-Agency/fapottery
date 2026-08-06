@@ -25,6 +25,7 @@
     "derechos": "Todos los derechos reservados.",
     "privacidad": "Privacidad",
     "cookies": "Cookies",
+    "configurarCookies": "Configurar cookies",
     "instagramAria": "Instagram de FA Pottery",
     "facebookAria": "Facebook de FA Pottery"
   },
@@ -39,15 +40,15 @@
       },
       "technical": {
         "title": "Cookies técnicas",
-        "body": "El sitio puede usar cookies estrictamente necesarias para su funcionamiento. En el área de gestión interna se guarda una cookie para recordar el estado visual del menú lateral."
+        "body": "El sitio utiliza cookies estrictamente necesarias para su funcionamiento y para recordar determinadas preferencias técnicas. Estas cookies no requieren consentimiento."
       },
       "analytics": {
         "title": "Medición y marketing",
-        "body": "Utilizamos Google Tag Manager para gestionar etiquetas de medición y campañas. Las cookies concretas que puedan instalarse dependen de los servicios activados mediante esa herramienta."
+        "body": "Google Tag Manager (Google LLC) puede gestionar etiquetas de medición y campañas. Las categorías de analítica y marketing solo se activan si das tu consentimiento expreso desde el banner o «Configurar cookies»."
       },
       "manage": {
         "title": "Cómo gestionar las cookies",
-        "body": "Puedes eliminar o bloquear cookies desde la configuración de tu navegador. Tené en cuenta que bloquear las cookies técnicas puede afectar al funcionamiento de algunas partes del sitio."
+        "body": "Puedes cambiar o retirar tu elección en cualquier momento desde «Configurar cookies» en el pie de página, además de eliminar o bloquear cookies desde tu navegador. Bloquear las cookies técnicas puede afectar al funcionamiento de algunas partes del sitio."
       },
       "contact": {
         "title": "Más información",

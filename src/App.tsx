@@ -7,7 +7,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation, useParams, Navigate } from "react-router-dom";
 import { localizePath } from "@/components/LocalizedLink";
 import { AuthProvider } from "@/hooks/useAuth";
-import { initGTM } from "@/lib/analytics";
+import CookieConsentBanner from "@/components/CookieConsent";
 import { getLanguageFromPathname } from "@/i18n";
 import SkipLink from "@/components/SkipLink";
 import Header from "@/components/Header";
@@ -28,6 +28,7 @@ import Novedades from "./pages/Novedades";
 import NovedadDetalle from "./pages/NovedadDetalle";
 import NotFound from "./pages/NotFound";
 import BackofficeLogin from "./pages/BackofficeLogin";
+import BackofficeResetPassword from "./pages/BackofficeResetPassword";
 import BackofficeLayout from "./components/backoffice/BackofficeLayout";
 import Dashboard from "./pages/backoffice/Dashboard";
 import CatalogManager from "./pages/backoffice/CatalogManager";
@@ -42,8 +43,6 @@ import EventInterestLeadsManager from "./pages/backoffice/EventInterestLeadsMana
 
 const queryClient = new QueryClient();
 
-initGTM();
-
 const PublicShell = ({ children }: { children: React.ReactNode }) => (
   <div className="min-h-screen flex flex-col">
     <SkipLink />
@@ -53,6 +52,7 @@ const PublicShell = ({ children }: { children: React.ReactNode }) => (
     </main>
     <Footer />
     <WhatsAppButton />
+    <CookieConsentBanner />
   </div>
 );
 
@@ -109,6 +109,7 @@ const AppRoutes = () => {
   return isBackoffice ? (
     <Routes>
       <Route path="/backoffice/login" element={<BackofficeLogin />} />
+      <Route path="/backoffice/reset-password" element={<BackofficeResetPassword />} />
       <Route path="/backoffice" element={<BackofficeLayout />}>
         <Route index element={<Dashboard />} />
         <Route path="catalogo" element={<CatalogManager />} />

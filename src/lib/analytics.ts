@@ -4,6 +4,7 @@ const GTM_ID = "GTM-N7HF8BTQ";
 
 export const initGTM = () => {
   if (!GTM_ID || typeof window === "undefined") return;
+  if (document.querySelector('script[data-fa-pottery-gtm="true"]')) return;
 
   // GTM script
   const script = document.createElement("script");
@@ -14,6 +15,7 @@ export const initGTM = () => {
     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
     })(window,document,'script','dataLayer','${GTM_ID}');
   `;
+  script.dataset.faPotteryGtm = "true";
   document.head.appendChild(script);
 
   // noscript fallback
@@ -29,7 +31,7 @@ export const initGTM = () => {
 };
 
 export const trackEvent = (event: string, data?: Record<string, unknown>) => {
-  if (!GTM_ID || typeof window === "undefined") return;
+  if (!GTM_ID || typeof window === "undefined" || !document.querySelector('script[data-fa-pottery-gtm="true"]')) return;
   (window as any).dataLayer = (window as any).dataLayer || [];
   (window as any).dataLayer.push({ event, ...data });
 };

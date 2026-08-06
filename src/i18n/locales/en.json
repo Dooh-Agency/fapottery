@@ -25,6 +25,7 @@
     "derechos": "All rights reserved.",
     "privacidad": "Privacy",
     "cookies": "Cookies",
+    "configurarCookies": "Cookie settings",
     "instagramAria": "FA Pottery's Instagram",
     "facebookAria": "FA Pottery's Facebook"
   },
@@ -39,15 +40,15 @@
       },
       "technical": {
         "title": "Technical cookies",
-        "body": "The site may use cookies that are strictly necessary for it to work. In the internal management area, a cookie is stored to remember the visual state of the sidebar menu."
+        "body": "The site uses cookies that are strictly necessary for it to work and to remember certain technical preferences. These cookies do not require consent."
       },
       "analytics": {
         "title": "Analytics and marketing",
-        "body": "We use Google Tag Manager to manage analytics and campaign tags. The specific cookies that may be installed depend on the services enabled through that tool."
+        "body": "Google Tag Manager (Google LLC) may manage analytics and campaign tags. Analytics and marketing categories are only activated after your express consent through the banner or Cookie settings."
       },
       "manage": {
         "title": "How to manage cookies",
-        "body": "You can remove or block cookies in your browser settings. Please note that blocking technical cookies may affect the operation of some parts of the site."
+        "body": "You can change or withdraw your choice at any time through Cookie settings in the footer, as well as remove or block cookies in your browser settings. Blocking technical cookies may affect the operation of some parts of the site."
       },
       "contact": {
         "title": "Further information",
