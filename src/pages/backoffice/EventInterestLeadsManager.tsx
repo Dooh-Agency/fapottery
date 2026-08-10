@@ -5,8 +5,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useEventInterestLeads, useUpdateEventInterestLeadStatus } from "@/hooks/useEventInterestLeads";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Trash2 } from "lucide-react";
 import { useDeleteEventInterestLead } from "@/hooks/useEventInterestLeads";
+import { useMemo, useState } from "react";
 
 const statusLabels: Record<string, string> = {
   new: "Nuevo",
@@ -21,6 +23,15 @@ const EventInterestLeadsManager = () => {
   const { data: leads, isLoading } = useEventInterestLeads();
   const updateStatus = useUpdateEventInterestLeadStatus();
   const deleteLead = useDeleteEventInterestLead();
+  const [emailFilter, setEmailFilter] = useState("");
+  const filteredLeads = useMemo(() => {
+    const normalizedFilter = emailFilter.trim().toLowerCase();
+    if (!normalizedFilter) return leads || [];
+    return (leads || []).filter((lead) =>
+      lead.email.toLowerCase().includes(normalizedFilter)
+      || lead.full_name?.toLowerCase().includes(normalizedFilter),
+    );
+  }, [emailFilter, leads]);
 
   const updateLeadStatus = async (id: string, status: string) => {
     try {
@@ -44,15 +55,24 @@ const EventInterestLeadsManager = () => {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="font-serif text-2xl">Leads de eventos</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Preinscripciones de Breakfast &amp; Paint · 1 de agosto.</p>
+        <h1 className="font-serif text-2xl">Registros de emails</h1>
+        <p className="mt-1 text-sm text-muted-foreground">Consultas y preinscripciones registradas desde los formularios. Podés eliminar los registros de prueba para volver a probar un mismo email.</p>
       </div>
       {isLoading ? (
         <p className="text-sm text-muted-foreground">Cargando…</p>
       ) : !leads?.length ? (
-        <p className="text-sm text-muted-foreground">Todavía no hay preinscripciones.</p>
+        <p className="text-sm text-muted-foreground">Todavía no hay registros.</p>
       ) : (
-        <Table>
+        <>
+          <Input
+            value={emailFilter}
+            onChange={(event) => setEmailFilter(event.target.value)}
+            placeholder="Buscar por email o nombre"
+            aria-label="Buscar registros de emails"
+            className="max-w-sm"
+          />
+          {filteredLeads.length === 0 && <p className="text-sm text-muted-foreground">No encontramos registros con esa búsqueda.</p>}
+          {filteredLeads.length > 0 && <Table>
           <TableHeader>
             <TableRow>
               <TableHead>Contacto</TableHead>
@@ -64,16 +84,11 @@ const EventInterestLeadsManager = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {leads.map((lead) => (
+            {filteredLeads.map((lead) => (
               <TableRow key={lead.id}>
                 <TableCell>
                   <p className="font-medium">{lead.full_name || "—"}</p>
                   <a className="text-sm underline underline-offset-2" href={`mailto:${lead.email}`}>{lead.email}</a>
-                </TableCell>
-                <TableCell className="text-right">
-                  <Button variant="ghost" size="icon" title="Eliminar preinscripción" disabled={deleteLead.isPending} onClick={() => removeLead(lead.id, lead.email)}>
-                    <Trash2 className="h-4 w-4 text-destructive" />
-                  </Button>
                 </TableCell>
                 <TableCell className="text-sm">
                   <p>{sourceLabels[lead.entry_point] || lead.entry_point}</p>
@@ -92,10 +107,16 @@ const EventInterestLeadsManager = () => {
                     {Object.entries(statusLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
                   </select>
                 </TableCell>
+                <TableCell className="text-right">
+                  <Button variant="ghost" size="icon" title="Eliminar registro" aria-label={`Eliminar registro de ${lead.email}`} disabled={deleteLead.isPending} onClick={() => removeLead(lead.id, lead.email)}>
+                    <Trash2 className="h-4 w-4 text-destructive" />
+                  </Button>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
-        </Table>
+          </Table>}
+        </>
       )}
     </div>
   );

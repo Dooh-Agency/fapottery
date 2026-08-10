@@ -40,6 +40,7 @@ import Placeholder from "./pages/backoffice/Placeholder";
 import Privacy from "./pages/Privacy";
 import CookiePolicy from "./pages/CookiePolicy";
 import EventInterestLeadsManager from "./pages/backoffice/EventInterestLeadsManager";
+import HomePopupManager from "./pages/backoffice/HomePopupManager";
 
 const queryClient = new QueryClient();
 
@@ -117,6 +118,7 @@ const AppRoutes = () => {
         <Route path="novedades" element={<NewsManager />} />
         <Route path="imagenes" element={<SiteImagesManager />} />
         <Route path="servicios-home" element={<HomeServicesManager />} />
+        <Route path="popup-home" element={<HomePopupManager />} />
         <Route path="leads" element={<EventInterestLeadsManager />} />
         <Route path="usuarios" element={<Placeholder title="Usuarios" description="Gestión de usuarios y roles. Próximamente." />} />
       </Route>

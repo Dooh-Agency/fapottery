@@ -245,6 +245,7 @@
     "faqTitle": "Preguntas frecuentes",
     "porPersona": "por persona",
     "minutos": "minutos",
+    "horas": "h",
     "maxAlumnos": "Máx. {{count}} alumnos",
     "verMapa": "Ver en Google Maps",
     "cargandoFechas": "Cargando fechas…",
@@ -257,6 +258,8 @@
     "listaInteresProximoEvento": "Quiero recibir info del próximo evento",
     "sinFechas": "No hay fechas próximas disponibles.",
     "reservarWhatsapp": "Reservar {{tipo}} por WhatsApp",
+    "elegirFechaClaseSuelta": "Elegí la fecha que querés reservar. Solo se muestran las próximas clases con vacantes.",
+    "seleccionarFecha": "Seleccionar fecha",
     "whatsappMensaje": "Hola! Quiero reservar mi lugar en \"{{title}}\" el {{date}} a las {{time}}. ¿Confirmamos?",
     "whatsappMensajeListaEspera": "Hola! Quiero sumarme a la lista de espera para \"{{title}}\" del {{date}}. ¿Me avisáis cuando haya próxima fecha?",
     "imagenAnterior": "Imagen anterior",
@@ -269,7 +272,8 @@
     "tipoPersonalizadas": "clase personalizada",
     "sinImagen": "Sin imagen",
     "elegirOpcion": "Elige",
-    "whatsappMensajeOpcion": "¡Hola! Quiero reservar una plaza para \"{{title}}\" - opción \"{{option}}\" (€{{price}}). ¿Cómo confirmo mi reserva?"
+    "whatsappMensajeOpcion": "¡Hola! Quiero reservar una plaza para \"{{title}}\" - opción \"{{option}}\" (€{{price}}). ¿Cómo confirmo mi reserva?",
+    "whatsappMensajeOpcionFecha": "¡Hola! Quiero reservar una plaza para \"{{title}}\" - {{option}} (€{{price}}) el {{date}} a las {{time}}. ¿Cómo confirmo mi reserva?"
   },
   "catalogo": {
     "seoTitle": "Tienda",

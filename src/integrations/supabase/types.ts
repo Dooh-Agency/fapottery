@@ -211,6 +211,7 @@ export type Database = {
           max_students: number
           options: Json
           price: number
+          recurring_schedules: Json
           title: string
           title_en: string | null
           updated_at: string
@@ -235,6 +236,7 @@ export type Database = {
           max_students?: number
           options?: Json
           price?: number
+          recurring_schedules?: Json
           title: string
           title_en?: string | null
           updated_at?: string
@@ -259,6 +261,7 @@ export type Database = {
           max_students?: number
           options?: Json
           price?: number
+          recurring_schedules?: Json
           title?: string
           title_en?: string | null
           updated_at?: string

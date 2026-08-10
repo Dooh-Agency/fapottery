@@ -10,10 +10,13 @@ import { es, enUS } from "date-fns/locale";
 import { getLanguageFromPathname } from "@/i18n";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ArrowLeft, CalendarDays, Clock, Users, MapPin, ExternalLink, MessageCircle, ChevronDown, ChevronLeft, ChevronRight, ChevronUp } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { renderActivityDescription, renderBoldText } from "@/lib/richText";
 import EventInterestDialog from "@/components/EventInterestDialog";
+import { cn } from "@/lib/utils";
 
 const WHATSAPP_NUMBER = "+34681816030";
 const BREAKFAST_PAINT_ACTIVITY_ID = "56fbca84-e350-4738-a57f-9d6be48501cf";
@@ -27,7 +30,7 @@ const TIPO_LABEL_KEYS: Record<string, string> = {
 const ClaseDetalle = () => {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const isEn = getLanguageFromPathname(location.pathname) === "en";
   const dateLocale = isEn ? enUS : es;
   const { data: classTypes, isLoading: loadingTypes } = useClassTypes(true);
@@ -41,6 +44,7 @@ const ClaseDetalle = () => {
   const imagesKey = images.join("|");
   const [selectedImgIdx, setSelectedImgIdx] = useState(0);
   const [selectedOptionIdx, setSelectedOptionIdx] = useState(0);
+  const [selectedSingleDate, setSelectedSingleDate] = useState<Date | undefined>();
   const [interestOpen, setInterestOpen] = useState(false);
   const [hasHiddenThumbnails, setHasHiddenThumbnails] = useState(false);
   const thumbnailScrollRef = useRef<HTMLDivElement>(null);
@@ -96,9 +100,12 @@ const ClaseDetalle = () => {
   const faq: { question: string; answer: string }[] =
     (isEn && Array.isArray(cta.faq_en) && cta.faq_en.length > 0 ? cta.faq_en : Array.isArray(cta.faq) ? cta.faq : []);
   const tipoLabel = t(TIPO_LABEL_KEYS[cta.category] || TIPO_LABEL_KEYS.regulares);
-  const options: { label: string; price: number }[] = Array.isArray(cta.options) ? cta.options : [];
+  const options: { label: string; price: number; booking_mode?: "single" | "monthly" }[] = Array.isArray(cta.options) ? cta.options : [];
   const locations: { name: string; map_url?: string }[] = Array.isArray(cta.locations) ? cta.locations : [];
   const selectedOption = options[selectedOptionIdx];
+  const selectedSchedule = selectedSingleDate
+    ? upcoming.find((schedule) => schedule.scheduled_date === format(selectedSingleDate, "yyyy-MM-dd") && schedule.spots_available > 0)
+    : undefined;
   const isBreakfastPaint = item.id === BREAKFAST_PAINT_ACTIVITY_ID;
 
   const whatsappUrl = (s: ClassSchedule) => {
@@ -115,6 +122,11 @@ const ClaseDetalle = () => {
 
   const optionWhatsappUrl = () => {
     if (!selectedOption) return "#";
+    if (selectedOption.booking_mode === "single" && selectedSchedule) {
+      const date = format(new Date(selectedSchedule.scheduled_date + "T00:00:00"), "EEEE d 'de' MMMM", { locale: dateLocale });
+      const message = t("claseDetalle.whatsappMensajeOpcionFecha", { title, option: selectedOption.label, price: selectedOption.price, date, time: formatTime(selectedSchedule.start_time) });
+      return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+    }
     const message = t("claseDetalle.whatsappMensajeOpcion", { title, option: selectedOption.label, price: selectedOption.price });
     return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
   };
@@ -247,7 +259,7 @@ const ClaseDetalle = () => {
               <div className="space-y-2 text-sm">
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Clock className="h-4 w-4 shrink-0" />
-                  <span>{item.duration_minutes} {t("claseDetalle.minutos")}</span>
+                  <span>{new Intl.NumberFormat(i18n.language === "en" ? "en" : "es", { maximumFractionDigits: 2 }).format(item.duration_minutes / 60)} {t("claseDetalle.horas")}</span>
                 </div>
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Users className="h-4 w-4 shrink-0" />
@@ -302,7 +314,7 @@ const ClaseDetalle = () => {
                         <button
                           key={idx}
                           type="button"
-                          onClick={() => setSelectedOptionIdx(idx)}
+                          onClick={() => { setSelectedOptionIdx(idx); setSelectedSingleDate(undefined); }}
                           aria-pressed={selectedOptionIdx === idx}
                           className={`font-sans text-sm px-4 py-2.5 border transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring ${
                             selectedOptionIdx === idx
@@ -314,12 +326,46 @@ const ClaseDetalle = () => {
                         </button>
                       ))}
                     </div>
-                    <Button className="w-full mt-1" variant="default" asChild>
-                      <a href={optionWhatsappUrl()} target="_blank" rel="noopener noreferrer">
-                        <MessageCircle className="h-4 w-4 mr-1.5" aria-hidden="true" />
-                        {t("claseDetalle.reservarWhatsapp", { tipo: tipoLabel })}
-                      </a>
-                    </Button>
+                    {selectedOption?.booking_mode === "single" ? (
+                      <div className="space-y-3 border-t border-border pt-4">
+                        <p className="text-sm text-muted-foreground">{t("claseDetalle.elegirFechaClaseSuelta")}</p>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button variant="outline" className={cn("w-full justify-start text-left font-normal", !selectedSingleDate && "text-muted-foreground")}>
+                              <CalendarDays className="mr-2 h-4 w-4" />
+                              {selectedSingleDate ? format(selectedSingleDate, dateLocale === enUS ? "EEEE d MMMM" : "EEEE d 'de' MMMM", { locale: dateLocale }) : t("claseDetalle.seleccionarFecha")}
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={selectedSingleDate}
+                              onSelect={setSelectedSingleDate}
+                              locale={dateLocale}
+                              disabled={(date) => !upcoming.some((schedule) => schedule.scheduled_date === format(date, "yyyy-MM-dd") && schedule.spots_available > 0)}
+                              initialFocus
+                              className="p-3 pointer-events-auto"
+                            />
+                          </PopoverContent>
+                        </Popover>
+                        {selectedSchedule && <p className="text-xs text-muted-foreground">{formatTime(selectedSchedule.start_time)} – {formatTime(selectedSchedule.end_time)} · {t("claseDetalle.vacantes", { count: selectedSchedule.spots_available })}</p>}
+                        {selectedSchedule ? (
+                          <Button className="w-full" variant="default" asChild>
+                            <a href={optionWhatsappUrl()} target="_blank" rel="noopener noreferrer">
+                              <MessageCircle className="h-4 w-4 mr-1.5" aria-hidden="true" />
+                              {t("claseDetalle.reservarWhatsapp", { tipo: tipoLabel })}
+                            </a>
+                          </Button>
+                        ) : <Button className="w-full" variant="default" disabled>{t("claseDetalle.seleccionarFecha")}</Button>}
+                      </div>
+                    ) : (
+                      <Button className="w-full mt-1" variant="default" asChild>
+                        <a href={optionWhatsappUrl()} target="_blank" rel="noopener noreferrer">
+                          <MessageCircle className="h-4 w-4 mr-1.5" aria-hidden="true" />
+                          {t("claseDetalle.reservarWhatsapp", { tipo: tipoLabel })}
+                        </a>
+                      </Button>
+                    )}
                   </div>
                 ) : loadingSchedules ? (
                   <p className="text-sm text-muted-foreground">{t("claseDetalle.cargandoFechas")}</p>

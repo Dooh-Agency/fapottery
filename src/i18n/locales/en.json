@@ -245,6 +245,7 @@
     "faqTitle": "Frequently asked questions",
     "porPersona": "per person",
     "minutos": "minutes",
+    "horas": "h",
     "maxAlumnos": "Max. {{count}} students",
     "verMapa": "View on Google Maps",
     "cargandoFechas": "Loading dates…",
@@ -256,6 +257,8 @@
     "listaInteresProximoEvento": "Get info about the next event",
     "sinFechas": "No upcoming dates available.",
     "reservarWhatsapp": "Book {{tipo}} via WhatsApp",
+    "elegirFechaClaseSuelta": "Choose the date you would like to book. Only upcoming classes with available places are shown.",
+    "seleccionarFecha": "Select a date",
     "whatsappMensaje": "Hi! I'd like to book my spot in \"{{title}}\" on {{date}} at {{time}}. Can we confirm?",
     "whatsappMensajeListaEspera": "Hi! I'd like to join the waiting list for \"{{title}}\" on {{date}}. Please let me know when the next date is available.",
     "imagenAnterior": "Previous image",
@@ -268,7 +271,8 @@
     "tipoPersonalizadas": "personalized class",
     "sinImagen": "No image",
     "elegirOpcion": "Choose an option",
-    "whatsappMensajeOpcion": "Hi! I'd like to reserve a place for \"{{title}}\" - option \"{{option}}\" (€{{price}}). How can I confirm my booking?"
+    "whatsappMensajeOpcion": "Hi! I'd like to reserve a place for \"{{title}}\" - option \"{{option}}\" (€{{price}}). How can I confirm my booking?",
+    "whatsappMensajeOpcionFecha": "Hi! I'd like to book a place for \"{{title}}\" - {{option}} (€{{price}}) on {{date}} at {{time}}. How can I confirm my booking?"
   },
   "catalogo": {
     "seoTitle": "Shop",

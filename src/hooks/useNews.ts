@@ -24,7 +24,7 @@ export const useNews = (publishedOnly = true) =>
       let q = supabase
         .from("news")
         .select("*")
-        .order("updated_at", { ascending: false });
+        .order("created_at", { ascending: false });
       if (publishedOnly) q = q.eq("is_published", true);
       const { data, error } = await q;
       if (error) throw error;

@@ -6,6 +6,12 @@ export type ClassType = Tables<"class_types">;
 export type ClassSchedule = Tables<"class_schedules"> & { class_types?: ClassType };
 export type ClassReservation = Tables<"class_reservations"> & { class_schedules?: ClassSchedule & { class_types?: ClassType } };
 export type ClassTypeWithSchedules = ClassType & { class_schedules: Tables<"class_schedules">[] };
+export type RecurringClassSchedule = {
+  weekday: number;
+  start_time: string;
+  end_time: string;
+  spots_available: number;
+};
 
 // ── Class Types ──
 
@@ -13,7 +19,7 @@ export const useClassTypes = (activeOnly = true) =>
   useQuery({
     queryKey: ["class_types", activeOnly],
     queryFn: async () => {
-      let q = supabase.from("class_types").select("*").order("title");
+      let q = supabase.from("class_types").select("*").order("created_at", { ascending: false });
       if (activeOnly) q = q.eq("is_active", true);
       const { data, error } = await q;
       if (error) throw error;
@@ -27,7 +33,7 @@ export const useClassTypesWithSchedules = (activeOnly = true) =>
   useQuery({
     queryKey: ["class_types_with_schedules", activeOnly],
     queryFn: async () => {
-      let q = supabase.from("class_types").select("*, class_schedules(*)").order("title");
+      let q = supabase.from("class_types").select("*, class_schedules(*)").order("created_at", { ascending: false });
       if (activeOnly) q = q.eq("is_active", true);
       const { data, error } = await q;
       if (error) throw error;
@@ -116,6 +122,20 @@ export const useUpsertSchedule = () => {
         const { error } = await supabase.from("class_schedules").insert(rest as TablesInsert<"class_schedules">);
         if (error) throw error;
       }
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["class_schedules"] }),
+  });
+};
+
+export const useCreateSchedulesIfMissing = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (schedules: TablesInsert<"class_schedules">[]) => {
+      if (schedules.length === 0) return;
+      const { error } = await supabase
+        .from("class_schedules")
+        .upsert(schedules, { onConflict: "class_type_id,scheduled_date,start_time", ignoreDuplicates: true });
+      if (error) throw error;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["class_schedules"] }),
   });

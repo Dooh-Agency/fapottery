@@ -1,0 +1,22 @@
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import ImageUploader from "@/components/backoffice/ImageUploader";
+import { useHomePopupCampaigns, useSaveHomePopupCampaign, type PopupCampaign, type PopupField } from "@/hooks/useHomePopupCampaign";
+import { toast } from "sonner";
+
+const empty: Partial<PopupCampaign> = { title: "", body: "", cta_label: "Suscribirme", objective: "lead", cta_url: "", discount_code: "", success_title: "¡Gracias!", success_body: "Te avisaré pronto.", interests: [], fields: [], show_name: true, is_active: false, image_url: "", badge: "", privacy_text: "" };
+
+export default function HomePopupManager() {
+  const { data } = useHomePopupCampaigns(); const save = useSaveHomePopupCampaign();
+  const [draft, setDraft] = useState<Partial<PopupCampaign>>(empty);
+  useEffect(() => { if (data?.[0]) setDraft(data[0]); }, [data]);
+  const set = (key: keyof PopupCampaign, value: unknown) => setDraft((current) => ({ ...current, [key]: value }));
+  const usesForm = draft.objective === "lead" || draft.objective === "discount";
+  const savePopup = async () => { if (!draft.title) return; try { await save.mutateAsync(draft as PopupCampaign); toast.success("Popup guardado"); } catch { toast.error("No se pudo guardar el popup"); } };
+  const fieldsText = (draft.fields || []).map((field) => field.label).join("\n");
+  return <div className="max-w-2xl space-y-5"><div><h1 className="font-serif text-2xl">Popup de la Home</h1><p className="text-sm text-muted-foreground">Configurá una campaña: información, captación, descuento o enlace.</p></div><div className="flex items-center gap-3"><Switch checked={draft.is_active} onCheckedChange={(value) => set("is_active", value)} /><Label>Mostrar popup</Label></div><ImageUploader label="Imagen" value={draft.image_url || ""} onChange={(value) => set("image_url", value)} bucket="site-images" folder="popup" /><Input value={draft.badge || ""} onChange={(e) => set("badge", e.target.value)} placeholder="Etiqueta (opcional)" /><Input value={draft.title || ""} onChange={(e) => set("title", e.target.value)} placeholder="Título" /><Textarea value={draft.body || ""} onChange={(e) => set("body", e.target.value)} placeholder="Texto" /><div><Label>Objetivo</Label><select className="mt-1 h-10 w-full border border-input bg-background px-3" value={draft.objective} onChange={(e) => set("objective", e.target.value)}><option value="info">Solo informar</option><option value="lead">Recibir novedades / captar email</option><option value="discount">Descuento a cambio de email</option><option value="link">Llevar a una página o promoción</option></select></div><Input value={draft.cta_label || ""} onChange={(e) => set("cta_label", e.target.value)} placeholder="Texto del botón" />{draft.objective === "link" && <Input value={draft.cta_url || ""} onChange={(e) => set("cta_url", e.target.value)} placeholder="Destino: /actividades o https://…" />}{draft.objective === "discount" && <Input value={draft.discount_code || ""} onChange={(e) => set("discount_code", e.target.value)} placeholder="Código de descuento" />}{usesForm && <><div className="flex items-center gap-3"><Switch checked={draft.show_name} onCheckedChange={(value) => set("show_name", value)} /><Label>Pedir nombre opcional</Label></div><Textarea value={fieldsText} onChange={(e) => set("fields", e.target.value.split("\n").map((label, index) => ({ id: `field-${index}`, label: label.trim(), type: "text" as const } satisfies PopupField)).filter((field) => field.label))} placeholder="Campos extra, uno por línea\nCiudad\nTeléfono" /><Textarea value={(draft.interests || []).join("\n")} onChange={(e) => set("interests", e.target.value.split("\n").map((item) => item.trim()).filter(Boolean))} placeholder="Intereses, uno por línea" /></>}<Input value={draft.success_title || ""} onChange={(e) => set("success_title", e.target.value)} placeholder="Título de agradecimiento" /><Textarea value={draft.success_body || ""} onChange={(e) => set("success_body", e.target.value)} placeholder="Mensaje de agradecimiento" /><Textarea value={draft.privacy_text || ""} onChange={(e) => set("privacy_text", e.target.value)} placeholder="Aviso de privacidad" /><Button onClick={savePopup} disabled={save.isPending}>Guardar popup</Button></div>;
+}

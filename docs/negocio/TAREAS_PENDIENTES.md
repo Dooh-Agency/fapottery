@@ -48,6 +48,28 @@ Documentación y materiales de trabajo: [`docs/negocio/rrss/`](rrss/README.md).
 
 ## Próximo lote de cambios
 
+- [ ] Rehacer el popup de la home como captación de leads editable desde el
+  backoffice. Debe funcionar como una campaña flexible, no como un popup fijo:
+  - Crear, activar, pausar y programar cada campaña; definir frecuencia de
+    aparición, idiomas, imagen, texto, CTA y destino posterior.
+  - Editor de campaña en backoffice para configurar sin código: imagen de
+    portada, etiqueta, título, texto, título/botón de CTA, campos visibles,
+    intereses seleccionables, aviso legal, mensaje de éxito y recompensa.
+    Los títulos del popup público deben usar la tipografía institucional de FA
+    Pottery y el resto respetar los estilos actuales del sitio.
+  - Elegir objetivo: suscripción a novedades, aviso de clase/workshop,
+    lanzamiento de piezas, descuento o campaña personalizada.
+  - Configurar campos del formulario (nombre y email como base), consentimiento
+    de comunicaciones y los intereses concretos que la persona quiere recibir
+    —por ejemplo novedades, workshops, clases regulares, piezas o descuentos—.
+  - Guardar los leads y sus preferencias en el backoffice, con origen de la
+    campaña, fecha y estado para poder hacer seguimiento y medir conversiones.
+  - Permitir una recompensa configurable, como código de descuento o mensaje
+    posterior, sin prometer descuentos ni condiciones no definidos previamente.
+  - Mantener español/inglés, diseño de FA Pottery, cierre visible y protección
+    contra envíos repetidos; respetar consentimiento, privacidad y cookies.
+  - Medir como mínimo visualizaciones, envíos, tasa de conversión y resultado
+    comercial posterior (consulta, reserva o compra), no solo correos captados.
 - [x] Añadir página bilingüe de política de cookies y enlaces desde el pie de
   página.
 - [x] Implementar consentimiento de cookies para España/UE:
