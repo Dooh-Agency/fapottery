@@ -151,7 +151,7 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
     name: "options",
   });
 
-  const { fields: recurringScheduleFields, append: appendRecurringSchedule, remove: removeRecurringSchedule } = useFieldArray({
+  const { fields: recurringScheduleFields, append: appendRecurringSchedule, remove: removeRecurringSchedule, replace: replaceRecurringSchedules } = useFieldArray({
     control: form.control,
     name: "recurring_schedules",
   });
@@ -161,7 +161,7 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
     name: "locations",
   });
 
-  const { fields: scheduleFields, append: appendSchedule, remove: removeSchedule } = useFieldArray({
+  const { fields: scheduleFields, append: appendSchedule, remove: removeSchedule, replace: replaceNewSchedules } = useFieldArray({
     control: form.control,
     name: "new_schedules",
   });
@@ -266,6 +266,24 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
     });
   };
 
+  const handleCategoryChange = (category: FormValues["category"], onChange: (value: FormValues["category"]) => void) => {
+    const previousCategory = form.getValues("category");
+    onChange(category);
+
+    if (previousCategory === category) return;
+
+    // Los datos de horarios del tipo anterior quedan fuera de la vista al cambiar
+    // de categoría. Los quitamos también del formulario para que una estructura
+    // antigua no bloquee el guardado sin poder verse ni corregirse.
+    if (category === "regulares") {
+      replaceNewSchedules([]);
+      form.clearErrors("new_schedules");
+    } else {
+      replaceRecurringSchedules([]);
+      form.clearErrors("recurring_schedules");
+    }
+  };
+
   const onSubmit = async (values: FormValues) => {
     try {
       // 1. Guardar tipo de clase
@@ -356,7 +374,7 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
             <FormField control={form.control} name="category" render={({ field }) => (
               <FormItem>
                 <FormLabel>Grupo / Categoría</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
+                <Select onValueChange={(value: FormValues["category"]) => handleCategoryChange(value, field.onChange)} value={field.value}>
                   <FormControl>
                     <SelectTrigger><SelectValue placeholder="Seleccioná un grupo" /></SelectTrigger>
                   </FormControl>
