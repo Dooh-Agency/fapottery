@@ -27,6 +27,13 @@ const TIPO_LABEL_KEYS: Record<string, string> = {
   personalizadas: "claseDetalle.tipoPersonalizadas",
 };
 
+const WEEKDAY_LABELS: Record<number, { es: string; en: string }> = {
+  0: { es: "domingo", en: "Sunday" }, 1: { es: "lunes", en: "Monday" },
+  2: { es: "martes", en: "Tuesday" }, 3: { es: "miércoles", en: "Wednesday" },
+  4: { es: "jueves", en: "Thursday" }, 5: { es: "viernes", en: "Friday" },
+  6: { es: "sábado", en: "Saturday" },
+};
+
 const ClaseDetalle = () => {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
@@ -43,7 +50,9 @@ const ClaseDetalle = () => {
     : rawGalleryImages;
   const imagesKey = images.join("|");
   const [selectedImgIdx, setSelectedImgIdx] = useState(0);
-  const [selectedOptionIdx, setSelectedOptionIdx] = useState(0);
+  const [selectedOptionIdx, setSelectedOptionIdx] = useState<number | null>(null);
+  const [selectedScheduleTimeKey, setSelectedScheduleTimeKey] = useState<string | null>(null);
+  const [selectedRegularMode, setSelectedRegularMode] = useState<"single" | "monthly" | null>(null);
   const [selectedSingleDate, setSelectedSingleDate] = useState<Date | undefined>();
   const [interestOpen, setInterestOpen] = useState(false);
   const [hasHiddenThumbnails, setHasHiddenThumbnails] = useState(false);
@@ -102,9 +111,19 @@ const ClaseDetalle = () => {
   const tipoLabel = t(TIPO_LABEL_KEYS[cta.category] || TIPO_LABEL_KEYS.regulares);
   const options: { label: string; price: number; booking_mode?: "single" | "monthly" }[] = Array.isArray(cta.options) ? cta.options : [];
   const locations: { name: string; map_url?: string }[] = Array.isArray(cta.locations) ? cta.locations : [];
-  const selectedOption = options[selectedOptionIdx];
+  const selectedOption = selectedOptionIdx !== null ? options[selectedOptionIdx] : undefined;
+  const recurringRules: Array<{ weekday: number; start_time: string; end_time: string; single_price?: number; monthly_price?: number }> = Array.isArray(cta.recurring_schedules) ? cta.recurring_schedules : [];
+  // Para regulares sólo se muestra el turno semanal: la fecha concreta se coordina por WhatsApp.
+  const scheduleTimeSlots = recurringRules.map((rule) => ({
+    key: `${rule.start_time}-${rule.end_time}`,
+    start_time: rule.start_time,
+    end_time: rule.end_time,
+    weekday: WEEKDAY_LABELS[rule.weekday]?.[isEn ? "en" : "es"] || "",
+    single_price: Number(rule.single_price ?? item.price),
+    monthly_price: Number(rule.monthly_price ?? item.price),
+  }));
   const selectedSchedule = selectedSingleDate
-    ? upcoming.find((schedule) => schedule.scheduled_date === format(selectedSingleDate, "yyyy-MM-dd") && schedule.spots_available > 0)
+    ? upcoming.find((schedule) => schedule.scheduled_date === format(selectedSingleDate, "yyyy-MM-dd") && `${schedule.start_time}-${schedule.end_time}` === selectedScheduleTimeKey && schedule.spots_available > 0)
     : undefined;
   const isBreakfastPaint = item.id === BREAKFAST_PAINT_ACTIVITY_ID;
 
@@ -121,13 +140,24 @@ const ClaseDetalle = () => {
   };
 
   const optionWhatsappUrl = () => {
-    if (!selectedOption) return "#";
+    if (!selectedOption || (cta.category === "regulares" && !selectedScheduleTimeKey)) return "#";
+    const selectedSlot = scheduleTimeSlots.find((slot) => slot.key === selectedScheduleTimeKey);
+    const scheduleLabel = selectedSlot
+      ? `${selectedSlot.weekday} ${formatTime(selectedSlot.start_time)} – ${formatTime(selectedSlot.end_time)}`
+      : "";
     if (selectedOption.booking_mode === "single" && selectedSchedule) {
       const date = format(new Date(selectedSchedule.scheduled_date + "T00:00:00"), "EEEE d 'de' MMMM", { locale: dateLocale });
       const message = t("claseDetalle.whatsappMensajeOpcionFecha", { title, option: selectedOption.label, price: selectedOption.price, date, time: formatTime(selectedSchedule.start_time) });
       return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
     }
-    const message = t("claseDetalle.whatsappMensajeOpcion", { title, option: selectedOption.label, price: selectedOption.price });
+    const message = t("claseDetalle.whatsappMensajeOpcionHorario", { title, option: selectedOption.label, price: selectedOption.price, schedule: scheduleLabel });
+    return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+  };
+
+  const regularWhatsappUrl = (slot: typeof scheduleTimeSlots[number], mode: "single" | "monthly") => {
+    const option = mode === "single" ? t("claseDetalle.claseUnica") : t("claseDetalle.bonoMensual");
+    const price = mode === "single" ? slot.single_price : slot.monthly_price;
+    const message = t("claseDetalle.whatsappMensajeOpcionHorario", { title, option, price, schedule: `${slot.weekday} ${formatTime(slot.start_time)} – ${formatTime(slot.end_time)}` });
     return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
   };
 
@@ -306,17 +336,63 @@ const ClaseDetalle = () => {
               )}
 
               <div className="pt-2 border-t border-border">
-                {options.length > 0 ? (
+                {cta.category === "regulares" && scheduleTimeSlots.length > 0 ? (
                   <div className="space-y-3">
-                    <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("claseDetalle.elegirOpcion")}</p>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("claseDetalle.elegirHorario")}</p>
+                    {scheduleTimeSlots.map((slot) => {
+                      const isSelected = selectedScheduleTimeKey === slot.key;
+                      return (
+                        <div key={slot.key} className={`border p-4 space-y-3 ${isSelected ? "border-foreground" : "border-border"}`}>
+                          <p className="font-medium capitalize">{slot.weekday} · {formatTime(slot.start_time)} – {formatTime(slot.end_time)}</p>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            <Button type="button" variant={isSelected && selectedRegularMode === "single" ? "default" : "outline"} onClick={() => { setSelectedScheduleTimeKey(slot.key); setSelectedRegularMode("single"); setSelectedSingleDate(undefined); }}>
+                              {t("claseDetalle.claseUnica")} · €{slot.single_price}
+                            </Button>
+                            <Button type="button" variant={isSelected && selectedRegularMode === "monthly" ? "default" : "outline"} onClick={() => { setSelectedScheduleTimeKey(slot.key); setSelectedRegularMode("monthly"); setSelectedSingleDate(undefined); }}>
+                              {t("claseDetalle.bonoMensual")} · €{slot.monthly_price}
+                            </Button>
+                          </div>
+                          {isSelected && selectedRegularMode === "single" && <Button className="w-full" asChild><a href={regularWhatsappUrl(slot, "single")} target="_blank" rel="noopener noreferrer"><MessageCircle className="h-4 w-4 mr-1.5" />{t("claseDetalle.reservarWhatsapp", { tipo: tipoLabel })}</a></Button>}
+                          {isSelected && selectedRegularMode === "monthly" && <Button className="w-full" asChild><a href={regularWhatsappUrl(slot, "monthly")} target="_blank" rel="noopener noreferrer"><MessageCircle className="h-4 w-4 mr-1.5" />{t("claseDetalle.reservarWhatsapp", { tipo: tipoLabel })}</a></Button>}
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : options.length > 0 ? (
+                  <div className="space-y-3">
+                    {cta.category === "regulares" && scheduleTimeSlots.length > 0 && (
+                      <div className="space-y-2">
+                        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("claseDetalle.elegirHorario")}</p>
+                        <p className="text-sm text-muted-foreground">{t("claseDetalle.elegirHorarioAyuda")}</p>
+                        <div className="flex flex-wrap gap-2">
+                          {scheduleTimeSlots.map((slot) => (
+                            <button
+                              key={slot.key}
+                              type="button"
+                              onClick={() => { setSelectedScheduleTimeKey(slot.key); setSelectedSingleDate(undefined); }}
+                              aria-pressed={selectedScheduleTimeKey === slot.key}
+                              className={`font-sans text-sm px-4 py-2.5 border transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring ${
+                                selectedScheduleTimeKey === slot.key
+                                  ? "border-foreground bg-foreground text-primary-foreground"
+                                  : "border-border text-muted-foreground hover:text-foreground"
+                              }`}
+                            >
+                              <span className="capitalize">{slot.weekday}</span> · {formatTime(slot.start_time)} – {formatTime(slot.end_time)}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t(cta.category === "regulares" ? "claseDetalle.elegirModalidad" : "claseDetalle.elegirOpcion")}</p>
                     <div className="flex flex-wrap gap-2">
                       {options.map((opt, idx) => (
                         <button
                           key={idx}
                           type="button"
                           onClick={() => { setSelectedOptionIdx(idx); setSelectedSingleDate(undefined); }}
+                          disabled={cta.category === "regulares" && !selectedScheduleTimeKey}
                           aria-pressed={selectedOptionIdx === idx}
-                          className={`font-sans text-sm px-4 py-2.5 border transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring ${
+                          className={`font-sans text-sm px-4 py-2.5 border transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-not-allowed disabled:opacity-45 ${
                             selectedOptionIdx === idx
                               ? "border-foreground bg-foreground text-primary-foreground"
                               : "border-border text-muted-foreground hover:text-foreground"
@@ -342,7 +418,7 @@ const ClaseDetalle = () => {
                               selected={selectedSingleDate}
                               onSelect={setSelectedSingleDate}
                               locale={dateLocale}
-                              disabled={(date) => !upcoming.some((schedule) => schedule.scheduled_date === format(date, "yyyy-MM-dd") && schedule.spots_available > 0)}
+                              disabled={(date) => !upcoming.some((schedule) => schedule.scheduled_date === format(date, "yyyy-MM-dd") && `${schedule.start_time}-${schedule.end_time}` === selectedScheduleTimeKey && schedule.spots_available > 0)}
                               initialFocus
                               className="p-3 pointer-events-auto"
                             />
@@ -358,14 +434,14 @@ const ClaseDetalle = () => {
                           </Button>
                         ) : <Button className="w-full" variant="default" disabled>{t("claseDetalle.seleccionarFecha")}</Button>}
                       </div>
-                    ) : (
+                    ) : selectedOption ? (
                       <Button className="w-full mt-1" variant="default" asChild>
                         <a href={optionWhatsappUrl()} target="_blank" rel="noopener noreferrer">
                           <MessageCircle className="h-4 w-4 mr-1.5" aria-hidden="true" />
                           {t("claseDetalle.reservarWhatsapp", { tipo: tipoLabel })}
                         </a>
                       </Button>
-                    )}
+                    ) : null}
                   </div>
                 ) : loadingSchedules ? (
                   <p className="text-sm text-muted-foreground">{t("claseDetalle.cargandoFechas")}</p>
