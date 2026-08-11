@@ -11,6 +11,8 @@ import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext
 import { renderBoldText, stripActivityDescriptionMarkup } from "@/lib/richText";
 
 const CLASS_CATEGORIES = ["regulares", "workshops", "personalizadas"] as const;
+// Los importes simbólicos, como 0,1 €, representan promociones sin precio publicado.
+const MINIMUM_DISPLAY_PRICE = 1;
 
 const isPastClassType = (ct: ClassTypeWithSchedules) => {
   // Las clases regulares y personalizadas son ofertas permanentes, no eventos puntuales:
@@ -65,10 +67,18 @@ const Clases = () => {
     const title = (isEn && cta.title_en) || ct.title;
     const description = (isEn && cta.description_en) || ct.description;
     const optionPrices = Array.isArray(cta.options)
-      ? cta.options.map((option: { price?: unknown }) => Number(option.price)).filter((price: number) => price > 0)
+      ? cta.options.map((option: { price?: unknown }) => Number(option.price)).filter((price: number) => price >= MINIMUM_DISPLAY_PRICE)
       : [];
-    const displayPrice = optionPrices.length > 0 ? Math.min(...optionPrices) : Number(ct.price);
-    const showsFromPrice = optionPrices.length > 1;
+    const recurringPrices = Array.isArray(cta.recurring_schedules)
+      ? cta.recurring_schedules.flatMap((schedule: { single_price?: unknown; monthly_price?: unknown }) => [
+          Number(schedule.single_price),
+          Number(schedule.monthly_price),
+        ]).filter((price: number) => price >= MINIMUM_DISPLAY_PRICE)
+      : [];
+    // La tarjeta resume el precio más accesible, independientemente de si viene
+    // del precio base, una opción o un turno semanal.
+    const availablePrices = [Number(ct.price), ...optionPrices, ...recurringPrices].filter((price) => Number.isFinite(price) && price >= MINIMUM_DISPLAY_PRICE);
+    const displayPrice = availablePrices.length > 0 ? Math.min(...availablePrices) : 0;
     return (
       <Link
         key={ct.id}
@@ -106,7 +116,7 @@ const Clases = () => {
           <div className="flex items-center justify-between mt-2">
             {displayPrice > 0 && (
               <span className={big ? "text-base font-serif font-semibold text-foreground" : "text-sm font-serif font-semibold text-foreground"}>
-                {showsFromPrice ? `${t("clases.desde")} ` : ""}€{displayPrice}
+                {t("clases.desde")} €{displayPrice}
               </span>
             )}
             <span className="text-xs uppercase tracking-[0.15em] font-sans text-muted-foreground">

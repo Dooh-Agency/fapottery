@@ -270,7 +270,13 @@
     "tipoWorkshops": "workshop",
     "tipoPersonalizadas": "personalized class",
     "sinImagen": "No image",
+    "elegirClase": "Choose a class",
+    "elegirTurno": "Choose your time slot",
+    "ninos": "Children",
+    "adultos": "Adults",
     "elegirOpcion": "Choose an option",
+    "consultarWhatsapp": "Ask on WhatsApp",
+    "whatsappMensajeConsultaPrecio": "Hi! I'd like to ask about \"{{title}}\". Could you give me more information?",
     "whatsappMensajeOpcion": "Hi! I'd like to reserve a place for \"{{title}}\" - option \"{{option}}\" (€{{price}}). How can I confirm my booking?",
     "whatsappMensajeOpcionFecha": "Hi! I'd like to book a place for \"{{title}}\" - {{option}} (€{{price}}) on {{date}} at {{time}}. How can I confirm my booking?"
   },

@@ -21,6 +21,8 @@ import { cn } from "@/lib/utils";
 const WHATSAPP_NUMBER = "+34681816030";
 const BREAKFAST_PAINT_ACTIVITY_ID = "56fbca84-e350-4738-a57f-9d6be48501cf";
 const REGULAR_CLASSES_ACTIVITY_ID = "c30c92d9-4ee4-469a-a890-78c5a70ff4a7";
+// Los importes simbólicos, como 0,1 €, representan promociones sin precio publicado.
+const MINIMUM_DISPLAY_PRICE = 1;
 
 const TIPO_LABEL_KEYS: Record<string, string> = {
   regulares: "claseDetalle.tipoRegulares",
@@ -105,7 +107,9 @@ const ClaseDetalle = () => {
   const faq: { question: string; answer: string }[] =
     (isEn && Array.isArray(cta.faq_en) && cta.faq_en.length > 0 ? cta.faq_en : Array.isArray(cta.faq) ? cta.faq : []);
   const tipoLabel = t(TIPO_LABEL_KEYS[cta.category] || TIPO_LABEL_KEYS.regulares);
-  const options: { label: string; price: number; booking_mode?: "single" | "monthly" }[] = Array.isArray(cta.options) ? cta.options : [];
+  const options: { label: string; price: number; booking_mode?: "single" | "monthly" }[] = Array.isArray(cta.options)
+    ? cta.options.filter((option: { price?: unknown }) => Number(option.price) >= MINIMUM_DISPLAY_PRICE)
+    : [];
   const locations: { name: string; map_url?: string }[] = Array.isArray(cta.locations) ? cta.locations : [];
   const selectedOption = options[selectedOptionIdx];
   const rawRegularSlots: Array<{ weekday: number; start_time: string; end_time: string; single_price?: number; monthly_price?: number; audience?: "kids" | "adults" }> = Array.isArray(cta.recurring_schedules) ? cta.recurring_schedules : [];
@@ -124,7 +128,13 @@ const ClaseDetalle = () => {
     { audience: "adults" as const, weekday: 2, start_time: "14:30", end_time: "16:30", key: "adults-14:30-16:30", single_price: 35, monthly_price: 100 },
   ];
   const regularSlots = item.id === REGULAR_CLASSES_ACTIVITY_ID && !hasConfiguredAudiencePrices ? defaultRegularSlots : storedRegularSlots;
-  const visibleRegularSlots = selectedAudience ? regularSlots.filter((slot) => slot.audience === selectedAudience) : [];
+  const availableRegularAudiences = (["kids", "adults"] as const).filter((audience) => regularSlots.some((slot) => slot.audience === audience));
+  // Cuando hay un único público, se muestran sus turnos directamente: no tiene
+  // sentido obligar a pasar por una pestaña ni enseñar una opción vacía.
+  const displayedAudience = selectedAudience && availableRegularAudiences.includes(selectedAudience)
+    ? selectedAudience
+    : availableRegularAudiences[0] || null;
+  const visibleRegularSlots = displayedAudience ? regularSlots.filter((slot) => slot.audience === displayedAudience) : [];
   const regularDurations = regularSlots.map((slot) => {
     const [startHour, startMinute] = slot.start_time.split(":").map(Number);
     const [endHour, endMinute] = slot.end_time.split(":").map(Number);
@@ -132,8 +142,11 @@ const ClaseDetalle = () => {
   });
   const minimumRegularDuration = regularDurations.length ? Math.min(...regularDurations) : 0;
   const maximumRegularDuration = regularDurations.length ? Math.max(...regularDurations) : 0;
-  const regularPrices = regularSlots.flatMap((slot) => [slot.single_price, slot.monthly_price]).filter((price) => price > 0);
+  const regularPrices = regularSlots.flatMap((slot) => [slot.single_price, slot.monthly_price]).filter((price) => price >= MINIMUM_DISPLAY_PRICE);
   const minimumRegularPrice = regularPrices.length ? Math.min(...regularPrices) : 0;
+  const hasPublishedPrice = cta.category === "regulares"
+    ? minimumRegularPrice >= MINIMUM_DISPLAY_PRICE
+    : options.some((option) => Number(option.price) >= MINIMUM_DISPLAY_PRICE) || Number(item.price) >= MINIMUM_DISPLAY_PRICE;
   const numberFormatter = new Intl.NumberFormat(i18n.language === "en" ? "en" : "es", { maximumFractionDigits: 2 });
   const selectedSchedule = selectedSingleDate
     ? upcoming.find((schedule) => schedule.scheduled_date === format(selectedSingleDate, "yyyy-MM-dd") && schedule.spots_available > 0)
@@ -166,6 +179,10 @@ const ClaseDetalle = () => {
     const option = mode === "single" ? "Clase única" : "Bono mensual · 4 clases";
     const price = mode === "single" ? slot.single_price : slot.monthly_price;
     const message = `¡Hola! Quiero reservar ${option} (€${price}) para ${title}, ${WEEKDAYS[slot.weekday]} ${formatTime(slot.start_time)}–${formatTime(slot.end_time)}. ¿Cómo lo coordinamos?`;
+    return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+  };
+  const priceInquiryWhatsappUrl = () => {
+    const message = t("claseDetalle.whatsappMensajeConsultaPrecio", { title });
     return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
   };
 
@@ -292,11 +309,19 @@ const ClaseDetalle = () => {
                   <p className="text-2xl font-serif font-normal text-foreground">{t("clases.desde")} €{numberFormatter.format(minimumRegularPrice)}</p>
                   <p className="text-xs text-muted-foreground">{t("claseDetalle.porPersona")}</p>
                 </div>
-              ) : options.length === 0 && Number(item.price) > 0 && (
+              ) : options.length === 0 && Number(item.price) >= MINIMUM_DISPLAY_PRICE && (
                 <div>
                   <p className="text-2xl font-serif font-semibold text-foreground">€{item.price}</p>
                   <p className="text-xs text-muted-foreground">{t("claseDetalle.porPersona")}</p>
                 </div>
+              )}
+              {!hasPublishedPrice && (
+                <Button variant="outline" asChild>
+                  <a href={priceInquiryWhatsappUrl()} target="_blank" rel="noopener noreferrer">
+                    <MessageCircle className="h-4 w-4 mr-1.5" aria-hidden="true" />
+                    {t("claseDetalle.consultarWhatsapp")}
+                  </a>
+                </Button>
               )}
 
               <div className="space-y-2 text-sm">
@@ -353,12 +378,17 @@ const ClaseDetalle = () => {
               <div className="pt-2 border-t border-border">
                 {cta.category === "regulares" && regularSlots.length > 0 ? (
                   <div className="space-y-3">
-                    <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Elige la clase</p>
-                    <div className="grid grid-cols-2 gap-2">
-                      <Button type="button" variant={selectedAudience === "kids" ? "default" : "outline"} onClick={() => { setSelectedAudience("kids"); setSelectedRegularSlot(null); setSelectedRegularMode(null); }}>Niños</Button>
-                      <Button type="button" variant={selectedAudience === "adults" ? "default" : "outline"} onClick={() => { setSelectedAudience("adults"); setSelectedRegularSlot(null); setSelectedRegularMode(null); }}>Adultos</Button>
-                    </div>
-                    {selectedAudience && <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground pt-2">Elige tu turno</p>}
+                    {availableRegularAudiences.length > 1 && <>
+                      <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("claseDetalle.elegirClase")}</p>
+                      <div className="grid grid-cols-2 gap-2">
+                        {availableRegularAudiences.map((audience) => (
+                          <Button key={audience} type="button" variant={displayedAudience === audience ? "default" : "outline"} onClick={() => { setSelectedAudience(audience); setSelectedRegularSlot(null); setSelectedRegularMode(null); }}>
+                            {t(audience === "kids" ? "claseDetalle.ninos" : "claseDetalle.adultos")}
+                          </Button>
+                        ))}
+                      </div>
+                    </>}
+                    {displayedAudience && <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground pt-2">{t("claseDetalle.elegirTurno")}</p>}
                     {visibleRegularSlots.map((slot) => {
                       const active = selectedRegularSlot === slot.key;
                       return <div key={slot.key} className={`border p-4 space-y-3 ${active ? "border-foreground" : "border-border"}`}>

@@ -271,7 +271,13 @@
     "tipoWorkshops": "workshop",
     "tipoPersonalizadas": "clase personalizada",
     "sinImagen": "Sin imagen",
+    "elegirClase": "Elige la clase",
+    "elegirTurno": "Elige tu turno",
+    "ninos": "Niños",
+    "adultos": "Adultos",
     "elegirOpcion": "Elige",
+    "consultarWhatsapp": "Consultar por WhatsApp",
+    "whatsappMensajeConsultaPrecio": "¡Hola! Quiero consultar por \"{{title}}\". ¿Podéis darme más información?",
     "whatsappMensajeOpcion": "¡Hola! Quiero reservar una plaza para \"{{title}}\" - opción \"{{option}}\" (€{{price}}). ¿Cómo confirmo mi reserva?",
     "whatsappMensajeOpcionFecha": "¡Hola! Quiero reservar una plaza para \"{{title}}\" - {{option}} (€{{price}}) el {{date}} a las {{time}}. ¿Cómo confirmo mi reserva?"
   },
