@@ -26,6 +26,7 @@ const TIPO_LABEL_KEYS: Record<string, string> = {
   workshops: "claseDetalle.tipoWorkshops",
   personalizadas: "claseDetalle.tipoPersonalizadas",
 };
+const WEEKDAYS: Record<number, string> = { 0: "domingo", 1: "lunes", 2: "martes", 3: "miércoles", 4: "jueves", 5: "viernes", 6: "sábado" };
 
 const ClaseDetalle = () => {
   const { id } = useParams<{ id: string }>();
@@ -44,6 +45,8 @@ const ClaseDetalle = () => {
   const imagesKey = images.join("|");
   const [selectedImgIdx, setSelectedImgIdx] = useState(0);
   const [selectedOptionIdx, setSelectedOptionIdx] = useState(0);
+  const [selectedRegularSlot, setSelectedRegularSlot] = useState<string | null>(null);
+  const [selectedRegularMode, setSelectedRegularMode] = useState<"single" | "monthly" | null>(null);
   const [selectedSingleDate, setSelectedSingleDate] = useState<Date | undefined>();
   const [interestOpen, setInterestOpen] = useState(false);
   const [hasHiddenThumbnails, setHasHiddenThumbnails] = useState(false);
@@ -103,6 +106,9 @@ const ClaseDetalle = () => {
   const options: { label: string; price: number; booking_mode?: "single" | "monthly" }[] = Array.isArray(cta.options) ? cta.options : [];
   const locations: { name: string; map_url?: string }[] = Array.isArray(cta.locations) ? cta.locations : [];
   const selectedOption = options[selectedOptionIdx];
+  const regularSlots = Array.isArray(cta.recurring_schedules) ? cta.recurring_schedules.map((slot: { weekday: number; start_time: string; end_time: string; single_price?: number; monthly_price?: number }) => ({
+    ...slot, key: `${slot.start_time}-${slot.end_time}`, single_price: Number(slot.single_price ?? item.price), monthly_price: Number(slot.monthly_price ?? item.price),
+  })) : [];
   const selectedSchedule = selectedSingleDate
     ? upcoming.find((schedule) => schedule.scheduled_date === format(selectedSingleDate, "yyyy-MM-dd") && schedule.spots_available > 0)
     : undefined;
@@ -128,6 +134,12 @@ const ClaseDetalle = () => {
       return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
     }
     const message = t("claseDetalle.whatsappMensajeOpcion", { title, option: selectedOption.label, price: selectedOption.price });
+    return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+  };
+  const regularWhatsappUrl = (slot: typeof regularSlots[number], mode: "single" | "monthly") => {
+    const option = mode === "single" ? "Clase única" : "Bono mensual · 4 clases";
+    const price = mode === "single" ? slot.single_price : slot.monthly_price;
+    const message = `¡Hola! Quiero reservar ${option} (€${price}) para ${title}, ${WEEKDAYS[slot.weekday]} ${formatTime(slot.start_time)}–${formatTime(slot.end_time)}. ¿Cómo lo coordinamos?`;
     return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
   };
 
@@ -306,7 +318,22 @@ const ClaseDetalle = () => {
               )}
 
               <div className="pt-2 border-t border-border">
-                {options.length > 0 ? (
+                {cta.category === "regulares" && regularSlots.length > 0 ? (
+                  <div className="space-y-3">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Elegí tu turno</p>
+                    {regularSlots.map((slot) => {
+                      const active = selectedRegularSlot === slot.key;
+                      return <div key={slot.key} className={`border p-4 space-y-3 ${active ? "border-foreground" : "border-border"}`}>
+                        <p className="font-medium capitalize">{WEEKDAYS[slot.weekday]} · {formatTime(slot.start_time)} – {formatTime(slot.end_time)}</p>
+                        <div className="grid grid-cols-2 gap-2">
+                          <Button type="button" variant={active && selectedRegularMode === "single" ? "default" : "outline"} onClick={() => { setSelectedRegularSlot(slot.key); setSelectedRegularMode("single"); }}>Clase única · €{slot.single_price}</Button>
+                          <Button type="button" variant={active && selectedRegularMode === "monthly" ? "default" : "outline"} onClick={() => { setSelectedRegularSlot(slot.key); setSelectedRegularMode("monthly"); }}>Bono mensual · €{slot.monthly_price}</Button>
+                        </div>
+                        {active && selectedRegularMode && <Button className="w-full" asChild><a href={regularWhatsappUrl(slot, selectedRegularMode)} target="_blank" rel="noopener noreferrer"><MessageCircle className="h-4 w-4 mr-1.5" />Reservar por WhatsApp</a></Button>}
+                      </div>;
+                    })}
+                  </div>
+                ) : options.length > 0 ? (
                   <div className="space-y-3">
                     <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("claseDetalle.elegirOpcion")}</p>
                     <div className="flex flex-wrap gap-2">

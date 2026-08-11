@@ -17,7 +17,7 @@ import { CalendarIcon, Plus, Trash2, Bold, Upload, X, PanelTop, Pencil, GripVert
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { cn } from "@/lib/utils";
-import { useUpsertClassType, useUpsertSchedule, useCreateSchedulesIfMissing, useClassSchedules, useDeleteSchedule, uploadClassImage, type ClassSchedule, type ClassType } from "@/hooks/useClasses";
+import { useUpsertClassType, useUpsertSchedule, useClassSchedules, useDeleteSchedule, uploadClassImage, type ClassSchedule, type ClassType } from "@/hooks/useClasses";
 import { useTranslateContent } from "@/hooks/useTranslateContent";
 import { toast } from "sonner";
 import ImageUploader from "./ImageUploader";
@@ -72,6 +72,8 @@ const schema = z.object({
     start_time: z.string().min(1, "Requerido"),
     end_time: z.string().min(1, "Requerido"),
     spots_available: z.coerce.number().min(1),
+    single_price: z.coerce.number().min(0),
+    monthly_price: z.coerce.number().min(0),
   })),
   new_schedules: z.array(z.object({
     scheduled_date: z.date({ required_error: "Seleccioná fecha" }),
@@ -113,7 +115,6 @@ const emptyDefaults: FormValues = {
 const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
   const upsert = useUpsertClassType();
   const upsertSchedule = useUpsertSchedule();
-  const createSchedulesIfMissing = useCreateSchedulesIfMissing();
   const deleteSchedule = useDeleteSchedule();
   const translateContent = useTranslateContent("class_types");
   const { data: existingSchedules } = useClassSchedules(classType?.id);
@@ -177,7 +178,7 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
           badge_label: ct.badge_label || "",
           faq: Array.isArray(ct.faq) ? ct.faq : [],
           options: Array.isArray(ct.options) ? ct.options : [],
-          recurring_schedules: Array.isArray(ct.recurring_schedules) ? ct.recurring_schedules : [],
+          recurring_schedules: Array.isArray(ct.recurring_schedules) ? ct.recurring_schedules.map((schedule: any) => ({ ...schedule, single_price: Number(schedule.single_price ?? 0), monthly_price: Number(schedule.monthly_price ?? 0) })) : [],
           new_schedules: [],
         } : emptyDefaults
       );
@@ -262,6 +263,7 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
         image_url: classTypeData.image_url || null,
         badge_label: classTypeData.badge_label || null,
         duration_minutes: Math.round(duration_hours * 60),
+        price: values.category === "regulares" && recurring_schedules.length > 0 ? Math.min(...recurring_schedules.flatMap((schedule) => [schedule.single_price, schedule.monthly_price])) : classTypeData.price,
         recurring_schedules,
         images,
       } as any);
@@ -280,31 +282,6 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
             notes: s.notes || "",
           });
         }
-      }
-
-      // Las fechas concretas permiten elegir una clase suelta y controlar cupos.
-      // Generamos seis meses por delante sin modificar las fechas ya reservadas.
-      if (values.category === "regulares" && recurring_schedules.length > 0 && classTypeId) {
-        const until = new Date();
-        until.setMonth(until.getMonth() + 6);
-        const generated = [] as Array<{ class_type_id: string; scheduled_date: string; start_time: string; end_time: string; spots_available: number }>;
-        const date = new Date();
-        date.setHours(0, 0, 0, 0);
-        while (date <= until) {
-          recurring_schedules.forEach((rule) => {
-            if (date.getDay() === rule.weekday) {
-              generated.push({
-                class_type_id: classTypeId,
-                scheduled_date: format(date, "yyyy-MM-dd"),
-                start_time: rule.start_time,
-                end_time: rule.end_time,
-                spots_available: rule.spots_available,
-              });
-            }
-          });
-          date.setDate(date.getDate() + 1);
-        }
-        await createSchedulesIfMissing.mutateAsync(generated);
       }
 
       toast.success(classType ? "Clase actualizada" : "Clase creada");
@@ -338,7 +315,8 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
     (s) => !s.is_cancelled && new Date(s.scheduled_date + "T23:59:59") >= new Date()
   ) || [];
 
-  const isPending = upsert.isPending || upsertSchedule.isPending || createSchedulesIfMissing.isPending;
+  const isRegularClass = form.watch("category") === "regulares";
+  const isPending = upsert.isPending || upsertSchedule.isPending;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -510,11 +488,11 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
               <div className="space-y-3">
                 <div className="flex items-center justify-between gap-4">
                   <div>
-                    <p className="text-sm font-semibold text-foreground">Horario semanal</p>
-                    <p className="text-xs text-muted-foreground">Ej: martes, 17:00 a 19:30 (2,5 h). Al guardar se preparan automáticamente las próximas fechas de ese horario para que se puedan reservar.</p>
+                    <p className="text-sm font-semibold text-foreground">Turnos y precios</p>
+                    <p className="text-xs text-muted-foreground">Una fila por turno: día, horario, precio de clase única y precio del bono mensual. No se usan fechas ni calendario.</p>
                   </div>
-                  <Button type="button" variant="outline" size="sm" onClick={() => appendRecurringSchedule({ weekday: 1, start_time: "17:00", end_time: "19:00", spots_available: form.getValues("max_students") || 8 })}>
-                    <Plus className="h-3.5 w-3.5 mr-1" /> Agregar día
+                  <Button type="button" variant="outline" size="sm" onClick={() => appendRecurringSchedule({ weekday: 2, start_time: "17:00", end_time: "19:00", spots_available: form.getValues("max_students") || 8, single_price: 0, monthly_price: 0 })}>
+                    <Plus className="h-3.5 w-3.5 mr-1" /> Agregar turno
                   </Button>
                 </div>
                 {recurringScheduleFields.length === 0 && <p className="text-xs text-muted-foreground">No hay horarios semanales cargados.</p>}
@@ -533,13 +511,18 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
                     <FormField control={form.control} name={`recurring_schedules.${index}.spots_available`} render={({ field }) => (
                       <FormItem className="col-span-3"><FormLabel className="text-xs">Vacantes por clase</FormLabel><FormControl><Input type="number" min={1} step={1} {...field} /></FormControl><FormMessage /></FormItem>
                     )} />
+                    <FormField control={form.control} name={`recurring_schedules.${index}.single_price`} render={({ field }) => (
+                      <FormItem><FormLabel className="text-xs">Clase única (€)</FormLabel><FormControl><Input type="number" min={0} step="0.01" {...field} /></FormControl><FormMessage /></FormItem>
+                    )} />
+                    <FormField control={form.control} name={`recurring_schedules.${index}.monthly_price`} render={({ field }) => (
+                      <FormItem><FormLabel className="text-xs">Bono mensual · 4 clases (€)</FormLabel><FormControl><Input type="number" min={0} step="0.01" {...field} /></FormControl><FormMessage /></FormItem>
+                    )} />
                   </div>
                 ))}
               </div>
             )}
 
-            {/* Fechas */}
-            <p className="text-sm font-semibold text-foreground">{form.watch("category") === "regulares" ? "Fechas disponibles y excepciones" : "Fechas del evento"}</p>
+            {!isRegularClass && <><p className="text-sm font-semibold text-foreground">Fechas del evento</p>
 
             {/* Fechas existentes */}
             {upcomingSchedules.length > 0 && (
@@ -656,14 +639,15 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
               <Plus className="h-3.5 w-3.5 mr-1" /> Agregar fecha
             </Button>
 
+            </>}
             <Separator />
 
             {/* Detalles operativos */}
             <p className="text-sm font-semibold text-foreground">Detalles operativos</p>
             <div className="grid grid-cols-3 gap-3">
-              <FormField control={form.control} name="price" render={({ field }) => (
+              {!isRegularClass && <FormField control={form.control} name="price" render={({ field }) => (
                 <FormItem><FormLabel>Precio (€)</FormLabel><FormControl><Input type="number" step="0.01" {...field} /></FormControl><FormMessage /></FormItem>
-              )} />
+              )} />}
               <FormField control={form.control} name="duration_hours" render={({ field }) => (
                 <FormItem><FormLabel>Duración (horas)</FormLabel><FormControl><Input type="number" min="0.25" step="0.25" {...field} /></FormControl><p className="text-xs text-muted-foreground">Ej: 1,5 · 2 · 2,5</p><FormMessage /></FormItem>
               )} />
@@ -679,7 +663,8 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
 
             <Separator />
 
-            {/* Opciones con precio (ej. montos de tarjeta regalo, variantes de un taller) */}
+            {/* Las clases regulares ya tienen los dos precios dentro de cada turno. */}
+            {!isRegularClass && <>
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-semibold text-foreground">Opciones con precio</p>
@@ -731,6 +716,7 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
               </div>
             ))}
 
+            </>}
             <Separator />
 
             {/* FAQ */}

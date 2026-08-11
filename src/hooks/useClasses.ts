@@ -11,6 +11,8 @@ export type RecurringClassSchedule = {
   start_time: string;
   end_time: string;
   spots_available: number;
+  single_price?: number;
+  monthly_price?: number;
 };
 
 // ── Class Types ──
