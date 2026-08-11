@@ -7,6 +7,7 @@ export type ClassSchedule = Tables<"class_schedules"> & { class_types?: ClassTyp
 export type ClassReservation = Tables<"class_reservations"> & { class_schedules?: ClassSchedule & { class_types?: ClassType } };
 export type ClassTypeWithSchedules = ClassType & { class_schedules: Tables<"class_schedules">[] };
 export type RecurringClassSchedule = {
+  audience?: "kids" | "adults";
   weekday: number;
   start_time: string;
   end_time: string;

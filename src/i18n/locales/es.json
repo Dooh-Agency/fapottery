@@ -258,7 +258,7 @@
     "listaInteresProximoEvento": "Quiero recibir info del próximo evento",
     "sinFechas": "No hay fechas próximas disponibles.",
     "reservarWhatsapp": "Reservar {{tipo}} por WhatsApp",
-    "elegirFechaClaseSuelta": "Elegí la fecha que querés reservar. Solo se muestran las próximas clases con vacantes.",
+    "elegirFechaClaseSuelta": "Elige la fecha que quieres reservar. Solo se muestran las próximas clases con vacantes.",
     "seleccionarFecha": "Seleccionar fecha",
     "whatsappMensaje": "Hola! Quiero reservar mi lugar en \"{{title}}\" el {{date}} a las {{time}}. ¿Confirmamos?",
     "whatsappMensajeListaEspera": "Hola! Quiero sumarme a la lista de espera para \"{{title}}\" del {{date}}. ¿Me avisáis cuando haya próxima fecha?",

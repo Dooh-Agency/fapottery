@@ -20,6 +20,7 @@ import { cn } from "@/lib/utils";
 
 const WHATSAPP_NUMBER = "+34681816030";
 const BREAKFAST_PAINT_ACTIVITY_ID = "56fbca84-e350-4738-a57f-9d6be48501cf";
+const REGULAR_CLASSES_ACTIVITY_ID = "c30c92d9-4ee4-469a-a890-78c5a70ff4a7";
 
 const TIPO_LABEL_KEYS: Record<string, string> = {
   regulares: "claseDetalle.tipoRegulares",
@@ -47,6 +48,7 @@ const ClaseDetalle = () => {
   const [selectedOptionIdx, setSelectedOptionIdx] = useState(0);
   const [selectedRegularSlot, setSelectedRegularSlot] = useState<string | null>(null);
   const [selectedRegularMode, setSelectedRegularMode] = useState<"single" | "monthly" | null>(null);
+  const [selectedAudience, setSelectedAudience] = useState<"kids" | "adults" | null>(null);
   const [selectedSingleDate, setSelectedSingleDate] = useState<Date | undefined>();
   const [interestOpen, setInterestOpen] = useState(false);
   const [hasHiddenThumbnails, setHasHiddenThumbnails] = useState(false);
@@ -106,9 +108,33 @@ const ClaseDetalle = () => {
   const options: { label: string; price: number; booking_mode?: "single" | "monthly" }[] = Array.isArray(cta.options) ? cta.options : [];
   const locations: { name: string; map_url?: string }[] = Array.isArray(cta.locations) ? cta.locations : [];
   const selectedOption = options[selectedOptionIdx];
-  const regularSlots = Array.isArray(cta.recurring_schedules) ? cta.recurring_schedules.map((slot: { weekday: number; start_time: string; end_time: string; single_price?: number; monthly_price?: number }) => ({
-    ...slot, key: `${slot.start_time}-${slot.end_time}`, single_price: Number(slot.single_price ?? item.price), monthly_price: Number(slot.monthly_price ?? item.price),
-  })) : [];
+  const rawRegularSlots: Array<{ weekday: number; start_time: string; end_time: string; single_price?: number; monthly_price?: number; audience?: "kids" | "adults" }> = Array.isArray(cta.recurring_schedules) ? cta.recurring_schedules : [];
+  const hasConfiguredAudiencePrices = rawRegularSlots.length > 0 && rawRegularSlots.every((slot) => slot.audience && Number(slot.single_price) > 0 && Number(slot.monthly_price) > 0);
+  const storedRegularSlots = rawRegularSlots.map((slot) => ({
+    ...slot,
+    audience: slot.audience || (Number(slot.start_time.slice(0, 2)) >= 17 ? "kids" as const : "adults" as const),
+    key: `${slot.audience || (Number(slot.start_time.slice(0, 2)) >= 17 ? "kids" : "adults")}-${slot.start_time}-${slot.end_time}`,
+    single_price: Number(slot.single_price ?? item.price),
+    monthly_price: Number(slot.monthly_price ?? item.price),
+  }));
+  // Vista local de prueba: permite revisar el selector aunque todavía no se hayan guardado los turnos nuevos.
+  const defaultRegularSlots = [
+    { audience: "kids" as const, weekday: 2, start_time: "17:00", end_time: "18:30", key: "kids-17:00-18:30", single_price: 25, monthly_price: 80 },
+    { audience: "adults" as const, weekday: 2, start_time: "12:00", end_time: "14:00", key: "adults-12:00-14:00", single_price: 35, monthly_price: 100 },
+    { audience: "adults" as const, weekday: 2, start_time: "14:30", end_time: "16:30", key: "adults-14:30-16:30", single_price: 35, monthly_price: 100 },
+  ];
+  const regularSlots = item.id === REGULAR_CLASSES_ACTIVITY_ID && !hasConfiguredAudiencePrices ? defaultRegularSlots : storedRegularSlots;
+  const visibleRegularSlots = selectedAudience ? regularSlots.filter((slot) => slot.audience === selectedAudience) : [];
+  const regularDurations = regularSlots.map((slot) => {
+    const [startHour, startMinute] = slot.start_time.split(":").map(Number);
+    const [endHour, endMinute] = slot.end_time.split(":").map(Number);
+    return (endHour * 60 + endMinute - startHour * 60 - startMinute) / 60;
+  });
+  const minimumRegularDuration = regularDurations.length ? Math.min(...regularDurations) : 0;
+  const maximumRegularDuration = regularDurations.length ? Math.max(...regularDurations) : 0;
+  const regularPrices = regularSlots.flatMap((slot) => [slot.single_price, slot.monthly_price]).filter((price) => price > 0);
+  const minimumRegularPrice = regularPrices.length ? Math.min(...regularPrices) : 0;
+  const numberFormatter = new Intl.NumberFormat(i18n.language === "en" ? "en" : "es", { maximumFractionDigits: 2 });
   const selectedSchedule = selectedSingleDate
     ? upcoming.find((schedule) => schedule.scheduled_date === format(selectedSingleDate, "yyyy-MM-dd") && schedule.spots_available > 0)
     : undefined;
@@ -261,7 +287,12 @@ const ClaseDetalle = () => {
             <div className="space-y-6">
               <h1 className="font-serif font-bold text-2xl md:text-3xl lg:text-4xl">{title}</h1>
 
-              {options.length === 0 && Number(item.price) > 0 && (
+              {cta.category === "regulares" && minimumRegularPrice > 0 ? (
+                <div>
+                  <p className="text-2xl font-serif font-normal text-foreground">{t("clases.desde")} €{numberFormatter.format(minimumRegularPrice)}</p>
+                  <p className="text-xs text-muted-foreground">{t("claseDetalle.porPersona")}</p>
+                </div>
+              ) : options.length === 0 && Number(item.price) > 0 && (
                 <div>
                   <p className="text-2xl font-serif font-semibold text-foreground">€{item.price}</p>
                   <p className="text-xs text-muted-foreground">{t("claseDetalle.porPersona")}</p>
@@ -271,7 +302,9 @@ const ClaseDetalle = () => {
               <div className="space-y-2 text-sm">
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Clock className="h-4 w-4 shrink-0" />
-                  <span>{new Intl.NumberFormat(i18n.language === "en" ? "en" : "es", { maximumFractionDigits: 2 }).format(item.duration_minutes / 60)} {t("claseDetalle.horas")}</span>
+                  <span>{cta.category === "regulares" && regularDurations.length > 0
+                    ? `${numberFormatter.format(minimumRegularDuration)}${maximumRegularDuration !== minimumRegularDuration ? `–${numberFormatter.format(maximumRegularDuration)}` : ""}`
+                    : numberFormatter.format(item.duration_minutes / 60)} {t("claseDetalle.horas")}</span>
                 </div>
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Users className="h-4 w-4 shrink-0" />
@@ -320,8 +353,13 @@ const ClaseDetalle = () => {
               <div className="pt-2 border-t border-border">
                 {cta.category === "regulares" && regularSlots.length > 0 ? (
                   <div className="space-y-3">
-                    <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Elegí tu turno</p>
-                    {regularSlots.map((slot) => {
+                    <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Elige la clase</p>
+                    <div className="grid grid-cols-2 gap-2">
+                      <Button type="button" variant={selectedAudience === "kids" ? "default" : "outline"} onClick={() => { setSelectedAudience("kids"); setSelectedRegularSlot(null); setSelectedRegularMode(null); }}>Niños</Button>
+                      <Button type="button" variant={selectedAudience === "adults" ? "default" : "outline"} onClick={() => { setSelectedAudience("adults"); setSelectedRegularSlot(null); setSelectedRegularMode(null); }}>Adultos</Button>
+                    </div>
+                    {selectedAudience && <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground pt-2">Elige tu turno</p>}
+                    {visibleRegularSlots.map((slot) => {
                       const active = selectedRegularSlot === slot.key;
                       return <div key={slot.key} className={`border p-4 space-y-3 ${active ? "border-foreground" : "border-border"}`}>
                         <p className="font-medium capitalize">{WEEKDAYS[slot.weekday]} · {formatTime(slot.start_time)} – {formatTime(slot.end_time)}</p>

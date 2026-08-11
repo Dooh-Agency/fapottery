@@ -39,6 +39,13 @@ const WEEKDAYS = [
   { value: 0, label: "Domingo" },
 ] as const;
 
+const REGULAR_CLASSES_ACTIVITY_ID = "c30c92d9-4ee4-469a-a890-78c5a70ff4a7";
+const DEFAULT_REGULAR_CLASS_SLOTS = [
+  { audience: "kids" as const, weekday: 2, start_time: "17:00", end_time: "18:30", spots_available: 8, single_price: 25, monthly_price: 80 },
+  { audience: "adults" as const, weekday: 2, start_time: "12:00", end_time: "14:00", spots_available: 8, single_price: 35, monthly_price: 100 },
+  { audience: "adults" as const, weekday: 2, start_time: "14:30", end_time: "16:30", spots_available: 8, single_price: 35, monthly_price: 100 },
+];
+
 const schema = z.object({
   title: z.string().min(1, "Requerido"),
   description: z.string().optional(),
@@ -68,6 +75,7 @@ const schema = z.object({
     booking_mode: z.enum(["single", "monthly"]).optional(),
   })),
   recurring_schedules: z.array(z.object({
+    audience: z.enum(["kids", "adults"]),
     weekday: z.coerce.number().int().min(0).max(6),
     start_time: z.string().min(1, "Requerido"),
     end_time: z.string().min(1, "Requerido"),
@@ -178,7 +186,14 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
           badge_label: ct.badge_label || "",
           faq: Array.isArray(ct.faq) ? ct.faq : [],
           options: Array.isArray(ct.options) ? ct.options : [],
-          recurring_schedules: Array.isArray(ct.recurring_schedules) ? ct.recurring_schedules.map((schedule: any) => ({ ...schedule, single_price: Number(schedule.single_price ?? 0), monthly_price: Number(schedule.monthly_price ?? 0) })) : [],
+          recurring_schedules: ct.id === REGULAR_CLASSES_ACTIVITY_ID && (!Array.isArray(ct.recurring_schedules) || !ct.recurring_schedules.every((schedule: any) => schedule.audience && Number(schedule.single_price) > 0 && Number(schedule.monthly_price) > 0))
+            ? DEFAULT_REGULAR_CLASS_SLOTS
+            : Array.isArray(ct.recurring_schedules) ? ct.recurring_schedules.map((schedule: any) => ({
+            ...schedule,
+            audience: schedule.audience || (Number(schedule.start_time?.slice(0, 2)) >= 17 ? "kids" : "adults"),
+            single_price: Number(schedule.single_price ?? 0),
+            monthly_price: Number(schedule.monthly_price ?? 0),
+          })) : [],
           new_schedules: [],
         } : emptyDefaults
       );
@@ -262,7 +277,13 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
         location_map_url: classTypeData.location_map_url || null,
         image_url: classTypeData.image_url || null,
         badge_label: classTypeData.badge_label || null,
-        duration_minutes: Math.round(duration_hours * 60),
+        duration_minutes: values.category === "regulares" && recurring_schedules.length > 0
+          ? Math.max(...recurring_schedules.map((schedule) => {
+              const [startHour, startMinute] = schedule.start_time.split(":").map(Number);
+              const [endHour, endMinute] = schedule.end_time.split(":").map(Number);
+              return endHour * 60 + endMinute - startHour * 60 - startMinute;
+            }))
+          : Math.round(duration_hours * 60),
         price: values.category === "regulares" && recurring_schedules.length > 0 ? Math.min(...recurring_schedules.flatMap((schedule) => [schedule.single_price, schedule.monthly_price])) : classTypeData.price,
         recurring_schedules,
         images,
@@ -491,13 +512,16 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
                     <p className="text-sm font-semibold text-foreground">Turnos y precios</p>
                     <p className="text-xs text-muted-foreground">Una fila por turno: día, horario, precio de clase única y precio del bono mensual. No se usan fechas ni calendario.</p>
                   </div>
-                  <Button type="button" variant="outline" size="sm" onClick={() => appendRecurringSchedule({ weekday: 2, start_time: "17:00", end_time: "19:00", spots_available: form.getValues("max_students") || 8, single_price: 0, monthly_price: 0 })}>
+                  <Button type="button" variant="outline" size="sm" onClick={() => appendRecurringSchedule({ audience: "kids", weekday: 2, start_time: "17:00", end_time: "18:30", spots_available: form.getValues("max_students") || 8, single_price: 25, monthly_price: 80 })}>
                     <Plus className="h-3.5 w-3.5 mr-1" /> Agregar turno
                   </Button>
                 </div>
                 {recurringScheduleFields.length === 0 && <p className="text-xs text-muted-foreground">No hay horarios semanales cargados.</p>}
                 {recurringScheduleFields.map((scheduleField, index) => (
-                  <div key={scheduleField.id} className="grid grid-cols-[1fr_1fr_1fr_auto] items-end gap-2 border border-border rounded p-3">
+                  <div key={scheduleField.id} className="grid grid-cols-2 md:grid-cols-[1fr_1fr_1fr_1fr_auto] items-end gap-2 border border-border rounded p-3">
+                    <FormField control={form.control} name={`recurring_schedules.${index}.audience`} render={({ field }) => (
+                      <FormItem><FormLabel className="text-xs">Clase</FormLabel><Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl><SelectContent><SelectItem value="kids">Niños</SelectItem><SelectItem value="adults">Adultos</SelectItem></SelectContent></Select><FormMessage /></FormItem>
+                    )} />
                     <FormField control={form.control} name={`recurring_schedules.${index}.weekday`} render={({ field }) => (
                       <FormItem><FormLabel className="text-xs">Día</FormLabel><Select onValueChange={(value) => field.onChange(Number(value))} value={String(field.value)}><FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl><SelectContent>{WEEKDAYS.map((day) => <SelectItem key={day.value} value={String(day.value)}>{day.label}</SelectItem>)}</SelectContent></Select><FormMessage /></FormItem>
                     )} />
@@ -648,9 +672,9 @@ const ClassTypeFormDialog = ({ open, onOpenChange, classType }: Props) => {
               {!isRegularClass && <FormField control={form.control} name="price" render={({ field }) => (
                 <FormItem><FormLabel>Precio (€)</FormLabel><FormControl><Input type="number" step="0.01" {...field} /></FormControl><FormMessage /></FormItem>
               )} />}
-              <FormField control={form.control} name="duration_hours" render={({ field }) => (
+              {!isRegularClass && <FormField control={form.control} name="duration_hours" render={({ field }) => (
                 <FormItem><FormLabel>Duración (horas)</FormLabel><FormControl><Input type="number" min="0.25" step="0.25" {...field} /></FormControl><p className="text-xs text-muted-foreground">Ej: 1,5 · 2 · 2,5</p><FormMessage /></FormItem>
-              )} />
+              )} />}
               <FormField control={form.control} name="max_students" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Capacidad máxima de la actividad</FormLabel>
