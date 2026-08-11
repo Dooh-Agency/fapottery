@@ -272,13 +272,7 @@
     "tipoPersonalizadas": "clase personalizada",
     "sinImagen": "Sin imagen",
     "elegirOpcion": "Elige",
-    "elegirHorario": "1. Elegí tu horario",
-    "elegirHorarioAyuda": "Primero elegí el turno que te resulta mejor; luego seleccioná cómo querés asistir.",
-    "elegirModalidad": "2. Elegí cómo querés asistir",
-    "claseUnica": "Clase única",
-    "bonoMensual": "Bono mensual · 4 clases",
     "whatsappMensajeOpcion": "¡Hola! Quiero reservar una plaza para \"{{title}}\" - opción \"{{option}}\" (€{{price}}). ¿Cómo confirmo mi reserva?",
-    "whatsappMensajeOpcionHorario": "¡Hola! Quiero reservar una plaza para \"{{title}}\" - {{option}} (€{{price}}), horario {{schedule}}. ¿Cómo confirmo mi reserva?",
     "whatsappMensajeOpcionFecha": "¡Hola! Quiero reservar una plaza para \"{{title}}\" - {{option}} (€{{price}}) el {{date}} a las {{time}}. ¿Cómo confirmo mi reserva?"
   },
   "catalogo": {

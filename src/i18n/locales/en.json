@@ -271,13 +271,7 @@
     "tipoPersonalizadas": "personalized class",
     "sinImagen": "No image",
     "elegirOpcion": "Choose an option",
-    "elegirHorario": "1. Choose your time slot",
-    "elegirHorarioAyuda": "First choose the time slot that suits you; then select how you would like to attend.",
-    "elegirModalidad": "2. Choose how you would like to attend",
-    "claseUnica": "Single class",
-    "bonoMensual": "Monthly pass · 4 classes",
     "whatsappMensajeOpcion": "Hi! I'd like to reserve a place for \"{{title}}\" - option \"{{option}}\" (€{{price}}). How can I confirm my booking?",
-    "whatsappMensajeOpcionHorario": "Hi! I'd like to reserve a place for \"{{title}}\" - {{option}} (€{{price}}), time slot {{schedule}}. How can I confirm my booking?",
     "whatsappMensajeOpcionFecha": "Hi! I'd like to book a place for \"{{title}}\" - {{option}} (€{{price}}) on {{date}} at {{time}}. How can I confirm my booking?"
   },
   "catalogo": {

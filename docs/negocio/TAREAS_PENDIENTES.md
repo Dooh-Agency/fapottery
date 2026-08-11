@@ -6,10 +6,6 @@
 > Regla: no marcar una tarea como hecha hasta comprobar el resultado en la
 > plataforma o sitio público correspondiente.
 
-> Los temas de mantenimiento del código se registran por separado en
-> [`docs/tecnica/PENDIENTES_TECNICOS.md`](../tecnica/PENDIENTES_TECNICOS.md),
-> para no mezclarlos con las tareas comerciales y de contenido.
-
 ## PAINT & BREAKFAST — descartado
 
 El evento y sus campañas/landings asociados quedan cancelados. No retomar, publicar
